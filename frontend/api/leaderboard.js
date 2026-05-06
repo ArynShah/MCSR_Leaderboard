@@ -15,7 +15,16 @@ if (!admin.apps.length) {
 }
 
 const db = admin.database();
-const WHITELIST = ['Player1', 'Player2', 'Crifzer', 'Goatener'];
+const WHITELIST = [
+  'Crifzer',
+  'Goatener',
+  'ILieALot',
+  'bozogoofylame',
+  'AneeboAmiibo',
+  'NeatFoot',
+  'CrouchingPuppy',
+  'Pratham001'
+];
 
 // 2. Vercel Native Serverless Function
 export default async function handler(req, res) {
