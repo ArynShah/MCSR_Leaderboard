@@ -15,6 +15,17 @@ export default function App() {
       .catch(err => console.error(err));
   }, []);
 
+  useEffect(() => {
+    if (players.length > 0) {
+      players.forEach(p => {
+        const head = new Image();
+        head.src = `https://starlightskins.lunareclipse.studio/render/isometric/${p.nickname}/head`;
+        
+        const fullBody = new Image();
+        fullBody.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/full`;
+      });
+    }
+  }, [players]);
   const formatTime = (ms) => {
     if (!ms) return 'N/A';
     const totalSeconds = Math.floor(ms / 1000);
