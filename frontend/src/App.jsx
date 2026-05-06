@@ -9,23 +9,24 @@ export default function App() {
   const coaches = ['Crifzer', 'Goatener'];
 
   useEffect(() => {
-    fetch('/api/leaderboard') 
+    fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => setPlayers(data))
       .catch(err => console.error(err));
   }, []);
 
+  // Invisible Image Preloader
   useEffect(() => {
     if (players.length > 0) {
       players.forEach(p => {
         const head = new Image();
         head.src = `https://starlightskins.lunareclipse.studio/render/isometric/${p.nickname}/head`;
-        
         const fullBody = new Image();
         fullBody.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/full`;
       });
     }
   }, [players]);
+
   const formatTime = (ms) => {
     if (!ms) return 'N/A';
     const totalSeconds = Math.floor(ms / 1000);
@@ -35,12 +36,12 @@ export default function App() {
   };
 
   const getRankStyles = (elo) => {
-    if (elo >= 2000) return { color: '#FF5555', borderColor: '#FF5555' };
-    if (elo >= 1500) return { color: '#55FFFF', borderColor: '#55FFFF' };
-    if (elo >= 1200) return { color: '#55FF55', borderColor: '#55FF55' };
-    if (elo >= 900) return { color: '#FFAA00', borderColor: '#FFAA00' };
-    if (elo >= 600) return { color: '#FFFFFF', borderColor: '#FFFFFF' };
-    return { color: '#AAAAAA', borderColor: '#AAAAAA' };
+    if (elo >= 2000) return { color: '#FF5555', borderColor: 'rgba(255, 85, 85, 0.5)', glow: 'rgba(255, 85, 85, 0.2)' };
+    if (elo >= 1500) return { color: '#55FFFF', borderColor: 'rgba(85, 255, 255, 0.5)', glow: 'rgba(85, 255, 255, 0.2)' };
+    if (elo >= 1200) return { color: '#55FF55', borderColor: 'rgba(85, 255, 85, 0.5)', glow: 'rgba(85, 255, 85, 0.2)' };
+    if (elo >= 900) return { color: '#FFAA00', borderColor: 'rgba(255, 170, 0, 0.5)', glow: 'rgba(255, 170, 0, 0.2)' };
+    if (elo >= 600) return { color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.5)', glow: 'rgba(255, 255, 255, 0.1)' };
+    return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.1)' };
   };
 
   const displayPlayers = players
@@ -55,253 +56,424 @@ export default function App() {
   return (
     <div className="app-container">
       <style>{`
+        /* =========================================
+           GLOBAL & BACKGROUND
+           ========================================= */
+        * {
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
         .app-container {
-          background-color: #121212;
+          /* Deep, rich gradient background to make the glass pop */
+          background: linear-gradient(135deg, #0b0d17 0%, #121224 50%, #1a1e36 100%);
+          background-attachment: fixed;
           color: #F0F1F2;
           min-height: 100vh;
-          padding: 40px 20px;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          padding: 40px 15px; /* Less padding on edges for mobile */
+          font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+          overflow-x: hidden;
         }
+
+        /* Ambient floating orbs for the liquid glass feel */
+        .app-container::before, .app-container::after {
+          content: '';
+          position: fixed;
+          border-radius: 50%;
+          filter: blur(80px);
+          z-index: 0;
+          opacity: 0.4;
+          animation: floatOrb 15s ease-in-out infinite alternate;
+        }
+        .app-container::before {
+          top: -10%; left: -10%;
+          width: 40vw; height: 40vw;
+          background: #315594;
+        }
+        .app-container::after {
+          bottom: -10%; right: -10%;
+          width: 50vw; height: 50vw;
+          background: #2F3675;
+          animation-delay: -5s;
+        }
+
+        /* Bring content above the orbs */
+        .content-wrapper {
+          position: relative;
+          z-index: 1;
+          max-width: 700px;
+          margin: 0 auto;
+        }
+
+        /* =========================================
+           TYPOGRAPHY & CONTROLS
+           ========================================= */
         .header-title {
           text-align: center;
           color: #70A6C1;
-          font-size: 2.5rem;
+          font-size: clamp(2rem, 5vw, 3rem); /* Fluid typography */
+          font-weight: 800;
+          letter-spacing: -1px;
           margin-bottom: 30px;
-          animation: fadeInDown 0.8s ease-out;
+          text-shadow: 0 4px 20px rgba(112, 166, 193, 0.4);
+          animation: fadeInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .controls-container {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 15px;
-          margin-bottom: 30px;
+          gap: 20px;
+          margin-bottom: 40px;
           animation: fadeIn 1s ease-out;
         }
+
+        /* Glass Pill Tabs */
         .tabs {
           display: flex;
-          gap: 10px;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.03);
+          padding: 6px;
+          border-radius: 50px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          flex-wrap: wrap; /* Allows stacking on tiny screens */
+          justify-content: center;
         }
+
         .tab-btn {
-          padding: 10px 24px;
-          background-color: #2F3675;
-          color: #F0F1F2;
+          padding: 12px 24px;
+          background: transparent;
+          color: #70A6C1;
           border: none;
-          border-radius: 8px;
+          border-radius: 40px;
           cursor: pointer;
           font-weight: 600;
-          transition: all 0.3s ease;
+          font-size: 0.95rem;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .tab-btn.active {
-          background-color: #70A6C1;
-          color: #121212;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(112, 166, 193, 0.3);
+          background: linear-gradient(135deg, #70A6C1, #315594);
+          color: #fff;
+          box-shadow: 0 4px 15px rgba(112, 166, 193, 0.3);
         }
+
         .tab-btn:hover:not(.active) {
-          background-color: #315594;
+          background: rgba(255, 255, 255, 0.1);
+          color: #F0F1F2;
         }
+
+        /* Switch */
         .toggle-container {
           display: flex;
           align-items: center;
-          gap: 10px;
-          font-size: 0.9rem;
+          gap: 12px;
+          font-size: 0.95rem;
+          font-weight: 500;
           color: #70A6C1;
+          background: rgba(47, 54, 117, 0.2);
+          padding: 10px 20px;
+          border-radius: 30px;
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .switch {
           position: relative;
           display: inline-block;
-          width: 40px;
-          height: 22px;
+          width: 44px;
+          height: 24px;
         }
-        .switch input {
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
+        .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
           position: absolute;
           cursor: pointer;
           top: 0; left: 0; right: 0; bottom: 0;
-          background-color: #2F3675;
-          transition: .4s;
-          border-radius: 22px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border-radius: 24px;
+          border: 1px solid rgba(255,255,255,0.1);
+          transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .slider:before {
           position: absolute;
           content: "";
-          height: 16px;
-          width: 16px;
-          left: 3px;
-          bottom: 3px;
+          height: 16px; width: 16px;
+          left: 3px; bottom: 3px;
           background-color: #F0F1F2;
-          transition: .4s;
           border-radius: 50%;
+          transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         input:checked + .slider {
           background-color: #70A6C1;
+          border-color: #70A6C1;
         }
         input:checked + .slider:before {
-          transform: translateX(18px);
+          transform: translateX(20px);
         }
+
+        /* =========================================
+           LIST CARDS (GLASSMORPHISM)
+           ========================================= */
         .leaderboard-list {
-          max-width: 650px;
-          margin: 0 auto;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
         }
+
         .player-card {
-          background-color: #2F3675;
-          border-radius: 12px;
+          background: rgba(47, 54, 117, 0.15); /* Translucent background */
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08); /* Frosted edge */
+          border-top: 1px solid rgba(255, 255, 255, 0.15); /* Light reflection */
+          border-radius: 24px; /* Bubbly corners */
           padding: 16px 24px;
           display: flex;
           align-items: center;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-          animation: slideUp 0.5s ease-out backwards;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          animation: slideUp 0.6s ease-out backwards;
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
+
         .player-card:hover {
-          background-color: #315594;
-          transform: translateY(-4px) scale(1.01);
-          box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+          background: rgba(47, 54, 117, 0.3);
+          transform: translateY(-5px) scale(1.02);
+          border-color: rgba(112, 166, 193, 0.4);
+          box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 
+                      0 0 20px rgba(112, 166, 193, 0.2);
         }
+
         .rank {
           font-size: 1.5rem;
-          font-weight: bold;
-          color: #70A6C1;
+          font-weight: 800;
+          color: rgba(255, 255, 255, 0.2);
           width: 40px;
           text-align: right;
+          font-style: italic;
         }
+
         .head-wrapper {
-          margin: 0 25px 0 30px;
-          transition: transform 0.3s ease;
+          margin: 0 20px 0 25px;
+          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
+
         .player-card:hover .head-wrapper {
-          transform: scale(1.1) rotate(5deg);
+          transform: scale(1.15) rotate(5deg);
         }
+
         .player-head {
-          width: 48px;
-          height: 48px;
-          border-radius: 4px;
+          width: 52px;
+          height: 52px;
+          border-radius: 8px;
           transform: scaleX(-1);
           display: block;
         }
+
         .player-name {
           flex-grow: 1;
           text-align: left;
-          font-size: 1.2rem;
-          font-weight: 600;
+          font-size: 1.25rem;
+          font-weight: 700;
           margin: 0;
+          color: #fff;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
+
         .player-stat {
           font-size: 1.3rem;
-          font-weight: bold;
-          min-width: 80px;
-          text-align: center;
+          font-weight: 800;
+          min-width: 90px;
+          text-align: right;
         }
+
         .elo-badge {
-          padding: 4px 12px;
+          padding: 6px 16px;
           border: 2px solid;
-          border-radius: 8px;
-          background-color: rgba(18, 18, 18, 0.4);
+          border-radius: 30px; /* Bubbly badge */
+          background-color: rgba(0, 0, 0, 0.2);
+          backdrop-filter: blur(4px);
         }
+
+        /* =========================================
+           MODAL (SUPER GLASS)
+           ========================================= */
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
-          background-color: rgba(18, 18, 18, 0.85);
-          backdrop-filter: blur(4px);
+          background-color: rgba(11, 13, 23, 0.6);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
           display: flex;
           justify-content: center;
           align-items: center;
           z-index: 1000;
-          animation: fadeIn 0.3s ease-out;
+          animation: fadeIn 0.4s ease-out;
+          padding: 20px;
         }
+
         .modal-content {
-          background-color: #2F3675;
-          padding: 40px;
-          border-radius: 16px;
-          width: 90%;
+          background: linear-gradient(180deg, rgba(47, 54, 117, 0.4) 0%, rgba(18, 18, 36, 0.8) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 40px 30px;
+          border-radius: 32px;
+          width: 100%;
           max-width: 450px;
           position: relative;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-          animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
+                      inset 0 1px 0 rgba(255,255,255,0.2);
+          animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+          overflow-y: auto;
+          max-height: 90vh; /* Prevent modal from exceeding mobile screen */
         }
+
         .close-btn {
           position: absolute;
-          top: 15px;
+          top: 20px;
           right: 20px;
-          background: none;
-          border: none;
+          width: 40px; height: 40px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
           color: #70A6C1;
-          font-size: 2rem;
+          font-size: 1.5rem;
+          display: flex; justify-content: center; align-items: center;
           cursor: pointer;
-          transition: color 0.2s;
+          transition: all 0.3s ease;
         }
+
         .close-btn:hover {
-          color: #F0F1F2;
+          background: rgba(255,255,255,0.15);
+          color: #fff;
+          transform: rotate(90deg);
         }
+
         .modal-header {
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin-bottom: 20px;
+          margin-bottom: 25px;
         }
+
         .modal-skin {
-          height: 220px;
-          margin-bottom: 15px;
-          filter: drop-shadow(0 10px 10px rgba(0,0,0,0.4));
-          animation: float 3s ease-in-out infinite;
+          height: 240px;
+          margin-bottom: 20px;
+          filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
+          animation: float 4s ease-in-out infinite;
           transform: scaleX(-1);
         }
+
         .link-actions {
           display: flex;
           gap: 12px;
           justify-content: center;
-          margin-bottom: 25px;
+          margin-bottom: 30px;
+          flex-wrap: wrap; /* Wrap links on tiny screens */
         }
+
         .action-link {
-          padding: 8px 16px;
-          background-color: #70A6C1;
-          color: #121212;
+          padding: 10px 20px;
+          background: rgba(112, 166, 193, 0.15);
+          border: 1px solid rgba(112, 166, 193, 0.3);
+          color: #70A6C1;
           text-decoration: none;
           font-weight: 600;
-          border-radius: 6px;
+          border-radius: 20px;
           font-size: 0.9rem;
-          transition: all 0.2s ease;
+          backdrop-filter: blur(4px);
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .action-link:hover {
-          background-color: #F0F1F2;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(240, 241, 242, 0.2);
+          background: #70A6C1;
+          color: #121212;
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(112, 166, 193, 0.3);
         }
+
         .stats-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
         }
+
         .stat-box {
-          background-color: #121212;
-          padding: 16px;
-          border-radius: 10px;
+          background: rgba(0, 0, 0, 0.2);
+          padding: 20px 15px;
+          border-radius: 20px;
           text-align: center;
-          border-left: 4px solid #70A6C1;
-          transition: transform 0.2s;
+          border: 1px solid rgba(255,255,255,0.05);
+          transition: transform 0.3s ease;
         }
+
         .stat-box:hover {
-          transform: translateY(-2px);
+          transform: translateY(-3px);
+          background: rgba(0, 0, 0, 0.3);
         }
+
         .stat-label {
-          font-size: 0.85rem;
-          color: #70A6C1;
+          font-size: 0.8rem;
+          color: rgba(255,255,255,0.5);
           text-transform: uppercase;
           letter-spacing: 1px;
           margin-bottom: 8px;
-        }
-        .stat-val {
-          font-size: 1.4rem;
-          font-weight: bold;
+          font-weight: 600;
         }
 
+        .stat-val {
+          font-size: 1.5rem;
+          font-weight: 800;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS
+           ========================================= */
+        @media (max-width: 600px) {
+          .player-card {
+            padding: 12px 16px;
+            border-radius: 20px;
+          }
+          .rank {
+            font-size: 1.2rem;
+            width: 30px;
+          }
+          .head-wrapper {
+            margin: 0 12px 0 15px;
+          }
+          .player-head {
+            width: 44px;
+            height: 44px;
+          }
+          .player-name {
+            font-size: 1.1rem;
+          }
+          .player-stat {
+            font-size: 1.1rem;
+            min-width: 70px;
+          }
+          .elo-badge {
+            padding: 4px 12px;
+          }
+          .stats-grid {
+            /* Stack stats gracefully on very small screens */
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .stat-box[style*="grid-column: span 2"] {
+            grid-column: span 1 !important; /* Override double span on mobile */
+          }
+          .modal-content {
+            padding: 30px 20px;
+          }
+        }
+
+        /* =========================================
+           ANIMATIONS
+           ========================================= */
         @keyframes fadeInDown {
           from { opacity: 0; transform: translateY(-20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -311,68 +483,81 @@ export default function App() {
           to { opacity: 1; }
         }
         @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
+          from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes popIn {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
+        @keyframes modalPop {
+          from { opacity: 0; transform: scale(0.9) translateY(20px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
         @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
+          0% { transform: scaleX(-1) translateY(0px); }
+          50% { transform: scaleX(-1) translateY(-12px); }
+          100% { transform: scaleX(-1) translateY(0px); }
+        }
+        @keyframes floatOrb {
+          0% { transform: translate(0, 0) scale(1); }
+          100% { transform: translate(30px, -50px) scale(1.1); }
         }
       `}</style>
 
-      <h1 className="header-title">Stinkoffs Leaderboard</h1>
+      <div className="content-wrapper">
+        <h1 className="header-title">MCSR Leaderboard</h1>
 
-      <div className="controls-container">
-        <div className="tabs">
-          <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
-          <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
-          <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
-        </div>
-        
-        <label className="toggle-container">
-          <span>Filter Coaches</span>
-          <div className="switch">
-            <input type="checkbox" checked={filterCoaches} onChange={(e) => setFilterCoaches(e.target.checked)} />
-            <span className="slider"></span>
+        <div className="controls-container">
+          <div className="tabs">
+            <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
+            <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
+            <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
           </div>
-        </label>
-      </div>
-
-      <div className="leaderboard-list">
-        {displayPlayers.map((player, index) => (
-          <div 
-            key={player.uuid} 
-            className="player-card"
-            onClick={() => setSelectedPlayer(player)}
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            <div className="rank">#{index + 1}</div>
-            <div className="head-wrapper">
-              <img 
-  className="player-head"
-  src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
-  alt={player.nickname} 
-/>
+          
+          <label className="toggle-container">
+            <span>Filter Coaches</span>
+            <div className="switch">
+              <input type="checkbox" checked={filterCoaches} onChange={(e) => setFilterCoaches(e.target.checked)} />
+              <span className="slider"></span>
             </div>
-            <h3 className="player-name">{player.nickname}</h3>
-            
-            {activeTab === 'elo' ? (
-              <div className="player-stat elo-badge" style={getRankStyles(player.elo)}>
-                {player.elo}
+          </label>
+        </div>
+
+        <div className="leaderboard-list">
+          {displayPlayers.map((player, index) => (
+            <div 
+              key={player.uuid} 
+              className="player-card"
+              onClick={() => setSelectedPlayer(player)}
+              style={{ animationDelay: `${index * 0.08}s` }}
+            >
+              <div className="rank">#{index + 1}</div>
+              <div className="head-wrapper">
+                <img 
+                  className="player-head"
+                  src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
+                  alt={player.nickname} 
+                />
               </div>
-            ) : (
-              <div className="player-stat" style={{ color: '#F0F1F2' }}>
-                {activeTab === 'pb' && formatTime(player.pb)}
-                {activeTab === 'completions' && player.completions}
-              </div>
-            )}
-          </div>
-        ))}
+              <h3 className="player-name">{player.nickname}</h3>
+              
+              {activeTab === 'elo' ? (
+                <div 
+                  className="player-stat elo-badge" 
+                  style={{ 
+                    color: getRankStyles(player.elo).color, 
+                    borderColor: getRankStyles(player.elo).borderColor,
+                    boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` 
+                  }}
+                >
+                  {player.elo}
+                </div>
+              ) : (
+                <div className="player-stat" style={{ color: '#F0F1F2' }}>
+                  {activeTab === 'pb' && formatTime(player.pb)}
+                  {activeTab === 'completions' && player.completions}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {selectedPlayer && (
@@ -382,11 +567,17 @@ export default function App() {
             
             <div className="modal-header">
               <img 
-  className="modal-skin"
-  src={`https://starlightskins.lunareclipse.studio/render/walking/${selectedPlayer.nickname}/full`} 
-  alt={selectedPlayer.nickname} 
-/>
-              <h2 style={{ margin: '0', color: getRankStyles(selectedPlayer.elo).color }}>
+                className="modal-skin"
+                src={`https://starlightskins.lunareclipse.studio/render/walking/${selectedPlayer.nickname}/full`} 
+                alt={selectedPlayer.nickname} 
+              />
+              <h2 style={{ 
+                margin: '0', 
+                color: getRankStyles(selectedPlayer.elo).color,
+                textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`,
+                fontSize: '2rem',
+                fontWeight: '800'
+              }}>
                 {selectedPlayer.nickname}
               </h2>
             </div>
@@ -413,13 +604,19 @@ export default function App() {
             </div>
             
             <div className="stats-grid">
-              <div className="stat-box" style={{ borderLeftColor: getRankStyles(selectedPlayer.elo).color }}>
+              <div className="stat-box" style={{ 
+                borderTopColor: getRankStyles(selectedPlayer.elo).borderColor,
+                background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.elo).glow} 0%, rgba(0,0,0,0.2) 100%)`
+              }}>
                 <div className="stat-label">Current ELO</div>
-                <div className="stat-val" style={getRankStyles(selectedPlayer.elo)}>{selectedPlayer.elo}</div>
+                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo}</div>
               </div>
-              <div className="stat-box" style={{ borderLeftColor: getRankStyles(selectedPlayer.peakElo).color }}>
+              <div className="stat-box" style={{ 
+                borderTopColor: getRankStyles(selectedPlayer.peakElo).borderColor,
+                background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.peakElo).glow} 0%, rgba(0,0,0,0.2) 100%)`
+              }}>
                 <div className="stat-label">Peak ELO</div>
-                <div className="stat-val" style={getRankStyles(selectedPlayer.peakElo)}>{selectedPlayer.peakElo}</div>
+                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo}</div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">PB</div>
