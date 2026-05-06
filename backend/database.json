@@ -1,0 +1,48 @@
+{
+  "crifzer": {
+    "pb": 595000,
+    "average": 809000,
+    "completions": 536,
+    "pbMatchId": null,
+    "elo": 1223,
+    "peakElo": 1651
+  },
+  "goatener": {
+    "pb": 568000,
+    "average": 841000,
+    "completions": 137,
+    "pbMatchId": 9703299,
+    "elo": 1412,
+    "peakElo": 1479
+  },
+  "iliealot": {
+    "pb": 1703000,
+    "average": 1703000,
+    "completions": 1,
+    "pbMatchId": 5711438,
+    "elo": 0
+  },
+  "bozogoofylame": {
+    "pb": 874000,
+    "average": null,
+    "completions": 51,
+    "pbMatchId": 3218935,
+    "elo": 0
+  },
+  "aneeboamiibo": {
+    "pb": 1245000,
+    "average": null,
+    "completions": 9,
+    "pbMatchId": 4010232,
+    "elo": 813,
+    "peakElo": 892
+  },
+  "pratham001": {
+    "pb": 1019000,
+    "average": null,
+    "completions": 11,
+    "pbMatchId": 4338981,
+    "elo": 1019,
+    "peakElo": 1079
+  }
+}
