@@ -1,12 +1,13 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const admin = require('firebase-admin');
+import express from 'express';
+import axios from 'axios';
+import cors from 'cors';
+import admin from 'firebase-admin';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 1. Initialize Firebase Securely via Environment Variables
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert({
@@ -91,5 +92,4 @@ app.get('/api/leaderboard', async (req, res) => {
     }
 });
 
-// Required for Vercel
-module.exports = app;
+export default app;
