@@ -23,7 +23,8 @@ const WHITELIST = [
   'AneeboAmiibo',
   'NeatFoot',
   'CrouchingPuppy',
-  'Pratham001'
+  'Pratham001',
+  'Hamzxy'
 ];
 
 // 2. Vercel Native Serverless Function
