@@ -20,7 +20,7 @@ export default function App() {
     if (players.length > 0) {
       players.forEach(p => {
         const head = new Image();
-        head.src = `https://starlightskins.lunareclipse.studio/render/isometric/${p.nickname}/head`;
+        head.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/head`;
         const fullBody = new Image();
         fullBody.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/full`;
       });
@@ -268,7 +268,7 @@ export default function App() {
           width: 52px;
           height: 52px;
           border-radius: 8px;
-          transform: scaleX(-1);
+          transform: scaleX(1);
           display: block;
         }
 
@@ -363,7 +363,7 @@ export default function App() {
           margin-bottom: 20px;
           filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
           animation: float 4s ease-in-out infinite;
-          transform: scaleX(-1);
+          transform: scaleX(1);
         }
 
         .link-actions {
@@ -502,7 +502,7 @@ export default function App() {
       `}</style>
 
       <div className="content-wrapper">
-        <h1 className="header-title">MCSR Leaderboard</h1>
+        <h1 className="header-title">Crifzer Playoffs Leaderboard</h1>
 
         <div className="controls-container">
           <div className="tabs">
