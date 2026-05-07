@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './App.css'; // Make sure this import is here!
+import './App.css'; 
 
 export default function App() {
   const [players, setPlayers] = useState([]);
@@ -45,23 +45,36 @@ export default function App() {
     return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.2)' };
   };
 
+  // Unified "Heat" Gradient for PB and Completions
+  const getWarmStyles = (tier) => {
+    const styles = [
+      { color: '#F0F1F2', class: 'tier-basic', glow: 'rgba(255, 255, 255, 0.1)', border: 'rgba(255,255,255,0.2)' }, 
+      { color: '#FFE066', class: 'tier-yellow', glow: 'rgba(255, 224, 102, 0.4)', border: 'rgba(255, 224, 102, 0.6)' }, 
+      { color: '#FFB347', class: 'tier-orange', glow: 'rgba(255, 179, 71, 0.5)', border: 'rgba(255, 179, 71, 0.8)' }, 
+      { color: '#FF7F50', class: 'tier-coral', glow: 'rgba(255, 127, 80, 0.6)', border: '#FF7F50' }, 
+      { color: '#FF3300', class: 'tier-legend', glow: 'rgba(255, 51, 0, 0.7)', border: '#FF3300' }, 
+      { color: '#FF0000', class: 'tier-god', glow: 'rgba(255, 0, 0, 0.9)', border: '#FF0000' } 
+    ];
+    return styles[tier];
+  };
+
   const getPbStyles = (ms) => {
-    if (!ms) return { color: '#AAAAAA', class: '', glow: 'transparent' };
-    if (ms < 600000) return { color: '#FF3333', class: 'tier-god', glow: 'rgba(255, 51, 51, 0.8)' }; // Sub 10
-    if (ms < 720000) return { color: '#FFAA00', class: 'tier-legend', glow: 'rgba(255, 170, 0, 0.6)' }; // Sub 12
-    if (ms < 780000) return { color: '#AA00FF', class: 'tier-master', glow: 'rgba(170, 0, 255, 0.5)' }; // Sub 13
-    if (ms < 900000) return { color: '#55FFFF', class: 'tier-diamond', glow: 'rgba(85, 255, 255, 0.4)' }; // Sub 15
-    if (ms < 1200000) return { color: '#55FF55', class: 'tier-gold', glow: 'rgba(85, 255, 85, 0.3)' }; // Sub 20
-    return { color: '#FFFFFF', class: 'tier-basic', glow: 'rgba(255, 255, 255, 0.1)' }; // Any
+    if (!ms) return getWarmStyles(0);
+    if (ms < 600000) return getWarmStyles(5); // Sub 10
+    if (ms < 720000) return getWarmStyles(4); // Sub 12
+    if (ms < 780000) return getWarmStyles(3); // Sub 13
+    if (ms < 900000) return getWarmStyles(2); // Sub 15
+    if (ms < 1200000) return getWarmStyles(1); // Sub 20
+    return getWarmStyles(0); // Any
   };
 
   const getCompletionsStyles = (count) => {
-    if (!count) return { color: '#AAAAAA', class: '', glow: 'transparent' };
-    if (count >= 100) return { color: '#FF3333', class: 'tier-god', glow: 'rgba(255, 51, 51, 0.8)' };
-    if (count >= 30) return { color: '#FFAA00', class: 'tier-legend', glow: 'rgba(255, 170, 0, 0.6)' };
-    if (count >= 15) return { color: '#AA00FF', class: 'tier-master', glow: 'rgba(170, 0, 255, 0.5)' };
-    if (count >= 5) return { color: '#55FF55', class: 'tier-gold', glow: 'rgba(85, 255, 85, 0.3)' };
-    return { color: '#FFFFFF', class: 'tier-basic', glow: 'rgba(255, 255, 255, 0.1)' };
+    if (!count) return getWarmStyles(0);
+    if (count >= 100) return getWarmStyles(5);
+    if (count >= 30) return getWarmStyles(4);
+    if (count >= 15) return getWarmStyles(3);
+    if (count >= 5) return getWarmStyles(1); 
+    return getWarmStyles(0);
   };
 
   const displayPlayers = players
@@ -75,9 +88,10 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <div className="content-wrapper">
+      <div className="decor-grid"></div>
+      
+      <div className="top-header">
         <h1 className="header-title">Crifzer Playoffs Leaderboard</h1>
-
         <div className="controls-container">
           <div className="tabs">
             <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
@@ -93,159 +107,150 @@ export default function App() {
             </div>
           </label>
         </div>
-
-        <div className="leaderboard-list">
-          {displayPlayers.map((player, index) => {
-            return (
-              <div 
-                key={`${player.nickname}-${activeTab}-${filterCoaches}`} 
-                className="player-card"
-                onClick={() => setSelectedPlayer(player)}
-                style={{ animationDelay: `${index * 0.08}s` }}
-              >
-                <div className="rank">#{index + 1}</div>
-                <div className="head-wrapper">
-                  <img 
-                    className="player-head"
-                    src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
-                    alt={player.nickname} 
-                  />
-                </div>
-                <h3 className="player-name">{player.nickname}</h3>
-                
-                <div className="player-stat">
-                  {activeTab === 'elo' && (
-                    <div 
-                      className="stat-badge" 
-                      style={{ 
-                        color: getRankStyles(player.elo).color, 
-                        borderColor: getRankStyles(player.elo).borderColor,
-                        boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` 
-                      }}
-                    >
-                      {player.elo === 0 ? '???' : player.elo}
-                    </div>
-                  )}
-                  {activeTab === 'pb' && (
-                    <div 
-                      className={`stat-badge ${getPbStyles(player.pb).class}`} 
-                      style={{ 
-                        color: getPbStyles(player.pb).color, 
-                        borderColor: getPbStyles(player.pb).color,
-                        boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}` 
-                      }}
-                    >
-                      {formatTime(player.pb)}
-                    </div>
-                  )}
-                  {activeTab === 'completions' && (
-                    <div 
-                      className={`stat-badge ${getCompletionsStyles(player.completions).class}`} 
-                      style={{ 
-                        color: getCompletionsStyles(player.completions).color, 
-                        borderColor: getCompletionsStyles(player.completions).color,
-                        boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}` 
-                      }}
-                    >
-                      {player.completions}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </div>
 
-      {selectedPlayer && (
-        <div className="modal-overlay" onClick={() => setSelectedPlayer(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
-            
-            <div className="modal-header">
-              <img 
-                className="modal-skin"
-                src={`https://starlightskins.lunareclipse.studio/render/default/${selectedPlayer.nickname}/full`} 
-                alt={selectedPlayer.nickname} 
-              />
-              <h2 style={{ 
-                margin: '0', 
-                color: getRankStyles(selectedPlayer.elo).color,
-                textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`,
-                fontSize: '2rem',
-                fontWeight: '800'
-              }}>
-                {selectedPlayer.nickname}
-              </h2>
-            </div>
+      <div className="main-layout">
+        <div className={`list-section ${selectedPlayer ? 'split-active' : ''}`}>
+          <div className="leaderboard-list">
+            {displayPlayers.map((player, index) => {
+              return (
+                <div 
+                  key={`${player.nickname}-${activeTab}-${filterCoaches}`} 
+                  className={`player-card ${selectedPlayer?.nickname === player.nickname ? 'selected' : ''}`}
+                  onClick={() => setSelectedPlayer(player)}
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <div className="rank">#{index + 1}</div>
+                  <div className="head-wrapper">
+                    <img 
+                      className="player-head"
+                      src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
+                      alt={player.nickname} 
+                    />
+                  </div>
+                  <h3 className="player-name">{player.nickname}</h3>
+                  
+                  <div className="player-stat">
+                    {activeTab === 'elo' && (
+                      <div 
+                        className="stat-badge" 
+                        style={{ 
+                          color: getRankStyles(player.elo).color, 
+                          borderColor: getRankStyles(player.elo).borderColor,
+                          boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` 
+                        }}
+                      >
+                        {player.elo === 0 ? '???' : player.elo}
+                      </div>
+                    )}
+                    {activeTab === 'pb' && (
+                      <div 
+                        className={`stat-badge ${getPbStyles(player.pb).class}`} 
+                        style={{ 
+                          color: getPbStyles(player.pb).color, 
+                          borderColor: getPbStyles(player.pb).border,
+                          boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}` 
+                        }}
+                      >
+                        {formatTime(player.pb)}
+                      </div>
+                    )}
+                    {activeTab === 'completions' && (
+                      <div 
+                        className={`stat-badge ${getCompletionsStyles(player.completions).class}`} 
+                        style={{ 
+                          color: getCompletionsStyles(player.completions).color, 
+                          borderColor: getCompletionsStyles(player.completions).border,
+                          boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}` 
+                        }}
+                      >
+                        {player.completions}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
-            <div className="link-actions">
-              <a 
-                href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="action-link"
-              >
-                Ranked Stats
-              </a>
-              {selectedPlayer.pbMatchId && (
+        {selectedPlayer && (
+          <div className="profile-overlay" onClick={() => setSelectedPlayer(null)}>
+            <div className="profile-panel" onClick={e => e.stopPropagation()}>
+              <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
+              
+              <div className="profile-header">
+                <img 
+                  className="profile-skin"
+                  src={`https://starlightskins.lunareclipse.studio/render/default/${selectedPlayer.nickname}/full`} 
+                  alt={selectedPlayer.nickname} 
+                />
+                <h2 style={{ 
+                  margin: '0', 
+                  color: getRankStyles(selectedPlayer.elo).color,
+                  textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`,
+                  fontSize: '2rem',
+                  fontWeight: '800'
+                }}>
+                  {selectedPlayer.nickname}
+                </h2>
+              </div>
+
+              <div className="link-actions">
                 <a 
-                  href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`}
+                  href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="action-link"
                 >
-                  View PB
+                  Ranked Stats
                 </a>
-              )}
-            </div>
-            
-            <div className="stats-grid">
-              <div className="stat-box" style={{ 
-                borderTopColor: getRankStyles(selectedPlayer.elo).borderColor,
-                background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.elo).glow} 0%, rgba(0,0,0,0.2) 100%)`
-              }}>
-                <div className="stat-label">Current ELO</div>
-                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>
-                  {selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}
+                {selectedPlayer.pbMatchId && (
+                  <a 
+                    href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="action-link"
+                  >
+                    View PB
+                  </a>
+                )}
+              </div>
+              
+              <div className="stats-grid">
+                <div className="stat-box" style={{ borderColor: getRankStyles(selectedPlayer.elo).borderColor }}>
+                  <div className="stat-label">Current ELO</div>
+                  <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color, textShadow: `0 0 10px ${getRankStyles(selectedPlayer.elo).glow}`}}>
+                    {selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}
+                  </div>
                 </div>
-              </div>
-              <div className="stat-box" style={{ 
-                borderTopColor: getRankStyles(selectedPlayer.peakElo).borderColor,
-                background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.peakElo).glow} 0%, rgba(0,0,0,0.2) 100%)`
-              }}>
-                <div className="stat-label">Peak ELO</div>
-                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>
-                  {selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}
+                <div className="stat-box" style={{ borderColor: getRankStyles(selectedPlayer.peakElo).borderColor }}>
+                  <div className="stat-label">Peak ELO</div>
+                  <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color, textShadow: `0 0 10px ${getRankStyles(selectedPlayer.peakElo).glow}`}}>
+                    {selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}
+                  </div>
                 </div>
-              </div>
-              <div className="stat-box" style={{
-                borderTopColor: getPbStyles(selectedPlayer.pb).color,
-                background: `linear-gradient(180deg, ${getPbStyles(selectedPlayer.pb).glow} 0%, rgba(0,0,0,0.2) 100%)`
-              }}>
-                <div className="stat-label">PB</div>
-                <div className={`stat-val ${getPbStyles(selectedPlayer.pb).class}`} style={{color: getPbStyles(selectedPlayer.pb).color}}>
-                  {formatTime(selectedPlayer.pb)}
+                <div className="stat-box" style={{ borderColor: getPbStyles(selectedPlayer.pb).border }}>
+                  <div className="stat-label">PB</div>
+                  <div className={`stat-val ${getPbStyles(selectedPlayer.pb).class}`} style={{color: getPbStyles(selectedPlayer.pb).color}}>
+                    {formatTime(selectedPlayer.pb)}
+                  </div>
                 </div>
-              </div>
-              <div className="stat-box">
-                <div className="stat-label">Average</div>
-                <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
-              </div>
-              <div className="stat-box" style={{ 
-                gridColumn: 'span 2',
-                borderTopColor: getCompletionsStyles(selectedPlayer.completions).color,
-                background: `linear-gradient(180deg, ${getCompletionsStyles(selectedPlayer.completions).glow} 0%, rgba(0,0,0,0.2) 100%)`
-              }}>
-                <div className="stat-label">Total Completions</div>
-                <div className={`stat-val ${getCompletionsStyles(selectedPlayer.completions).class}`} style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>
-                  {selectedPlayer.completions}
+                <div className="stat-box">
+                  <div className="stat-label">Average</div>
+                  <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
+                </div>
+                <div className="stat-box" style={{ gridColumn: 'span 2', borderColor: getCompletionsStyles(selectedPlayer.completions).border }}>
+                  <div className="stat-label">Total Completions</div>
+                  <div className={`stat-val ${getCompletionsStyles(selectedPlayer.completions).class}`} style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>
+                    {selectedPlayer.completions}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
