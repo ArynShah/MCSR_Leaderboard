@@ -16,14 +16,14 @@ export default function App() {
       .catch(err => console.error(err));
   }, []);
 
-  // Invisible Image Preloader
+  // Invisible Image Preloader (Now pointing to local assets)
   useEffect(() => {
     if (players.length > 0) {
       players.forEach(p => {
         const head = new Image();
-        head.src = `https://starlightskins.lunareclipse.studio/render/default/${p.nickname}/head`;
+        head.src = `/assets/heads/${p.nickname.toLowerCase()}.png`;
         const fullBody = new Image();
-        fullBody.src = `https://starlightskins.lunareclipse.studio/render/default/${p.nickname}/full`;
+        fullBody.src = `/assets/skins/${p.nickname.toLowerCase()}.png`;
       });
     }
   }, [players]);
@@ -122,10 +122,12 @@ export default function App() {
                 >
                   <div className="rank">#{index + 1}</div>
                   <div className="head-wrapper">
+                    {/* FETCHING LOCAL HEAD IMAGE */}
                     <img 
                       className="player-head"
-                      src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
+                      src={`/assets/heads/${player.nickname.toLowerCase()}.png`} 
                       alt={player.nickname} 
+                      onError={(e) => { e.target.src = 'https://starlightskins.lunareclipse.studio/render/isometric/steve/head'; }} // Fallback if local file is missing
                     />
                   </div>
                   <h3 className="player-name">{player.nickname}</h3>
@@ -180,10 +182,12 @@ export default function App() {
               <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
               
               <div className="profile-header">
+                {/* FETCHING LOCAL FULL BODY SKIN */}
                 <img 
                   className="profile-skin"
-                  src={`https://starlightskins.lunareclipse.studio/render/default/${selectedPlayer.nickname}/full`} 
+                  src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} 
                   alt={selectedPlayer.nickname} 
+                  onError={(e) => { e.target.src = 'https://starlightskins.lunareclipse.studio/render/default/steve/full'; }} // Fallback if local file is missing
                 />
                 <h2 style={{ 
                   margin: '0', 
