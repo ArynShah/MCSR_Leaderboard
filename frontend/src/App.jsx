@@ -20,9 +20,9 @@ export default function App() {
     if (players.length > 0) {
       players.forEach(p => {
         const head = new Image();
-        head.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/head`;
+        head.src = `https://starlightskins.lunareclipse.studio/render/default/${p.nickname}/head`;
         const fullBody = new Image();
-        fullBody.src = `https://starlightskins.lunareclipse.studio/render/walking/${p.nickname}/full`;
+        fullBody.src = `https://starlightskins.lunareclipse.studio/render/default/${p.nickname}/full`;
       });
     }
   }, [players]);
@@ -568,7 +568,7 @@ export default function App() {
             <div className="modal-header">
               <img 
                 className="modal-skin"
-                src={`https://starlightskins.lunareclipse.studio/render/walking/${selectedPlayer.nickname}/full`} 
+                src={`https://starlightskins.lunareclipse.studio/render/default/${selectedPlayer.nickname}/full`} 
                 alt={selectedPlayer.nickname} 
               />
               <h2 style={{ 
