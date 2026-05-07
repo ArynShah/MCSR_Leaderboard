@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './App.css'; // Make sure this import is here!
 
 export default function App() {
   const [players, setPlayers] = useState([]);
@@ -36,12 +37,31 @@ export default function App() {
   };
 
   const getRankStyles = (elo) => {
-    if (elo >= 2000) return { color: '#FF5555', borderColor: 'rgba(255, 85, 85, 0.5)', glow: 'rgba(255, 85, 85, 0.2)' };
-    if (elo >= 1500) return { color: '#55FFFF', borderColor: 'rgba(85, 255, 255, 0.5)', glow: 'rgba(85, 255, 255, 0.2)' };
-    if (elo >= 1200) return { color: '#55FF55', borderColor: 'rgba(85, 255, 85, 0.5)', glow: 'rgba(85, 255, 85, 0.2)' };
-    if (elo >= 900) return { color: '#FFAA00', borderColor: 'rgba(255, 170, 0, 0.5)', glow: 'rgba(255, 170, 0, 0.2)' };
-    if (elo >= 600) return { color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.5)', glow: 'rgba(255, 255, 255, 0.1)' };
-    return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.1)' };
+    if (elo >= 2000) return { color: '#FF5555', borderColor: 'rgba(255, 85, 85, 0.5)', glow: 'rgba(255, 85, 85, 0.5)' };
+    if (elo >= 1500) return { color: '#55FFFF', borderColor: 'rgba(85, 255, 255, 0.5)', glow: 'rgba(85, 255, 255, 0.5)' };
+    if (elo >= 1200) return { color: '#55FF55', borderColor: 'rgba(85, 255, 85, 0.5)', glow: 'rgba(85, 255, 85, 0.5)' };
+    if (elo >= 900) return { color: '#FFAA00', borderColor: 'rgba(255, 170, 0, 0.5)', glow: 'rgba(255, 170, 0, 0.5)' };
+    if (elo >= 600) return { color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.5)', glow: 'rgba(255, 255, 255, 0.3)' };
+    return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.2)' };
+  };
+
+  const getPbStyles = (ms) => {
+    if (!ms) return { color: '#AAAAAA', class: '', glow: 'transparent' };
+    if (ms < 600000) return { color: '#FF3333', class: 'tier-god', glow: 'rgba(255, 51, 51, 0.8)' }; // Sub 10
+    if (ms < 720000) return { color: '#FFAA00', class: 'tier-legend', glow: 'rgba(255, 170, 0, 0.6)' }; // Sub 12
+    if (ms < 780000) return { color: '#AA00FF', class: 'tier-master', glow: 'rgba(170, 0, 255, 0.5)' }; // Sub 13
+    if (ms < 900000) return { color: '#55FFFF', class: 'tier-diamond', glow: 'rgba(85, 255, 255, 0.4)' }; // Sub 15
+    if (ms < 1200000) return { color: '#55FF55', class: 'tier-gold', glow: 'rgba(85, 255, 85, 0.3)' }; // Sub 20
+    return { color: '#FFFFFF', class: 'tier-basic', glow: 'rgba(255, 255, 255, 0.1)' }; // Any
+  };
+
+  const getCompletionsStyles = (count) => {
+    if (!count) return { color: '#AAAAAA', class: '', glow: 'transparent' };
+    if (count >= 100) return { color: '#FF3333', class: 'tier-god', glow: 'rgba(255, 51, 51, 0.8)' };
+    if (count >= 30) return { color: '#FFAA00', class: 'tier-legend', glow: 'rgba(255, 170, 0, 0.6)' };
+    if (count >= 15) return { color: '#AA00FF', class: 'tier-master', glow: 'rgba(170, 0, 255, 0.5)' };
+    if (count >= 5) return { color: '#55FF55', class: 'tier-gold', glow: 'rgba(85, 255, 85, 0.3)' };
+    return { color: '#FFFFFF', class: 'tier-basic', glow: 'rgba(255, 255, 255, 0.1)' };
   };
 
   const displayPlayers = players
@@ -55,452 +75,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <style>{`
-        /* =========================================
-           GLOBAL & BACKGROUND
-           ========================================= */
-        * {
-          box-sizing: border-box;
-          -webkit-tap-highlight-color: transparent;
-        }
-        
-        .app-container {
-          /* Deep, rich gradient background to make the glass pop */
-          background: linear-gradient(135deg, #0b0d17 0%, #121224 50%, #1a1e36 100%);
-          background-attachment: fixed;
-          color: #F0F1F2;
-          min-height: 100vh;
-          padding: 40px 15px; /* Less padding on edges for mobile */
-          font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-          overflow-x: hidden;
-        }
-
-        /* Ambient floating orbs for the liquid glass feel */
-        .app-container::before, .app-container::after {
-          content: '';
-          position: fixed;
-          border-radius: 50%;
-          filter: blur(80px);
-          z-index: 0;
-          opacity: 0.4;
-          animation: floatOrb 15s ease-in-out infinite alternate;
-        }
-        .app-container::before {
-          top: -10%; left: -10%;
-          width: 40vw; height: 40vw;
-          background: #315594;
-        }
-        .app-container::after {
-          bottom: -10%; right: -10%;
-          width: 50vw; height: 50vw;
-          background: #2F3675;
-          animation-delay: -5s;
-        }
-
-        /* Bring content above the orbs */
-        .content-wrapper {
-          position: relative;
-          z-index: 1;
-          max-width: 700px;
-          margin: 0 auto;
-        }
-
-        /* =========================================
-           TYPOGRAPHY & CONTROLS
-           ========================================= */
-        .header-title {
-          text-align: center;
-          color: #70A6C1;
-          font-size: clamp(2rem, 5vw, 3rem); /* Fluid typography */
-          font-weight: 800;
-          letter-spacing: -1px;
-          margin-bottom: 30px;
-          text-shadow: 0 4px 20px rgba(112, 166, 193, 0.4);
-          animation: fadeInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .controls-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 20px;
-          margin-bottom: 40px;
-          animation: fadeIn 1s ease-out;
-        }
-
-        /* Glass Pill Tabs */
-        .tabs {
-          display: flex;
-          gap: 8px;
-          background: rgba(255, 255, 255, 0.03);
-          padding: 6px;
-          border-radius: 50px;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          flex-wrap: wrap; /* Allows stacking on tiny screens */
-          justify-content: center;
-        }
-
-        .tab-btn {
-          padding: 12px 24px;
-          background: transparent;
-          color: #70A6C1;
-          border: none;
-          border-radius: 40px;
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 0.95rem;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .tab-btn.active {
-          background: linear-gradient(135deg, #70A6C1, #315594);
-          color: #fff;
-          box-shadow: 0 4px 15px rgba(112, 166, 193, 0.3);
-        }
-
-        .tab-btn:hover:not(.active) {
-          background: rgba(255, 255, 255, 0.1);
-          color: #F0F1F2;
-        }
-
-        /* Switch */
-        .toggle-container {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          font-size: 0.95rem;
-          font-weight: 500;
-          color: #70A6C1;
-          background: rgba(47, 54, 117, 0.2);
-          padding: 10px 20px;
-          border-radius: 30px;
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .switch {
-          position: relative;
-          display: inline-block;
-          width: 44px;
-          height: 24px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background-color: rgba(0, 0, 0, 0.3);
-          border-radius: 24px;
-          border: 1px solid rgba(255,255,255,0.1);
-          transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 16px; width: 16px;
-          left: 3px; bottom: 3px;
-          background-color: #F0F1F2;
-          border-radius: 50%;
-          transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        input:checked + .slider {
-          background-color: #70A6C1;
-          border-color: #70A6C1;
-        }
-        input:checked + .slider:before {
-          transform: translateX(20px);
-        }
-
-        /* =========================================
-           LIST CARDS (GLASSMORPHISM)
-           ========================================= */
-        .leaderboard-list {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .player-card {
-          background: rgba(47, 54, 117, 0.15); /* Translucent background */
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08); /* Frosted edge */
-          border-top: 1px solid rgba(255, 255, 255, 0.15); /* Light reflection */
-          border-radius: 24px; /* Bubbly corners */
-          padding: 16px 24px;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          animation: slideUp 0.6s ease-out backwards;
-          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        .player-card:hover {
-          background: rgba(47, 54, 117, 0.3);
-          transform: translateY(-5px) scale(1.02);
-          border-color: rgba(112, 166, 193, 0.4);
-          box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 
-                      0 0 20px rgba(112, 166, 193, 0.2);
-        }
-
-        .rank {
-          font-size: 1.5rem;
-          font-weight: 800;
-          color: rgba(255, 255, 255, 0.2);
-          width: 40px;
-          text-align: right;
-          font-style: italic;
-        }
-
-        .head-wrapper {
-          margin: 0 20px 0 25px;
-          transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-        }
-
-        .player-card:hover .head-wrapper {
-          transform: scale(1.15) rotate(5deg);
-        }
-
-        .player-head {
-          width: 52px;
-          height: 52px;
-          border-radius: 8px;
-          transform: scaleX(1);
-          display: block;
-        }
-
-        .player-name {
-          flex-grow: 1;
-          text-align: left;
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin: 0;
-          color: #fff;
-          text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .player-stat {
-          font-size: 1.3rem;
-          font-weight: 800;
-          min-width: 90px;
-          text-align: right;
-        }
-
-        .elo-badge {
-          padding: 6px 16px;
-          border: 2px solid;
-          border-radius: 30px; /* Bubbly badge */
-          background-color: rgba(0, 0, 0, 0.2);
-          backdrop-filter: blur(4px);
-        }
-
-        /* =========================================
-           MODAL (SUPER GLASS)
-           ========================================= */
-        .modal-overlay {
-          position: fixed;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background-color: rgba(11, 13, 23, 0.6);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1000;
-          animation: fadeIn 0.4s ease-out;
-          padding: 20px;
-        }
-
-        .modal-content {
-          background: linear-gradient(180deg, rgba(47, 54, 117, 0.4) 0%, rgba(18, 18, 36, 0.8) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-top: 1px solid rgba(255, 255, 255, 0.2);
-          padding: 40px 30px;
-          border-radius: 32px;
-          width: 100%;
-          max-width: 450px;
-          position: relative;
-          box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
-                      inset 0 1px 0 rgba(255,255,255,0.2);
-          animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-          overflow-y: auto;
-          max-height: 90vh; /* Prevent modal from exceeding mobile screen */
-        }
-
-        .close-btn {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          width: 40px; height: 40px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: #70A6C1;
-          font-size: 1.5rem;
-          display: flex; justify-content: center; align-items: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-          background: rgba(255,255,255,0.15);
-          color: #fff;
-          transform: rotate(90deg);
-        }
-
-        .modal-header {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 25px;
-        }
-
-        .modal-skin {
-          height: 240px;
-          margin-bottom: 20px;
-          filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
-          animation: float 4s ease-in-out infinite;
-          transform: scaleX(1);
-        }
-
-        .link-actions {
-          display: flex;
-          gap: 12px;
-          justify-content: center;
-          margin-bottom: 30px;
-          flex-wrap: wrap; /* Wrap links on tiny screens */
-        }
-
-        .action-link {
-          padding: 10px 20px;
-          background: rgba(112, 166, 193, 0.15);
-          border: 1px solid rgba(112, 166, 193, 0.3);
-          color: #70A6C1;
-          text-decoration: none;
-          font-weight: 600;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          backdrop-filter: blur(4px);
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .action-link:hover {
-          background: #70A6C1;
-          color: #121212;
-          transform: translateY(-3px);
-          box-shadow: 0 10px 20px rgba(112, 166, 193, 0.3);
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-
-        .stat-box {
-          background: rgba(0, 0, 0, 0.2);
-          padding: 20px 15px;
-          border-radius: 20px;
-          text-align: center;
-          border: 1px solid rgba(255,255,255,0.05);
-          transition: transform 0.3s ease;
-        }
-
-        .stat-box:hover {
-          transform: translateY(-3px);
-          background: rgba(0, 0, 0, 0.3);
-        }
-
-        .stat-label {
-          font-size: 0.8rem;
-          color: rgba(255,255,255,0.5);
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          margin-bottom: 8px;
-          font-weight: 600;
-        }
-
-        .stat-val {
-          font-size: 1.5rem;
-          font-weight: 800;
-          text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        /* =========================================
-           MOBILE RESPONSIVENESS
-           ========================================= */
-        @media (max-width: 600px) {
-          .player-card {
-            padding: 12px 16px;
-            border-radius: 20px;
-          }
-          .rank {
-            font-size: 1.2rem;
-            width: 30px;
-          }
-          .head-wrapper {
-            margin: 0 12px 0 15px;
-          }
-          .player-head {
-            width: 44px;
-            height: 44px;
-          }
-          .player-name {
-            font-size: 1.1rem;
-          }
-          .player-stat {
-            font-size: 1.1rem;
-            min-width: 70px;
-          }
-          .elo-badge {
-            padding: 4px 12px;
-          }
-          .stats-grid {
-            /* Stack stats gracefully on very small screens */
-            grid-template-columns: 1fr;
-            gap: 12px;
-          }
-          .stat-box[style*="grid-column: span 2"] {
-            grid-column: span 1 !important; /* Override double span on mobile */
-          }
-          .modal-content {
-            padding: 30px 20px;
-          }
-        }
-
-        /* =========================================
-           ANIMATIONS
-           ========================================= */
-        @keyframes fadeInDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes modalPop {
-          from { opacity: 0; transform: scale(0.9) translateY(20px); }
-          to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes float {
-          0% { transform: scaleX(-1) translateY(0px); }
-          50% { transform: scaleX(-1) translateY(-12px); }
-          100% { transform: scaleX(-1) translateY(0px); }
-        }
-        @keyframes floatOrb {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(30px, -50px) scale(1.1); }
-        }
-      `}</style>
-
       <div className="content-wrapper">
         <h1 className="header-title">Crifzer Playoffs Leaderboard</h1>
 
@@ -521,42 +95,65 @@ export default function App() {
         </div>
 
         <div className="leaderboard-list">
-          {displayPlayers.map((player, index) => (
-            <div 
-              key={player.uuid} 
-              className="player-card"
-              onClick={() => setSelectedPlayer(player)}
-              style={{ animationDelay: `${index * 0.08}s` }}
-            >
-              <div className="rank">#{index + 1}</div>
-              <div className="head-wrapper">
-                <img 
-                  className="player-head"
-                  src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
-                  alt={player.nickname} 
-                />
+          {displayPlayers.map((player, index) => {
+            return (
+              <div 
+                key={`${player.nickname}-${activeTab}-${filterCoaches}`} 
+                className="player-card"
+                onClick={() => setSelectedPlayer(player)}
+                style={{ animationDelay: `${index * 0.08}s` }}
+              >
+                <div className="rank">#{index + 1}</div>
+                <div className="head-wrapper">
+                  <img 
+                    className="player-head"
+                    src={`https://starlightskins.lunareclipse.studio/render/isometric/${player.nickname}/head`} 
+                    alt={player.nickname} 
+                  />
+                </div>
+                <h3 className="player-name">{player.nickname}</h3>
+                
+                <div className="player-stat">
+                  {activeTab === 'elo' && (
+                    <div 
+                      className="stat-badge" 
+                      style={{ 
+                        color: getRankStyles(player.elo).color, 
+                        borderColor: getRankStyles(player.elo).borderColor,
+                        boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` 
+                      }}
+                    >
+                      {player.elo === 0 ? '???' : player.elo}
+                    </div>
+                  )}
+                  {activeTab === 'pb' && (
+                    <div 
+                      className={`stat-badge ${getPbStyles(player.pb).class}`} 
+                      style={{ 
+                        color: getPbStyles(player.pb).color, 
+                        borderColor: getPbStyles(player.pb).color,
+                        boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}` 
+                      }}
+                    >
+                      {formatTime(player.pb)}
+                    </div>
+                  )}
+                  {activeTab === 'completions' && (
+                    <div 
+                      className={`stat-badge ${getCompletionsStyles(player.completions).class}`} 
+                      style={{ 
+                        color: getCompletionsStyles(player.completions).color, 
+                        borderColor: getCompletionsStyles(player.completions).color,
+                        boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}` 
+                      }}
+                    >
+                      {player.completions}
+                    </div>
+                  )}
+                </div>
               </div>
-              <h3 className="player-name">{player.nickname}</h3>
-              
-              {activeTab === 'elo' ? (
-                <div 
-                  className="player-stat elo-badge" 
-                  style={{ 
-                    color: getRankStyles(player.elo).color, 
-                    borderColor: getRankStyles(player.elo).borderColor,
-                    boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` 
-                  }}
-                >
-                  {player.elo}
-                </div>
-              ) : (
-                <div className="player-stat" style={{ color: '#F0F1F2' }}>
-                  {activeTab === 'pb' && formatTime(player.pb)}
-                  {activeTab === 'completions' && player.completions}
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -609,26 +206,41 @@ export default function App() {
                 background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.elo).glow} 0%, rgba(0,0,0,0.2) 100%)`
               }}>
                 <div className="stat-label">Current ELO</div>
-                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo}</div>
+                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>
+                  {selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}
+                </div>
               </div>
               <div className="stat-box" style={{ 
                 borderTopColor: getRankStyles(selectedPlayer.peakElo).borderColor,
                 background: `linear-gradient(180deg, ${getRankStyles(selectedPlayer.peakElo).glow} 0%, rgba(0,0,0,0.2) 100%)`
               }}>
                 <div className="stat-label">Peak ELO</div>
-                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo}</div>
+                <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>
+                  {selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}
+                </div>
               </div>
-              <div className="stat-box">
+              <div className="stat-box" style={{
+                borderTopColor: getPbStyles(selectedPlayer.pb).color,
+                background: `linear-gradient(180deg, ${getPbStyles(selectedPlayer.pb).glow} 0%, rgba(0,0,0,0.2) 100%)`
+              }}>
                 <div className="stat-label">PB</div>
-                <div className="stat-val">{formatTime(selectedPlayer.pb)}</div>
+                <div className={`stat-val ${getPbStyles(selectedPlayer.pb).class}`} style={{color: getPbStyles(selectedPlayer.pb).color}}>
+                  {formatTime(selectedPlayer.pb)}
+                </div>
               </div>
               <div className="stat-box">
                 <div className="stat-label">Average</div>
                 <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
               </div>
-              <div className="stat-box" style={{ gridColumn: 'span 2' }}>
+              <div className="stat-box" style={{ 
+                gridColumn: 'span 2',
+                borderTopColor: getCompletionsStyles(selectedPlayer.completions).color,
+                background: `linear-gradient(180deg, ${getCompletionsStyles(selectedPlayer.completions).glow} 0%, rgba(0,0,0,0.2) 100%)`
+              }}>
                 <div className="stat-label">Total Completions</div>
-                <div className="stat-val">{selectedPlayer.completions}</div>
+                <div className={`stat-val ${getCompletionsStyles(selectedPlayer.completions).class}`} style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>
+                  {selectedPlayer.completions}
+                </div>
               </div>
             </div>
           </div>
