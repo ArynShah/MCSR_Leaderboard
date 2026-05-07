@@ -204,6 +204,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   animation: slideUp 0.6s ease-out backwards; 
+  will-change: transform, background-color;
+  transform: translateZ(0);
 }
 
 .player-card:hover, .player-card.selected {
@@ -311,6 +313,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   width: 100%;
   position: relative;
   box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .close-btn {
