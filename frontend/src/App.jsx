@@ -94,10 +94,8 @@ export default function App() {
       <div className="side-ribbon left-ribbon"></div>
       <div className="side-ribbon right-ribbon"></div>
 
-      {/* Added flexWrap and gap to safely space out the header and controls */}
-      <div className="top-header" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
-        {/* Added lineHeight: '1.2' to fix text overlapping itself */}
-        <h1 className="header-title" style={{ marginBottom: '0.5rem', lineHeight: '1.2' }}>
+      <div className="top-header">
+        <h1 className="header-title" style={{ lineHeight: '1.2', marginBottom: '1.5rem' }}>
           Crifzer Playoffs<br />Leaderboard
         </h1>
         <div className="controls-container">
