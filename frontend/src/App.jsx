@@ -16,13 +16,14 @@ export default function App() {
       .catch(err => console.error(err));
   }, []);
 
+  // Preload local assets with .toLowerCase() to match your filenames
   useEffect(() => {
     if (players.length > 0) {
       players.forEach(p => {
         const head = new Image();
-        head.src = `/assets/head/${p.nickname.toLowerCase()}.png`;
+        head.src = `/assets/heads/${p.nickname.toLowerCase()}.png`;
         const fullBody = new Image();
-        fullBody.src = `/assets/skin/${p.nickname.toLowerCase()}.png`;
+        fullBody.src = `/assets/skins/${p.nickname.toLowerCase()}.png`;
       });
     }
   }, [players]);
@@ -126,25 +127,25 @@ export default function App() {
                 <div className="head-wrapper">
                   <img 
                     className="player-head"
-                    src={`/assets/head/${player.nickname.toLowerCase()}.png`} 
+                    src={`/assets/heads/${player.nickname.toLowerCase()}.png`} 
                     alt={player.nickname} 
-                    onError={(e) => { e.target.src = 'https://starlightskins.lunareclipse.studio/render/isometric/steve/head'; }}
+                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 </div>
                 <h3 className="player-name">{player.nickname}</h3>
                 <div className="player-stat">
                   {activeTab === 'elo' && (
-                    <div className="stat-badge" style={{ color: getRankStyles(player.elo).color, borderColor: getRankStyles(player.elo).borderColor, boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}` }}>
+                    <div className="stat-badge" style={{ color: getRankStyles(player.elo).color, borderColor: getRankStyles(player.elo).borderColor, boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}`, textShadow: `0 0 10px ${getRankStyles(player.elo).glow}` }}>
                       {player.elo === 0 ? '???' : player.elo}
                     </div>
                   )}
                   {activeTab === 'pb' && (
-                    <div className={`stat-badge ${getPbStyles(player.pb).class}`} style={{ color: getPbStyles(player.pb).color, borderColor: getPbStyles(player.pb).border, boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}` }}>
+                    <div className={`stat-badge ${getPbStyles(player.pb).class}`} style={{ color: getPbStyles(player.pb).color, borderColor: getPbStyles(player.pb).border, boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}`, textShadow: `0 0 10px ${getPbStyles(player.pb).glow}` }}>
                       {formatTime(player.pb)}
                     </div>
                   )}
                   {activeTab === 'completions' && (
-                    <div className={`stat-badge ${getCompletionsStyles(player.completions).class}`} style={{ color: getCompletionsStyles(player.completions).color, borderColor: getCompletionsStyles(player.completions).border, boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}` }}>
+                    <div className={`stat-badge ${getCompletionsStyles(player.completions).class}`} style={{ color: getCompletionsStyles(player.completions).color, borderColor: getCompletionsStyles(player.completions).border, boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}`, textShadow: `0 0 10px ${getCompletionsStyles(player.completions).glow}` }}>
                       {player.completions}
                     </div>
                   )}
@@ -161,9 +162,9 @@ export default function App() {
               <div className="profile-header">
                 <img 
                   className="profile-skin"
-                  src={`/assets/skin/${selectedPlayer.nickname.toLowerCase()}.png`} 
+                  src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} 
                   alt={selectedPlayer.nickname} 
-                  onError={(e) => { e.target.src = 'https://starlightskins.lunareclipse.studio/render/default/steve/full'; }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
                 <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
                   {selectedPlayer.nickname}
@@ -188,7 +189,7 @@ export default function App() {
                   <div className="stat-label">PB</div>
                   <div className="stat-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
                 </div>
-                <div className="stat-box">
+                <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
                   <div className="stat-label">Average</div>
                   <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
                 </div>
