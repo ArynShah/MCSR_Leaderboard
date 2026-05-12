@@ -171,7 +171,8 @@ export default function App() {
       </div>
 
       <div className="main-layout">
-        <div className={`list-section ${selectedPlayer ? 'split-active' : ''}`}>
+        {/* ADDED: hide-list class when comments are active */}
+        <div className={`list-section ${selectedPlayer ? 'split-active' : ''} ${showComments ? 'hide-list' : ''}`}>
           <div className="leaderboard-list">
             {displayPlayers.map((player, index) => (
               <div 
@@ -213,7 +214,7 @@ export default function App() {
         </div>
 
         {selectedPlayer && (
-          <div className="profile-overlay" onClick={() => setSelectedPlayer(null)}>
+          <div className={`profile-overlay ${showComments ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
             <div className={`profile-container ${showComments ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
               
               <div className="profile-panel">
