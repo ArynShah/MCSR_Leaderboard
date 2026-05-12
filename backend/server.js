@@ -16,7 +16,8 @@ const WHITELIST = [
   'AneeboAmiibo',
   'NeatFoot',
   'CrouchingPuppy',
-  'Pratham001'
+  'Pratham001',
+  'a1sauces'
 ];
 const DB_PATH = path.join(__dirname, 'database.json');
 const SKINS_DIR = path.join(__dirname, 'skins'); // The new folder for downloaded skins
