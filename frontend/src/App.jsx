@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import './App.css'; 
+import { db } from './firebase';
+import { ref, onValue, push, serverTimestamp } from 'firebase/database';
+import './App.css';
 
 export default function App() {
   const [players, setPlayers] = useState([]);
   const [activeTab, setActiveTab] = useState('elo');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [filterCoaches, setFilterCoaches] = useState(true);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]); 
+  const [newComment, setNewComment] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+
+  // Comment System States
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]); 
+  const [newComment, setNewComment] = useState('');
+  const [newUsername, setNewUsername] = useState('');
 
   const coaches = ['Crifzer', 'Goatener'];
 
@@ -16,7 +28,7 @@ export default function App() {
       .catch(err => console.error(err));
   }, []);
 
-  // Preload local assets with .toLowerCase() to match your filenames
+  // Preload local assets
   useEffect(() => {
     if (players.length > 0) {
       players.forEach(p => {
@@ -27,6 +39,56 @@ export default function App() {
       });
     }
   }, [players]);
+
+useEffect(() => {
+    setShowComments(false);
+    setNewComment('');
+    setComments([]);
+
+    if (!selectedPlayer) return;
+    const playerKey = selectedPlayer.nickname.toLowerCase();
+    const commentsRef = ref(db, `comments/${playerKey}`);
+
+    const unsubscribe = onValue(commentsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Convert the object into an array and sort by timestamp
+        const fetchedComments = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).sort((a, b) => b.createdAt - a.createdAt); // Newest first
+        
+        setComments(fetchedComments);
+      } else {
+        setComments([]);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener when player changes
+  }, [selectedPlayer]);
+
+  // --- FIREBASE: Post a Comment ---
+  const handlePostComment = async () => {
+    if (!newUsername.trim() || !newComment.trim() || !selectedPlayer) return;
+
+    const playerKey = selectedPlayer.nickname.toLowerCase();
+    const commentsRef = ref(db, `comments/${playerKey}`);
+
+    try {
+      // push() automatically generates a unique ID in Realtime Database
+      await push(commentsRef, {
+        username: newUsername.trim(),
+        text: newComment.trim(),
+        createdAt: serverTimestamp() 
+      });
+
+      setNewComment(''); // Clear input on success
+    } catch (error) {
+      console.error("Error posting comment: ", error);
+      alert("Failed to post comment.");
+    }
+  };
+
 
   const formatTime = (ms) => {
     if (!ms) return 'N/A';
@@ -90,7 +152,6 @@ export default function App() {
       <div className="decor-grid"></div>
       <div className="star-field"></div>
       
-      {/* Desktop Ribbon Decorations */}
       <div className="side-ribbon left-ribbon"></div>
       <div className="side-ribbon right-ribbon"></div>
 
@@ -159,47 +220,117 @@ export default function App() {
 
         {selectedPlayer && (
           <div className="profile-overlay" onClick={() => setSelectedPlayer(null)}>
-            <div className="profile-panel" onClick={e => e.stopPropagation()}>
-              <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
-              <div className="profile-header">
-                <img 
-                  className="profile-skin"
-                  src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} 
-                  alt={selectedPlayer.nickname} 
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-                <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
-                  {selectedPlayer.nickname}
-                </h2>
+            <div 
+              className={`profile-container ${showComments ? 'show-comments' : ''}`} 
+              onClick={e => e.stopPropagation()}
+            >
+              
+              {/* --- 1. Profile Panel --- */}
+              <div className="profile-panel">
+                <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
+                <div className="profile-header">
+                  <img 
+                    className="profile-skin"
+                    src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} 
+                    alt={selectedPlayer.nickname} 
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                  <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
+                    {selectedPlayer.nickname}
+                  </h2>
+                </div>
+
+                <div className="link-actions">
+                  <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
+                  {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
+                  
+                  {/* View Comments Toggle Button */}
+                  <button 
+                    className="action-link" 
+                    onClick={() => setShowComments(!showComments)}
+                    style={{ cursor: 'pointer', border: '1px solid #70A6C1' }}
+                  >
+                    {showComments ? 'Hide Comments' : 'View Comments'}
+                  </button>
+                </div>
+                
+                <div className="stats-grid">
+                  <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
+                    <div className="stat-label">Current ELO</div>
+                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
+                  </div>
+                  <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
+                    <div className="stat-label">Peak ELO</div>
+                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
+                  </div>
+                  <div className="stat-box" style={{ borderTop: `3px solid ${getPbStyles(selectedPlayer.pb).color}` }}>
+                    <div className="stat-label">PB</div>
+                    <div className="stat-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
+                  </div>
+                  <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
+                    <div className="stat-label">Average</div>
+                    <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
+                  </div>
+                  <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: `3px solid ${getCompletionsStyles(selectedPlayer.completions).color}` }}>
+                    <div className="stat-label">Total Completions</div>
+                    <div className="stat-val" style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>{selectedPlayer.completions}</div>
+                  </div>
+                </div>
               </div>
 
-              <div className="link-actions">
-                <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
-                {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
-              </div>
-              
-              <div className="stats-grid">
-                <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
-                  <div className="stat-label">Current ELO</div>
-                  <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
+              {/* --- 2. Comments Panel --- */}
+              {showComments && (
+                <div className="comments-panel">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                    <h3 style={{ color: 'white', margin: 0 }}>Comments</h3>
+                    <button 
+                      className="close-btn" 
+                      style={{ position: 'relative', top: '0', right: '0', display: window.innerWidth <= 1024 ? 'flex' : 'none' }}
+                      onClick={() => setShowComments(false)}
+                    >&times;</button>
+                  </div>
+                  
+                  <div className="comments-list custom-scrollbar">
+                    {comments.length === 0 ? (
+                      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', textAlign: 'center', marginTop: '20px' }}>No comments yet. Be the first!</p>
+                    ) : (
+                      comments.map((c) => (
+                        <div key={c.id} className="comment-item">
+                          <strong>{c.username}</strong> 
+                          <p>{c.text}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="comment-inputs">
+                    <input 
+                      placeholder="Username" 
+                      maxLength="15"
+                      value={newUsername}
+                      onChange={e => setNewUsername(e.target.value)}
+                    />
+                    <textarea 
+                      placeholder="Type a comment..." 
+                      maxLength="150"
+                      rows="3"
+                      value={newComment}
+                      onChange={e => setNewComment(e.target.value)}
+                    ></textarea>
+                    
+                    {/* The Post Button */}
+                    <button 
+                      className="action-link" 
+                      style={{ width: '100%', marginTop: '5px', textAlign: 'center', opacity: (!newUsername || !newComment) ? 0.5 : 1 }}
+                      onClick={handlePostComment}
+                      disabled={!newUsername || !newComment}
+                    >
+                      Post Comment
+                    </button>
+                  </div>
                 </div>
-                <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
-                  <div className="stat-label">Peak ELO</div>
-                  <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
-                </div>
-                <div className="stat-box" style={{ borderTop: `3px solid ${getPbStyles(selectedPlayer.pb).color}` }}>
-                  <div className="stat-label">PB</div>
-                  <div className="stat-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
-                </div>
-                <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-                  <div className="stat-label">Average</div>
-                  <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
-                </div>
-                <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: `3px solid ${getCompletionsStyles(selectedPlayer.completions).color}` }}>
-                  <div className="stat-label">Total Completions</div>
-                  <div className="stat-val" style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>{selectedPlayer.completions}</div>
-                </div>
-              </div>
+              )}
+
             </div>
           </div>
         )}
