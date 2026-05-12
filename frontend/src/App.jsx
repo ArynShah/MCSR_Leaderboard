@@ -236,24 +236,24 @@ export default function App() {
                 
                 <div className="stats-grid">
                   <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
-                    <div className="stat-label">Current ELO</div>
-                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
+                    <div className="stat-label">ELO</div>
+                    <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
                   </div>
                   <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
                     <div className="stat-label">Peak ELO</div>
-                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
+                    <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className="stat-box" style={{ borderTop: `3px solid ${getPbStyles(selectedPlayer.pb).color}` }}>
+                  <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
                     <div className="stat-label">PB</div>
-                    <div className="stat-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
+                    <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(selectedPlayer.pb)}</div>
                   </div>
                   <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
                     <div className="stat-label">Average</div>
-                    <div className="stat-val">{formatTime(selectedPlayer.average)}</div>
+                    <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(selectedPlayer.average)}</div>
                   </div>
-                  <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: `3px solid ${getCompletionsStyles(selectedPlayer.completions).color}` }}>
+                  <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
                     <div className="stat-label">Total Completions</div>
-                    <div className="stat-val" style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>{selectedPlayer.completions}</div>
+                    <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.completions}</div>
                   </div>
                 </div>
               </div>
