@@ -385,7 +385,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   transform: translateY(-2px);
 }
 
-/* --- Tournament Layout --- */
+/* --- Tournament Layout (SCOPED) --- */
 .tournament-container {
   display: flex;
   flex-direction: column;
@@ -396,7 +396,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #e0e0e0;
 }
 
-.tournament-about {
+.tournament-container .tournament-about {
   background: #1e1e1e;
   padding: 1.5rem 2rem;
   border-radius: 12px;
@@ -407,13 +407,13 @@ input:checked + .slider:before { transform: translateX(20px); }
   border: 1px solid #333;
 }
 
-.tournament-about h2 {
+.tournament-container .tournament-about h2 {
   margin-top: 0;
   color: #ff5722;
 }
 
 /* --- Bracket Flexbox Grid --- */
-.bracket {
+.tournament-container .bracket {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -423,19 +423,19 @@ input:checked + .slider:before { transform: translateX(20px); }
   padding-bottom: 2rem;
 }
 
-.round {
+.tournament-container .round {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 /* Spacing out the rounds so they align perfectly */
-.round-1 { gap: 2rem; }
-.round-2 { gap: 7.5rem; } /* Matches up with the middle of Round 1 */
-.round-3 { gap: 0; }
+.tournament-container .round-1 { gap: 2rem; }
+.tournament-container .round-2 { gap: 7.5rem; } 
+.tournament-container .round-3 { gap: 0; }
 
 /* --- Match Cards --- */
-.match {
+.tournament-container .match {
   display: flex;
   flex-direction: column;
   background: #252525;
@@ -447,44 +447,47 @@ input:checked + .slider:before { transform: translateX(20px); }
   border: 1px solid #3a3a3a;
 }
 
-.match:hover {
+.tournament-container .match:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(255, 87, 34, 0.2);
   border-color: #ff5722;
   z-index: 10;
 }
 
-.final-match {
-  border: 2px solid #ffd700; /* Gold border for finals */
+.tournament-container .final-match {
+  border: 2px solid #ffd700; 
   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
 }
 
-.final-match:hover {
+.tournament-container .final-match:hover {
   box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
   border-color: #ffd700;
 }
 
 /* --- Player Slots --- */
-.player {
+.tournament-container .player {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #3a3a3a;
 }
 
-.player:last-child {
+.tournament-container .player:last-child {
   border-bottom: none;
 }
 
-.player-head {
-  width: 28px;
-  height: 28px;
+/* THIS FIXED THE CONFLICT! */
+.tournament-container .player-head {
+  width: 28px !important;
+  height: 28px !important;
   margin-right: 12px;
   border-radius: 4px;
-  image-rendering: pixelated; /* Keeps MC heads crispy instead of blurry */
+  image-rendering: pixelated; 
+  position: static;
+  margin-top: 0;
 }
 
-.seed {
+.tournament-container .seed {
   font-size: 0.8rem;
   color: #888;
   margin-right: 10px;
@@ -492,7 +495,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   width: 15px;
 }
 
-.name {
+.tournament-container .name {
   font-weight: 600;
   font-size: 0.95rem;
   white-space: nowrap;
