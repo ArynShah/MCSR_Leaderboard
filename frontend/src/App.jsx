@@ -160,23 +160,25 @@ export default function App() {
           {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
         </h1>
         
-        <div className="controls-container" style={{ alignItems: 'flex-start' }}>
+        {/* Adjusted controls container to spread items perfectly left/right */}
+        <div className="controls-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
           
-          {/* Conditional rendering for Leaderboard Tabs so they hide on the Tournament view */}
-          {activeView === 'leaderboard' && (
-            <div className="tabs">
-              <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
-              <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
-              <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
-            </div>
-          )}
+          {/* Left Side: Tabs */}
+          <div style={{ flex: 1 }}>
+            {activeView === 'leaderboard' && (
+              <div className="tabs">
+                <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
+                <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
+                <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
+              </div>
+            )}
+          </div>
           
-          {/* Controls Right Column (Filter & Toggle View Button) */}
+          {/* Right Side: Toggle & Filter */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
             <button 
               className="toggle-view-btn"
               onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
-              style={{ padding: '10px 15px', fontSize: '1rem', whiteSpace: 'nowrap' }}
             >
               {activeView === 'leaderboard' ? '🏆 Switch to Tournament' : '📊 Switch to Leaderboard'}
             </button>
