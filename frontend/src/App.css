@@ -362,11 +362,21 @@ input:checked + .slider:before { transform: translateX(20px); }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(112, 166, 193, 0.5); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(112, 166, 193, 0.8); }
 
+/* =========================================
+   TOURNAMENT & CONTROLS FIXES
+   ========================================= */
+
+/* 1. This fixes the unclickable button by bringing the header to the very front */
+.top-header {
+  position: relative;
+  z-index: 20; 
+}
+
 /* --- Tournament Toggle Button (THEME MATCHED) --- */
 .toggle-view-btn {
-  background: rgba(112, 166, 193, 0.15); /* Sleek translucent blue */
+  background: rgba(112, 166, 193, 0.15); 
   color: #E0E0E0;
-  border: 1px solid #70A6C1; /* Matches action links */
+  border: 1px solid #70A6C1; 
   padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
@@ -392,6 +402,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   padding: 3rem 1rem;
   animation: fadeIn 0.4s ease-out;
   color: #e0e0e0;
+  position: relative;
+  z-index: 10;
 }
 
 .tournament-container .tournament-about {
@@ -407,7 +419,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .tournament-container .tournament-about h2 {
   margin-top: 0;
-  color: #ff5722;
+  color: #70A6C1; /* Matched to your sleek blue theme */
 }
 
 /* --- Bracket Flexbox Grid --- */
@@ -439,7 +451,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: #252525;
   border-radius: 8px;
   overflow: hidden;
-  width: 280px; /* <--- WIDENED FROM 240px */
+  width: 280px; /* Widened to fit crouchingpuppy */
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   border: 1px solid #3a3a3a;
@@ -447,8 +459,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .tournament-container .match:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(255, 87, 34, 0.2);
-  border-color: #ff5722;
+  box-shadow: 0 8px 20px rgba(112, 166, 193, 0.2);
+  border-color: #70A6C1;
   z-index: 10;
 }
 
@@ -474,7 +486,6 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-bottom: none;
 }
 
-/* THIS FIXED THE CONFLICT! */
 .tournament-container .player-head {
   width: 28px !important;
   height: 28px !important;
@@ -501,12 +512,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   text-overflow: ellipsis;
 }
 
-/* --- Entry Animation --- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* --- TBD States for Empty Matches --- */
 .tournament-container .tbd-player {
   opacity: 0.4;
 }
