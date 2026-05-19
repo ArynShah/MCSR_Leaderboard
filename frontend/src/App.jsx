@@ -160,11 +160,11 @@ export default function App() {
           {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
         </h1>
         
-        {/* Adjusted controls container to spread items perfectly left/right */}
-        <div className="controls-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+        {/* Controls Container: Aligned center, side-by-side layout */}
+        <div className="controls-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '1rem' }}>
           
           {/* Left Side: Tabs */}
-          <div style={{ flex: 1 }}>
+          <div>
             {activeView === 'leaderboard' && (
               <div className="tabs">
                 <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
@@ -174,15 +174,8 @@ export default function App() {
             )}
           </div>
           
-          {/* Right Side: Toggle & Filter */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
-            <button 
-              className="toggle-view-btn"
-              onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
-            >
-              {activeView === 'leaderboard' ? '🏆 Switch to Tournament' : '📊 Switch to Leaderboard'}
-            </button>
-
+          {/* Right Side: Filter & Toggle Button Side-by-Side */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             {activeView === 'leaderboard' && (
               <label className="toggle-container" style={{ margin: 0 }}>
                 <span>Filter Coaches</span>
@@ -192,6 +185,13 @@ export default function App() {
                 </div>
               </label>
             )}
+            
+            <button 
+              className="toggle-view-btn"
+              onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
+            >
+              {activeView === 'leaderboard' ? '🏆 Switch to Tournament' : '📊 Switch to Leaderboard'}
+            </button>
           </div>
 
         </div>

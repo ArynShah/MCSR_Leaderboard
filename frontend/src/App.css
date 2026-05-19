@@ -362,23 +362,24 @@ input:checked + .slider:before { transform: translateX(20px); }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(112, 166, 193, 0.5); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(112, 166, 193, 0.8); }
 
-/* --- Tournament Toggle Button (FIXED ALIGNMENT) --- */
+/* --- Tournament Toggle Button (THEME MATCHED) --- */
 .toggle-view-btn {
-  background: #ff5722;
-  color: white;
-  border: none;
+  background: rgba(112, 166, 193, 0.15); /* Sleek translucent blue */
+  color: #E0E0E0;
+  border: 1px solid #70A6C1; /* Matches action links */
   padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   font-size: 0.95rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   white-space: nowrap;
 }
 
 .toggle-view-btn:hover {
-  background: #e64a19;
+  background: rgba(112, 166, 193, 0.3);
+  color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(112, 166, 193, 0.4);
   transform: translateY(-2px);
 }
 
