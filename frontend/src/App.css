@@ -361,3 +361,147 @@ input:checked + .slider:before { transform: translateX(20px); }
 .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(112, 166, 193, 0.5); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(112, 166, 193, 0.8); }
+
+/* --- Tournament Toggle Button --- */
+.toggle-view-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.toggle-view-btn:hover {
+  background: #e64a19;
+  transform: translateY(-2px);
+}
+
+/* --- Tournament Layout --- */
+.tournament-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 3rem 1rem;
+  animation: fadeIn 0.4s ease-out;
+  color: #e0e0e0;
+}
+
+.tournament-about {
+  background: #1e1e1e;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  border: 1px solid #333;
+}
+
+.tournament-about h2 {
+  margin-top: 0;
+  color: #ff5722;
+}
+
+/* --- Bracket Flexbox Grid --- */
+.bracket {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 2rem;
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Spacing out the rounds so they align perfectly */
+.round-1 { gap: 2rem; }
+.round-2 { gap: 7.5rem; } /* Matches up with the middle of Round 1 */
+.round-3 { gap: 0; }
+
+/* --- Match Cards --- */
+.match {
+  display: flex;
+  flex-direction: column;
+  background: #252525;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 240px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 1px solid #3a3a3a;
+}
+
+.match:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 87, 34, 0.2);
+  border-color: #ff5722;
+  z-index: 10;
+}
+
+.final-match {
+  border: 2px solid #ffd700; /* Gold border for finals */
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.final-match:hover {
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+  border-color: #ffd700;
+}
+
+/* --- Player Slots --- */
+.player {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.player:last-child {
+  border-bottom: none;
+}
+
+.player-head {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+  border-radius: 4px;
+  image-rendering: pixelated; /* Keeps MC heads crispy instead of blurry */
+}
+
+.seed {
+  font-size: 0.8rem;
+  color: #888;
+  margin-right: 10px;
+  font-weight: bold;
+  width: 15px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Entry Animation --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
