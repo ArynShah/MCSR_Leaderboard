@@ -28,9 +28,9 @@ const Tournament = () => {
       <div className="tournament-about">
         <h2>About the Tournament</h2>
         <p>
-          Welcome to the 8-player invitational! Initial seeding matches determine 
-          placement (1v8, 4v5, 3v6, 2v7). The Top 2 seeds are placed on opposite 
-          sides of the bracket so they can only meet in the Grand Finals.
+          Current seeds are random. Seeding matches will take place (1*8 FFA tournament with 3 seeds)
+          BO3 bracket, BO5 for Grand Finals. First 4 matches on first day of tourney, semis and grands on day 2.
+          No Buried Treasure but all other seed types. Seeds will be checked. Calculator is allowed.
         </p>
       </div>
 
