@@ -406,76 +406,93 @@ input:checked + .slider:before { transform: translateX(20px); }
   z-index: 10;
 }
 
-.tournament-container .tournament-about {
+.tournament-about {
   background: #1e1e1e;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
+  max-width: 600px;
   margin-bottom: 3rem;
-  max-width: 800px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
   border: 1px solid #333;
 }
 
-.tournament-container .tournament-about h2 {
-  margin-top: 0;
-  color: #70A6C1; /* Matched to your sleek blue theme */
+.tournament-about h2 {
+  margin: 0 0 1rem 0;
+  color: #70A6C1;
+  text-align: center;
 }
 
-/* --- Bracket Flexbox Grid --- */
-.tournament-container .bracket {
+.about-content p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #b0b0b0;
+}
+
+/* Bracket Container Fix: Padding prevents glow cut-off */
+.bracket {
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 4rem;
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 2rem;
+  padding: 30px;
+  overflow-x: visible;
 }
 
-.tournament-container .round {
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bracket-column h3 {
+  margin-bottom: 2rem;
+  color: #70A6C1;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.round-group {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 2rem;
+  position: relative;
 }
 
-/* Spacing out the rounds so they align perfectly */
-.tournament-container .round-1 { gap: 2rem; }
-.tournament-container .round-2 { gap: 7.5rem; } 
-.tournament-container .round-3 { gap: 0; }
-
-/* --- Match Cards --- */
-.tournament-container .match {
-  display: flex;
-  flex-direction: column;
+/* Match Card */
+.match {
   background: #252525;
   border-radius: 8px;
-  overflow: hidden;
-  width: 280px; /* Widened to fit crouchingpuppy */
+  width: 280px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: all 0.2s ease;
   border: 1px solid #3a3a3a;
+  z-index: 2;
 }
 
-.tournament-container .match:hover {
+.match:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(112, 166, 193, 0.2);
+  box-shadow: 0 0 20px rgba(112, 166, 193, 0.3);
   border-color: #70A6C1;
-  z-index: 10;
 }
 
-.tournament-container .final-match {
-  border: 2px solid #ffd700; 
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+/* Connector Lines */
+.round-group::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -2rem;
+  width: 2rem;
+  height: 2px;
+  background: #444;
+  z-index: 1;
 }
 
-.tournament-container .final-match:hover {
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-  border-color: #ffd700;
+.final-match {
+  border: 2px solid #ffd700;
 }
 
 /* --- Player Slots --- */
-.tournament-container .player {
+.player {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;

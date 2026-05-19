@@ -1,25 +1,22 @@
 import React from 'react';
 import './App.css';
 
-// --- TOURNAMENT DATABASE ---
-// Update seeds, players, and advance match winners here.
 const TOURNAMENT_DB = {
   round1: {
-    match1: { p1: { name: "crouchingpuppy", seed: 1, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "a1sauces", seed: 8, img: "/assets/heads/a1sauces.png" } }, // 1 vs 8
-    match2: { p1: { name: "pratham001", seed: 4, img: "/assets/heads/pratham001.png" }, p2: { name: "hamzxy", seed: 5, img: "/assets/heads/hamzxy.png" } }, // 4 vs 5
-    match3: { p1: { name: "neatfoot", seed: 3, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, img: "/assets/heads/iliealot.png" } }, // 3 vs 6
-    match4: { p1: { name: "aneeboamiibo", seed: 2, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, img: "/assets/heads/bozogoofylame.png" } }, // 2 vs 7
+    match1: { p1: { name: "crouchingpuppy", seed: 1, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "a1sauces", seed: 8, img: "/assets/heads/a1sauces.png" } },
+    match2: { p1: { name: "pratham001", seed: 4, img: "/assets/heads/pratham001.png" }, p2: { name: "hamzxy", seed: 5, img: "/assets/heads/hamzxy.png" } },
+    match3: { p1: { name: "neatfoot", seed: 3, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, img: "/assets/heads/iliealot.png" } },
+    match4: { p1: { name: "aneeboamiibo", seed: 2, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, img: "/assets/heads/bozogoofylame.png" } },
   },
   round2: {
-    match1: { p1: null, p2: null }, // Winners of R1M1 vs R1M2
-    match2: { p1: null, p2: null }, // Winners of R1M3 vs R1M4
+    match1: { p1: null, p2: null }, 
+    match2: { p1: null, p2: null },
   },
   round3: {
-    match1: { p1: null, p2: null }, // Grand Finals
+    match1: { p1: null, p2: null },
   }
 };
 
-// Fallback for empty slots
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
 
 const Tournament = () => {
@@ -27,40 +24,47 @@ const Tournament = () => {
     <div className="tournament-container">
       <div className="tournament-about">
         <h2>About the Tournament</h2>
-        <p>
-          Current seeds are random. Seeding matches will take place (1*8 FFA tournament with 3 seeds)
-          BO3 bracket, BO5 for Grand Finals. First 4 matches on first day of tourney, semis and grands on day 2.
-          No Buried Treasure but all other seed types. Seeds will be checked. Calculator is allowed.
-        </p>
+        <div className="about-content">
+          <p><strong>Format:</strong> 8-player bracket, BO3 matches (BO5 for Grand Finals).</p>
+          <p><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2.</p>
+          <p><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</p>
+        </div>
       </div>
 
       <div className="bracket">
-        {/* Round 1 (Quarterfinals) */}
-        <div className="round round-1">
-          <Match data={TOURNAMENT_DB.round1.match1} />
-          <Match data={TOURNAMENT_DB.round1.match2} />
-          <Match data={TOURNAMENT_DB.round1.match3} />
-          <Match data={TOURNAMENT_DB.round1.match4} />
+        {/* Quarter-Finals */}
+        <div className="bracket-column">
+          <h3>Quarter-Finals</h3>
+          <div className="round-group">
+            <Match data={TOURNAMENT_DB.round1.match1} />
+            <Match data={TOURNAMENT_DB.round1.match2} />
+            <Match data={TOURNAMENT_DB.round1.match3} />
+            <Match data={TOURNAMENT_DB.round1.match4} />
+          </div>
         </div>
 
-        {/* Round 2 (Semifinals) */}
-        <div className="round round-2">
-          <Match data={TOURNAMENT_DB.round2.match1} />
-          <Match data={TOURNAMENT_DB.round2.match2} />
+        {/* Semi-Finals */}
+        <div className="bracket-column">
+          <h3>Semi-Finals</h3>
+          <div className="round-group">
+            <Match data={TOURNAMENT_DB.round2.match1} />
+            <Match data={TOURNAMENT_DB.round2.match2} />
+          </div>
         </div>
 
-        {/* Round 3 (Grand Finals) */}
-        <div className="round round-3">
-          <Match data={TOURNAMENT_DB.round3.match1} isFinal />
+        {/* Grand Finals */}
+        <div className="bracket-column">
+          <h3>Grand Finals</h3>
+          <div className="round-group">
+            <Match data={TOURNAMENT_DB.round3.match1} isFinal />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Sub-component for individual match boxes
 const Match = ({ data, isFinal }) => {
-  // If a player slot is null, render the TBD state
   const p1 = data?.p1 || TBD_PLAYER;
   const p2 = data?.p2 || TBD_PLAYER;
 
