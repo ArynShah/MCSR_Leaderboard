@@ -24,18 +24,17 @@ const Tournament = () => {
     <div className="tournament-container">
       <div className="tournament-about">
         <h2>About the Tournament</h2>
-        <div className="about-content">
-          <p><strong>Format:</strong> 8-player bracket, BO3 matches (BO5 for Grand Finals).</p>
-          <p><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2.</p>
-          <p><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</p>
+        <div className="about-grid">
+          <div className="about-item"><strong>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)</div>
+          <div className="about-item"><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2</div>
+          <div className="about-item"><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</div>
         </div>
       </div>
 
-      <div className="bracket">
-        {/* Quarter-Finals */}
+      <div className="bracket-wrapper">
         <div className="bracket-column">
           <h3>Quarter-Finals</h3>
-          <div className="round-group">
+          <div className="bracket-matches">
             <Match data={TOURNAMENT_DB.round1.match1} />
             <Match data={TOURNAMENT_DB.round1.match2} />
             <Match data={TOURNAMENT_DB.round1.match3} />
@@ -43,19 +42,17 @@ const Tournament = () => {
           </div>
         </div>
 
-        {/* Semi-Finals */}
         <div className="bracket-column">
           <h3>Semi-Finals</h3>
-          <div className="round-group">
-            <Match data={TOURNAMENT_DB.round2.match1} />
-            <Match data={TOURNAMENT_DB.round2.match2} />
+          <div className="bracket-matches">
+            <div className="connector-box"><Match data={TOURNAMENT_DB.round2.match1} /></div>
+            <div className="connector-box"><Match data={TOURNAMENT_DB.round2.match2} /></div>
           </div>
         </div>
 
-        {/* Grand Finals */}
         <div className="bracket-column">
           <h3>Grand Finals</h3>
-          <div className="round-group">
+          <div className="bracket-matches">
             <Match data={TOURNAMENT_DB.round3.match1} isFinal />
           </div>
         </div>
