@@ -237,11 +237,11 @@ export default function App() {
                 <div className="stats-grid">
                   <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
                     <div className="stat-label">ELO</div>
-                    <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
+                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
                   </div>
                   <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
                     <div className="stat-label">Peak ELO</div>
-                    <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
+                    <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
                   <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
                     <div className="stat-label">PB</div>
