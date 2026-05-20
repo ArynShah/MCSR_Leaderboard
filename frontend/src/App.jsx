@@ -161,7 +161,7 @@ export default function App() {
         </h1>
         
         {/* Controls Container: Aligned center, side-by-side layout */}
-        <div className="controls-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="controls-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '1rem', flexDirection: 'column' }}>
           
           {/* Left Side: Tabs */}
           <div>
@@ -175,7 +175,7 @@ export default function App() {
           </div>
           
           {/* Right Side: Filter & Toggle Button Side-by-Side */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             {activeView === 'leaderboard' && (
               <label className="toggle-container" style={{ margin: 0 }}>
                 <span>Filter Coaches</span>

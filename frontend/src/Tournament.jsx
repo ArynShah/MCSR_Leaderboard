@@ -30,10 +30,21 @@ const Tournament = () => {
 
       {showAbout && (
         <div className="about-popup-overlay" onClick={() => setShowAbout(false)}>
-          <div className="about-popup-card" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="about-popup-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,250,0.98))',
+              padding: '20px',
+              borderRadius: '10px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+              maxWidth: '480px',
+              width: '90%'
+            }}
+          >
             <button className="close-button" onClick={() => setShowAbout(false)}>×</button>
             <h2>About the Tournament</h2>
-            <div className="about-grid">
+            <div className="about-grid" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div className="about-item"><strong>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)</div>
               <div className="about-item"><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2</div>
               <div className="about-item"><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</div>
