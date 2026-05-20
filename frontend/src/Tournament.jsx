@@ -23,7 +23,7 @@ const Tournament = () => {
   const [showAbout, setShowAbout] = React.useState(false);
 
   return (
-    <div className="tournament-container">
+    <div className="tournament-container" style={{ color: '#fff' }}>
       <div className="tournament-header">
         <button className="about-button" onClick={() => setShowAbout(!showAbout)} title="About the Tournament">?</button>
       </div>
@@ -34,12 +34,13 @@ const Tournament = () => {
             className="about-popup-card"
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,250,0.98))',
+              background: 'linear-gradient(180deg, rgba(1, 44, 84, 0.98), rgba(2, 56, 131, 0.98))',
               padding: '20px',
               borderRadius: '10px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
               maxWidth: '480px',
-              width: '90%'
+              width: '90%',
+              color: '#fff'
             }}
           >
             <button className="close-button" onClick={() => setShowAbout(false)}>×</button>
