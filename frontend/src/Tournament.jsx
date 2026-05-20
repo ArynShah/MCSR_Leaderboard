@@ -20,18 +20,29 @@ const TOURNAMENT_DB = {
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
 
 const Tournament = () => {
+  const [showAbout, setShowAbout] = React.useState(false);
+
   return (
     <div className="tournament-container">
-      <div className="tournament-about">
-        <h2>About the Tournament</h2>
-        <div className="about-grid">
-          <div className="about-item"><strong>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)</div>
-          <div className="about-item"><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2</div>
-          <div className="about-item"><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</div>
-          <div className="about-item"><strong>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1*8 matches to determine seeding.</div>
-          <div className="about-item"><strong>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks</div>
-        </div>
+      <div className="tournament-header">
+        <button className="about-button" onClick={() => setShowAbout(!showAbout)} title="About the Tournament">?</button>
       </div>
+
+      {showAbout && (
+        <div className="about-popup-overlay" onClick={() => setShowAbout(false)}>
+          <div className="about-popup-card" onClick={(e) => e.stopPropagation()}>
+            <button className="close-button" onClick={() => setShowAbout(false)}>×</button>
+            <h2>About the Tournament</h2>
+            <div className="about-grid">
+              <div className="about-item"><strong>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)</div>
+              <div className="about-item"><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2</div>
+              <div className="about-item"><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</div>
+              <div className="about-item"><strong>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1*8 matches to determine seeding.</div>
+              <div className="about-item"><strong>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bracket-scroll-wrapper">
         {/* FIX: Removed inline style={{display: 'block'}} that was breaking the layout */}
