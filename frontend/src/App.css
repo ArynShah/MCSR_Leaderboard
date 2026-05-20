@@ -362,17 +362,19 @@ input:checked + .slider:before { transform: translateX(20px); }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(112, 166, 193, 0.5); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(112, 166, 193, 0.8); }
 
+
+
+
 /* =========================================
-   TOURNAMENT & CONTROLS FIXES
+   TOURNAMENT LAYOUT & BRACKET FIXES
    ========================================= */
 
-/* 1. This fixes the unclickable button by bringing the header to the very front */
 .top-header {
   position: relative;
   z-index: 20; 
 }
 
-/* --- Tournament Toggle Button (THEME MATCHED) --- */
+/* --- Tournament Toggle Button --- */
 .toggle-view-btn {
   background: rgba(112, 166, 193, 0.15); 
   color: #E0E0E0;
@@ -393,7 +395,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   transform: translateY(-2px);
 }
 
-/* --- Tournament Layout (SCOPED) --- */
+/* --- Tournament Layout --- */
 .tournament-container {
   display: flex;
   flex-direction: column;
@@ -410,6 +412,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   padding: 1.5rem;
   border-radius: 12px;
   max-width: 800px;
+  width: 100%;
   margin-bottom: 3rem;
   border: 1px solid #333;
 }
@@ -422,102 +425,117 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   font-size: 0.85rem;
   color: #b0b0b0;
 }
 
-.about-content p {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-  color: #b0b0b0;
+/* --- Mobile Scroll Fix --- */
+.bracket-scroll-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2rem;
 }
 
-/* Bracket Wrapper: Padding prevents glow cut-off */
-.bracket-wrapper,
-.bracket {
+/* --- Bracket Grid Layout --- */
+.bracket-wrapper {
   display: flex;
   justify-content: center;
+  align-items: stretch; /* FIX: Forces columns to perfectly match heights */
   gap: 4rem;
-  padding: 50px;
-  overflow: visible;
+  min-width: 950px; /* Essential: Prevents squishing on mobile */
+  padding: 1rem 2rem;
+  margin: 0 auto;
 }
 
 .bracket-column {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 250px;
 }
 
 .bracket-column h3 {
   margin-bottom: 2rem;
   color: #70A6C1;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-align: center;
+  flex: 0 0 auto;
 }
 
-.bracket-matches,
-.round-group {
+/* --- Flex Alignment Magic --- */
+.bracket-matches {
   display: flex;
   flex-direction: column;
+  flex: 1; /* FIX: Ensures space-around spans the full height */
+}
+
+.match-pair {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; /* Precisely centers matches mathematically */
+  flex: 1;
+  position: relative;
+}
+
+.match-pair.single-match {
   justify-content: center;
-  gap: 2rem;
-  position: relative;
 }
 
-/* Match Card */
-.match {
-  background: #252525;
-  border-radius: 8px;
-  width: 250px;
-  border: 1px solid #3a3a3a;
-  transition: all 0.25s ease;
-  position: relative;
-  z-index: 2;
-}
-
-/* Fix Glow Cut-off & Hover */
-.match:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(112, 166, 193, 0.4);
-  border-color: #70A6C1;
-}
-
-/* Connecting Lines */
-.match::after,
-.round-group::after {
+/* --- Connecting Lines --- */
+.bracket-column:not(:last-child) .match-pair::after {
   content: '';
   position: absolute;
-  top: 50%;
   right: -2rem;
+  width: 2rem;
+  top: 25%;
+  bottom: 25%;
+  border-right: 2px solid #444;
+  border-top: 2px solid #444;
+  border-bottom: 2px solid #444;
+  border-radius: 0 4px 4px 0;
+  z-index: 1;
+}
+
+.connect-left::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 50%;
   width: 2rem;
   height: 2px;
   background: #444;
   z-index: 1;
 }
 
+/* --- Individual Match Styling --- */
+.match {
+  background: #252525;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  position: relative;
+  z-index: 2;
+  margin: 0.5rem 0;
+  transition: all 0.25s ease;
+  flex: 0 0 auto; /* FIX: Prevents cards from stretching vertically */
+}
+
+.match:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(112, 166, 193, 0.2);
+  border-color: #70A6C1;
+}
+
 .final-match {
   border: 2px solid #ffd700;
 }
 
-/* Specific connector adjustments */
-.bracket-column:last-child .match::after,
-.bracket-column:last-child .round-group::after { display: none; }
-.bracket-column:nth-child(2) .connector-box { position: relative; }
-.bracket-column:nth-child(2) .connector-box::before {
-  content: '';
-  position: absolute;
-  top: -30%;
-  left: -2rem;
-  width: 2px;
-  height: 160%;
-  background: #444;
-}
-
 /* --- Player Slots --- */
-.player {
+.tournament-container .player {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
@@ -534,8 +552,11 @@ input:checked + .slider:before { transform: translateX(20px); }
   margin-right: 12px;
   border-radius: 4px;
   image-rendering: pixelated; 
-  position: static;
-  margin-top: 0;
+}
+
+.tournament-container .placeholder-head {
+  background: #1a1a1a;
+  border: 1px dashed #444;
 }
 
 .tournament-container .seed {
@@ -554,12 +575,6 @@ input:checked + .slider:before { transform: translateX(20px); }
   text-overflow: ellipsis;
 }
 
-/* --- TBD States for Empty Matches --- */
 .tournament-container .tbd-player {
   opacity: 0.4;
-}
-
-.tournament-container .placeholder-head {
-  background: #1a1a1a;
-  border: 1px dashed #444;
 }
