@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const TOURNAMENT_DB = {
@@ -40,103 +40,128 @@ const getRankStyles = (elo) => {
 const Tournament = ({ players = [] }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState(null);
+  
+  // Mobile detection specifically for layout switching
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Define a variable for the modal scale (e.g., 0.75 is 75%)
-  const modalScale = 0.75;
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    handleResize(); // Check immediately on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
-      <div className="tournament-header">
-        <button className="about-button" onClick={() => setShowAbout(!showAbout)} title="About the Tournament">?</button>
+      <div className="tournament-header" style={{ marginBottom: '2rem' }}>
+        <button 
+          className="toggle-view-btn" 
+          onClick={() => setShowAbout(true)} 
+          title="About the Tournament"
+          style={{ padding: '8px 16px', fontSize: '1.2rem', borderRadius: '50%' }}
+        >
+          ?
+        </button>
       </div>
 
-      {/* About Popup */}
+      {/* UPDATED: About Popup Modal using existing Profile Card CSS classes */}
       {showAbout && (
-        <div className="about-popup-overlay" onClick={() => setShowAbout(false)}>
-          <div
-            className="about-popup-card"
+        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setShowAbout(false)}>
+          <div 
+            className="profile-container" 
             onClick={(e) => e.stopPropagation()}
-            style={{
-              background: 'linear-gradient(180deg, rgba(24, 31, 59, 0.98), rgba(48, 60, 78, 0.98))',
-              padding: '20px',
-              borderRadius: '10px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-              maxWidth: '480px',
-              width: '90%',
-              color: '#fff'
-            }}
+            style={{ width: '100%', maxWidth: '600px', display: 'flex', justifyContent: 'center', padding: '20px' }}
           >
-            <button className="close-button" onClick={() => setShowAbout(false)}>×</button>
-            <h2>About the Tournament</h2>
-            <div className="about-grid" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div className="about-item"><strong>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)</div>
-              <div className="about-item"><strong>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2</div>
-              <div className="about-item"><strong>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.</div>
-              <div className="about-item"><strong>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1*8 matches to determine seeding.</div>
-              <div className="about-item"><strong>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks</div>
+            <div className="profile-panel" style={{ width: '100%', position: 'relative' }}>
+              <button className="close-btn" style={{ display: 'flex', top: '15px', right: '15px' }} onClick={() => setShowAbout(false)}>&times;</button>
+              
+              <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
+                About the Tournament
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <strong style={{ color: '#70A6C1' }}>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <strong style={{ color: '#70A6C1' }}>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <strong style={{ color: '#70A6C1' }}>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1*8 matches to determine seeding.
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <strong style={{ color: '#70A6C1' }}>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* VS Match Popup Modal (Fullscreen, unified, scaled) */}
+      {/* VS Match Popup Modal (Responsive) */}
       {selectedMatch && (
-        <div
-          className="profile-overlay fullscreen-mode"
-          style={{ zIndex: 9999, position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          onClick={() => setSelectedMatch(null)}
-        >
-          <div
-            className="profile-container single-card-wrapper"
+        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setSelectedMatch(null)}>
+          <div 
+            className="profile-container single-card-wrapper" 
             onClick={e => e.stopPropagation()}
-            style={{
-              width: '100vw',
-              height: '100vh',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+            style={{ 
+              width: '100vw', 
+              height: '100vh', 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
               position: 'fixed',
               top: 0,
               left: 0,
-              transform: `scale(${modalScale})`,
-              transformOrigin: 'center'
+              // Only apply the scale trick if we are on a desktop
+              transform: isMobile ? 'none' : `scale(0.8)`, 
+              padding: isMobile ? '20px' : '0'
             }}
           >
+            {/* The Unified VS Card */}
             <div className="unified-vs-card" style={{
-              background: 'rgba(10, 12, 25, 0.9)',
+              background: 'rgba(10, 12, 25, 0.95)', 
               backdropFilter: 'blur(25px)',
-              WebkitBackdropFilter: 'blur(25px)',
-              border: '1px solid #70A6C1',
-              borderRadius: '32px',
-              padding: '40px',
+              WebkitBackdropFilter: 'blur(25px)', 
+              border: '1px solid rgba(112, 166, 193, 0.4)', 
+              borderRadius: '32px', 
+              padding: isMobile ? '25px 15px' : '40px', 
               boxShadow: '0 40px 100px rgba(0,0,0,0.8)',
               display: 'flex',
-              flexDirection: 'row',
+              // Switch to vertical layout on mobile so it doesn't overflow horizontally
+              flexDirection: isMobile ? 'column' : 'row', 
               alignItems: 'center',
-              position: 'relative'
+              position: 'relative',
+              maxHeight: isMobile ? '90vh' : 'auto',
+              overflowY: isMobile ? 'auto' : 'visible',
+              width: isMobile ? '100%' : 'auto'
             }}>
-              <button className="close-btn" style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                zIndex: 10,
-                display: 'flex'
+              
+              <button className="close-btn" style={{ 
+                position: 'absolute', 
+                top: '15px', 
+                right: '15px', 
+                zIndex: 10, 
+                display: 'flex' 
               }} onClick={() => setSelectedMatch(null)}>&times;</button>
-
-              <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth="380px" />
-
-              <div style={{
-                fontSize: '3.5rem',
-                fontWeight: 900,
-                color: '#70A6C1',
-                fontStyle: 'italic',
+              
+              <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
+              
+              <div className="vs-separator" style={{ 
+                fontSize: isMobile ? '2.5rem' : '3.5rem', 
+                fontWeight: 900, 
+                color: '#70A6C1', 
+                fontStyle: 'italic', 
                 textShadow: '0 0 20px rgba(112,166,193,0.5)',
-                margin: '0 30px'
+                margin: isMobile ? '15px 0' : '0 30px' 
               }}>
                 VS
               </div>
-
-              <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth="380px" />
+              
+              <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
             </div>
           </div>
         </div>
@@ -184,23 +209,20 @@ const Tournament = ({ players = [] }) => {
   );
 };
 
-// Reusable VS Player Card Component
-const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth = '100%' }) => {
+// Reusable VS Player Card Component 
+const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
   const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
   
-  // Find the player in the main leaderboard DB
   const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
 
-  // Fallback state if player is TBD
   if (isTbd) {
     return (
-      <div className="vs-player-card" style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
         <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
       </div>
     );
   }
 
-  // Use real data, or fallback defaults if the API missed them
   const p = playerData || {
     nickname: matchPlayer.name,
     elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
@@ -210,15 +232,15 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth = '100%' }) => {
   const peakRankStyles = getRankStyles(p.peakElo);
 
   return (
-    <div className="vs-player-card" style={{ width: cardWidth }}>
+    <div className="vs-player-card" style={{ width: cardWidth }}> 
       <div className="profile-header">
-        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
-        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
+        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} style={{ height: '220px', marginBottom: '15px' }} />
+        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
           {p.nickname}
         </h2>
       </div>
 
-      <div className="link-actions">
+      <div className="link-actions" style={{ marginBottom: '20px' }}>
         <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
         {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
       </div>
