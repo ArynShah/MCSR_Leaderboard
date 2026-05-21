@@ -165,7 +165,7 @@ export default function App() {
       <div className="side-ribbon left-ribbon"></div>
       <div className="side-ribbon right-ribbon"></div>
 
-      <div className="top-header">
+      <div className="top-header" style={{ display: (isMobile && selectedPlayer) ? 'none' : 'block' }}>
         <h1 className="header-title" style={{ lineHeight: '1.2', marginBottom: '1.5rem' }}>
           Crifzer Playoffs<br />
           {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}

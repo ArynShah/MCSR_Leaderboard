@@ -123,7 +123,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .main-layout {
   display: flex; justify-content: center; align-items: flex-start;
-  gap: 40px; max-width: 1300px; margin: 0 auto; position: relative; z-index: 10;
+  gap: 40px; max-width: 1300px; margin: 0 auto; position: relative; z-index: 30;
 }
 
 .list-section { flex: 1; max-width: 750px; transition: 0.5s ease; }
@@ -404,7 +404,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   padding: 3rem 1rem;
   color: #e0e0e0;
   position: relative;
-  z-index: 10;
+  z-index: 30;
 }
 
 .tournament-about {

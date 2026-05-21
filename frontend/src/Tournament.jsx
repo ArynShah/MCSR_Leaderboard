@@ -41,6 +41,9 @@ const Tournament = ({ players = [] }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState(null);
 
+  // Define a variable for the modal scale (e.g., 0.75 is 75%)
+  const modalScale = 0.75;
+
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       <div className="tournament-header">
@@ -76,39 +79,65 @@ const Tournament = ({ players = [] }) => {
         </div>
       )}
 
-      {/* VS Match Popup Modal */}
+      {/* VS Match Popup Modal (Fullscreen, unified, scaled) */}
       {selectedMatch && (
-        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setSelectedMatch(null)}>
-          <div 
-            className="profile-container" 
+        <div
+          className="profile-overlay fullscreen-mode"
+          style={{ zIndex: 9999, position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          onClick={() => setSelectedMatch(null)}
+        >
+          <div
+            className="profile-container single-card-wrapper"
             onClick={e => e.stopPropagation()}
-            style={{ 
-              width: '100%', 
-              maxWidth: '1200px', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              gap: '20px', 
-              flexWrap: 'wrap',
-              position: 'relative'
+            style={{
+              width: '100vw',
+              height: '100vh',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              transform: `scale(${modalScale})`,
+              transformOrigin: 'center'
             }}
           >
-            {/* Always Visible Close Button */}
-            <button className="close-btn" style={{ position: 'absolute', top: '0', right: '0', zIndex: 100, display: 'flex' }} onClick={() => setSelectedMatch(null)}>&times;</button>
-            
-            <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} />
-            
-            <div style={{ 
-              fontSize: '3.5rem', 
-              fontWeight: 900, 
-              color: '#70A6C1', 
-              fontStyle: 'italic', 
-              textShadow: '0 0 20px rgba(112,166,193,0.5)',
-              margin: '0 15px'
+            <div className="unified-vs-card" style={{
+              background: 'rgba(10, 12, 25, 0.9)',
+              backdropFilter: 'blur(25px)',
+              WebkitBackdropFilter: 'blur(25px)',
+              border: '1px solid #70A6C1',
+              borderRadius: '32px',
+              padding: '40px',
+              boxShadow: '0 40px 100px rgba(0,0,0,0.8)',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              position: 'relative'
             }}>
-              VS
+              <button className="close-btn" style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                zIndex: 10,
+                display: 'flex'
+              }} onClick={() => setSelectedMatch(null)}>&times;</button>
+
+              <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth="380px" />
+
+              <div style={{
+                fontSize: '3.5rem',
+                fontWeight: 900,
+                color: '#70A6C1',
+                fontStyle: 'italic',
+                textShadow: '0 0 20px rgba(112,166,193,0.5)',
+                margin: '0 30px'
+              }}>
+                VS
+              </div>
+
+              <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth="380px" />
             </div>
-            
-            <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} />
           </div>
         </div>
       )}
@@ -156,7 +185,7 @@ const Tournament = ({ players = [] }) => {
 };
 
 // Reusable VS Player Card Component
-const VsPlayerCard = ({ matchPlayer, allPlayers }) => {
+const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth = '100%' }) => {
   const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
   
   // Find the player in the main leaderboard DB
@@ -165,7 +194,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers }) => {
   // Fallback state if player is TBD
   if (isTbd) {
     return (
-      <div className="profile-panel" style={{ flex: '1 1 350px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="vs-player-card" style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
       </div>
     );
@@ -181,7 +210,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers }) => {
   const peakRankStyles = getRankStyles(p.peakElo);
 
   return (
-    <div className="profile-panel" style={{ flex: '1 1 350px' }}>
+    <div className="vs-player-card" style={{ width: cardWidth }}>
       <div className="profile-header">
         <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
         <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
