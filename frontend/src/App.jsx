@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
-import Tournament from './Tournament'; // <-- Import the new component
+import Tournament from './Tournament'; 
 import './App.css'; 
 
 export default function App() {
@@ -20,7 +20,18 @@ export default function App() {
   const [newComment, setNewComment] = useState('');
   const [newUsername, setNewUsername] = useState('');
 
+  // --- Mobile Detection State ---
+  const [isMobile, setIsMobile] = useState(false);
+
   const coaches = ['Crifzer', 'Goatener'];
+
+  // Handle Mobile Resize Tracking
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    handleResize(); // Check immediately on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Initial Leaderboard Fetch
   useEffect(() => {
@@ -160,7 +171,7 @@ export default function App() {
           {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
         </h1>
         
-        {/* Controls Container: Aligned center, side-by-side layout */}
+        {/* Controls Container */}
         <div className="controls-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '1rem', flexDirection: 'column' }}>
           
           {/* Left Side: Tabs */}
@@ -199,11 +210,11 @@ export default function App() {
 
       {/* --- Main View Switcher --- */}
       {activeView === 'tournament' ? (
-        <Tournament />
+        <Tournament players={players} />
       ) : (
         <div className="main-layout">
-          {/* ADDED: hide-list class when comments are active */}
-          <div className={`list-section ${selectedPlayer ? 'split-active' : ''} ${showComments ? 'hide-list' : ''}`}>
+          {/* UPDATED: hide-list class checks for mobile overlapping */}
+          <div className={`list-section ${selectedPlayer ? 'split-active' : ''} ${(showComments || (isMobile && selectedPlayer)) ? 'hide-list' : ''}`}>
             <div className="leaderboard-list">
               {displayPlayers.map((player, index) => (
                 <div 
@@ -293,7 +304,8 @@ export default function App() {
                   <div className="comments-panel">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                       <h3 style={{ color: 'white', margin: 0 }}>Comments</h3>
-                      <button className="close-btn" style={{ position: 'relative', top: '0', right: '0', display: window.innerWidth <= 1024 ? 'flex' : 'none' }} onClick={() => setShowComments(false)}>&times;</button>
+                      {/* UPDATED: Dynamic mobile state usage for close button */}
+                      <button className="close-btn" style={{ position: 'relative', top: '0', right: '0', display: isMobile ? 'flex' : 'none' }} onClick={() => setShowComments(false)}>&times;</button>
                     </div>
                     
                     <div className="comments-list custom-scrollbar">
