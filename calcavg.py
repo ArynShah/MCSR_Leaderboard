@@ -1,3 +1,7 @@
+import requests
+
+DB_URL = "https://mcsr-leaderboard-default-rtdb.firebaseio.com"
+
 def calculate_player_stats(player_data):
     stats = {}
 
@@ -24,6 +28,30 @@ def calculate_player_stats(player_data):
             
     return stats
 
+def update_firebase(player_stats):
+    print("\nUpdating Firebase...")
+    print("-" * 45)
+    for player, data in player_stats.items():
+        # Firebase keys in the screenshot are lowercase
+        player_id = player.lower()
+        
+        # Target the specific player's node
+        url = f"{DB_URL}/players/{player_id}.json"
+        
+        # Payload containing ONLY the fields we want to update
+        payload = {
+            "average": data["average"],
+            "completions": data["count"]
+        }
+        
+        # Using PATCH updates only the specified fields, leaving elo, pb, etc., intact
+        response = requests.patch(url, json=payload)
+        
+        if response.status_code == 200:
+            print(f"✅ Successfully updated {player_id}")
+        else:
+            print(f"❌ Failed to update {player_id} - Status Code: {response.status_code}")
+
 completions = {
     "Pratham001": ["22:32", "22:35", "27:21", "18:27", "19:53", "15:54", "19:25", "17:19", "17:04", "23:26", "30:56", "16:59", "19:30", "21:00", "39:58", "25:44", "39:50", "26:19", "16:28", "16:36","19:07", "18:42", "18:07", "19:26", "19:07", "18:11", "20:11", "39:27"],
     "AneeboAmiibo": ["24:47", "32:59", "22:36", "18:53", "23:15", "23:05", "26:59", "20:45", "42:04", "29:20", "25:16", "25:31", "30:17"],
@@ -40,3 +68,6 @@ if __name__ == "__main__":
     print("-" * 45)
     for player, data in player_stats.items():
         print(f"{player:<15} | {data['average']:<10} | {data['count']:<12}")
+
+    # Call the new function to push to Firebase
+    update_firebase(player_stats)
