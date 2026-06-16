@@ -39,15 +39,14 @@ const getRankStyles = (elo) => {
 
 const Tournament = ({ players = [] }) => {
   const [showAbout, setShowAbout] = useState(false);
-  const [showSeedBoard, setShowSeedBoard] = useState(false); // New state for Seed Points
+  const [showSeedBoard, setShowSeedBoard] = useState(false); 
   const [selectedMatch, setSelectedMatch] = useState(null);
   
-  // Mobile detection specifically for layout switching
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
-    handleResize(); // Check immediately on mount
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -59,13 +58,14 @@ const Tournament = ({ players = [] }) => {
 
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
-      {/* Header with both buttons */}
-      <div className="tournament-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center', gap: '15px' }}>
+      
+      {/* Header with reduced margins and tighter gap */}
+      <div className="tournament-header" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
         <button 
           className="toggle-view-btn" 
           onClick={() => setShowSeedBoard(true)} 
           title="Seed Points"
-          style={{ padding: '8px 16px', fontSize: '1.1rem', borderRadius: '8px', cursor: 'pointer' }}
+          style={{ padding: '8px 16px', fontSize: '1rem', borderRadius: '8px', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
         >
           🏆 Seed Points
         </button>
@@ -73,13 +73,13 @@ const Tournament = ({ players = [] }) => {
           className="toggle-view-btn" 
           onClick={() => setShowAbout(true)} 
           title="About the Tournament"
-          style={{ padding: '8px 16px', fontSize: '1.2rem', borderRadius: '50%', cursor: 'pointer' }}
+          style={{ padding: '8px 14px', fontSize: '1.1rem', borderRadius: '50%', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
         >
           ?
         </button>
       </div>
 
-      {/* NEW: Seed Points Leaderboard Modal */}
+      {/* Seed Points Leaderboard Modal */}
       {showSeedBoard && (
         <div 
           className="profile-overlay" 
@@ -87,36 +87,51 @@ const Tournament = ({ players = [] }) => {
           style={{ 
             position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
             backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
-            display: 'flex', justifyContent: 'center', alignItems: 'center' 
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: '20px', boxSizing: 'border-box'
           }}
         >
           <div 
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
             style={{ 
-              width: '90%', maxWidth: '400px', background: 'rgba(10, 12, 25, 0.95)', 
+              width: '100%', maxWidth: '420px', background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)' 
+              padding: '45px 25px 25px 25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box'
             }}
           >
             <button 
               className="close-btn" 
-              style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', cursor: 'pointer' }} 
+              style={{ 
+                position: 'absolute', top: '15px', right: '15px', 
+                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
+              }} 
               onClick={() => setShowSeedBoard(false)}
             >
               &times;
             </button>
-            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '20px', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginTop: 0, marginBottom: '20px', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
               Seed Points
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {tournamentPlayers.map((p, idx) => (
                 <div key={idx} style={{ 
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  background: 'rgba(255,255,255,0.05)', padding: '12px 20px', 
+                  background: 'rgba(255,255,255,0.05)', padding: '8px 16px', 
                   borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)'
                 }}>
-                  <span style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.1rem' }}>{p.name}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img 
+                      src={`/assets/heads/${p.name.toLowerCase()}.png`} 
+                      alt={p.name} 
+                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} 
+                      onError={(e) => { e.target.style.display = 'none'; }} 
+                    />
+                    <span style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.1rem' }}>{p.name}</span>
+                  </div>
                   <span style={{ color: '#55FF55', fontWeight: '900', fontSize: '1.2rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>0</span>
                 </div>
               ))}
@@ -125,7 +140,7 @@ const Tournament = ({ players = [] }) => {
         </div>
       )}
 
-      {/* UPDATED: About Popup Modal using explicit fixed positioning so it hovers instead of scrolling down */}
+      {/* About Popup Modal */}
       {showAbout && (
         <div 
           className="profile-overlay fullscreen-mode" 
@@ -133,31 +148,39 @@ const Tournament = ({ players = [] }) => {
           style={{ 
             position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
             backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
-            display: 'flex', justifyContent: 'center', alignItems: 'center' 
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: '20px', boxSizing: 'border-box'
           }}
         >
           <div 
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
             style={{ 
-              width: '90%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
+              width: '100%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '30px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)' 
+              padding: '45px 25px 25px 25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
+              display: 'flex', flexDirection: 'column'
             }}
           >
             <button 
               className="close-btn" 
-              style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', cursor: 'pointer' }} 
+              style={{ 
+                position: 'absolute', top: '15px', right: '15px', 
+                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
+              }} 
               onClick={() => setShowAbout(false)}
             >
               &times;
             </button>
             
-            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
+            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginTop: 0, marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
               About the Tournament
             </h2>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <strong style={{ color: '#70A6C1' }}>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)
               </div>
@@ -178,7 +201,7 @@ const Tournament = ({ players = [] }) => {
         </div>
       )}
 
-      {/* VS Match Popup Modal (Responsive) */}
+      {/* VS Match Popup Modal */}
       {selectedMatch && (
         <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setSelectedMatch(null)}>
           <div 
@@ -193,37 +216,35 @@ const Tournament = ({ players = [] }) => {
               position: 'fixed',
               top: 0,
               left: 0,
-              // Only apply the scale trick if we are on a desktop
               transform: isMobile ? 'none' : `scale(0.8)`, 
-              padding: isMobile ? '20px' : '0'
+              padding: isMobile ? '20px' : '0',
+              boxSizing: 'border-box'
             }}
           >
-            {/* The Unified VS Card */}
             <div className="unified-vs-card" style={{
               background: 'rgba(10, 12, 25, 0.95)', 
               backdropFilter: 'blur(25px)',
               WebkitBackdropFilter: 'blur(25px)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', 
               borderRadius: '32px', 
-              padding: isMobile ? '25px 15px' : '40px', 
+              padding: isMobile ? '45px 15px 25px 15px' : '40px', 
               boxShadow: '0 40px 100px rgba(0,0,0,0.8)',
               display: 'flex',
-              // Switch to vertical layout on mobile so it doesn't overflow horizontally
               flexDirection: isMobile ? 'column' : 'row', 
               alignItems: 'center',
               position: 'relative',
               maxHeight: isMobile ? '90vh' : 'auto',
               overflowY: isMobile ? 'auto' : 'visible',
-              width: isMobile ? '100%' : 'auto'
+              width: isMobile ? '100%' : 'auto',
+              boxSizing: 'border-box'
             }}>
               
               <button className="close-btn" style={{ 
-                position: 'absolute', 
-                top: '15px', 
-                right: '15px', 
-                zIndex: 10, 
-                display: 'flex',
-                cursor: 'pointer'
+                position: 'absolute', top: '15px', right: '15px', 
+                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
+                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
+                zIndex: 10
               }} onClick={() => setSelectedMatch(null)}>&times;</button>
               
               <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
