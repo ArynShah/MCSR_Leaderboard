@@ -59,8 +59,8 @@ const Tournament = ({ players = [] }) => {
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       
-      {/* Header with reduced margins and tighter gap */}
-      <div className="tournament-header" style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
+      {/* Header with negative top margin to pull it closer to the parent components */}
+      <div className="tournament-header" style={{ marginTop: '-40px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
         <button 
           className="toggle-view-btn" 
           onClick={() => setShowSeedBoard(true)} 
