@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCSR Player Comparison</title>
+    <!-- Include html2canvas for PNG Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Base Styling & Dark Blue Color Scheme */
+        :root {
+            --bg-dark: #0b1320;
+            --bg-panel: #111d31;
+            --row-dark: #0f1a2c;
+            --row-light: #16263e;
+            --text-main: #ffffff;
+            --text-blue: #4ea8de;
+            --text-label: #56cfe1;
+            --text-muted: #8ab4f8;
+        }
+
+        body {
+            background-color: #050a12;
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        /* Input Controls */
+        .controls-container {
+            background-color: var(--bg-panel);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid var(--row-light);
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .input-group { display: flex; gap: 5px; }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        input {
+            background-color: var(--bg-dark);
+            color: white;
+            border: 1px solid var(--text-blue);
+        }
+
+        .player-input { width: 160px; }
+        .seed-input { width: 70px; text-align: center; }
+
+        button {
+            background-color: var(--text-blue);
+            color: var(--bg-dark);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 20px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover { background-color: var(--text-label); }
+        .btn-export { background-color: #e63946; color: white; }
+        .btn-export:hover { background-color: #ff4d5a; }
+
+        /* General Board Wrapper */
+        .board-wrapper {
+            padding: 10px;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .board {
+            background-color: var(--bg-panel);
+            border: 4px solid var(--row-dark);
+            box-shadow: 0 0 20px rgba(78, 168, 222, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- STANDARD VIEW (15:8 Aspect Ratio) --- */
+        .standard-view {
+            aspect-ratio: 15 / 8;
+            width: 100%;
+            max-width: 900px; /* Widened to match horizontal orientation */
+        }
+        
+        .standard-view .board-header {
+            display: flex;
+            flex-direction: row; /* Horizontal alignment */
+            justify-content: space-between;
+            padding: 20px;
+            background-color: var(--bg-dark);
+            border-bottom: 2px solid var(--row-light);
+        }
+        
+        .standard-view .header-side { display: flex; align-items: center; gap: 18px; }
+        .standard-view .header-right { flex-direction: row-reverse; } /* Flips head to the right */
+        
+        .player-info { display: flex; flex-direction: column; justify-content: center; }
+        .standard-view .header-left .player-info { text-align: left; }
+        .standard-view .header-right .player-info { text-align: right; }
+        
+        .standard-view .board-header h2 { margin: 0; font-size: 32px; line-height: 1; text-transform: uppercase; }
+        .seed-text { color: var(--text-label); font-size: 15px; margin-top: 6px; text-transform: uppercase; font-weight: bold; }
+        .player-head { width: 76px; height: 76px; image-rendering: pixelated; object-fit: cover; border-radius: 4px; }
+
+        #stats-container-std {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        /* --- SPOTLIGHT VIEW (16:9 Aspect Ratio) --- */
+        .spotlight-view {
+            display: none;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            max-width: 1100px;
+        }
+        
+        .spotlight-header {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            padding: 2% 0;
+            background-color: var(--bg-dark);
+            border-bottom: 2px solid var(--row-light);
+            letter-spacing: 2px;
+            flex-shrink: 0;
+        }
+
+        .spotlight-skins {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+            background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-dark) 100%);
+            padding: 0 5%;
+            overflow: hidden;
+            border-bottom: 2px solid var(--row-light);
+        }
+
+        .player-skin {
+            height: 140%;
+            image-rendering: pixelated;
+            object-fit: contain;
+            transform: translateY(15%);
+        }
+
+        .vs-text {
+            font-size: 80px;
+            font-weight: bold;
+            color: rgba(78, 168, 222, 0.3);
+        }
+
+        .spotlight-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            flex-shrink: 0;
+            height: 35%;
+        }
+
+        .achievements-panel {
+            padding: 15px 25px;
+            background-color: var(--row-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .achievements-title {
+            border-bottom: 1px solid var(--text-blue);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .achievements-title h3 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+
+        .achievements-inputs {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            flex-grow: 1;
+            gap: 10px;
+        }
+
+        .achievement-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px dashed var(--row-light);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 14px;
+            padding: 8px 0;
+        }
+
+        .achievement-input:focus { outline: none; border-bottom: 1px solid var(--text-label); }
+        .achievements-panel.right { text-align: right; }
+        .achievements-panel.right .achievement-input { text-align: right; }
+
+        /* --- SHARED STATS GRID --- */
+        #stats-container-spot {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            text-align: center;
+            align-items: stretch;
+            font-size: 24px; /* Slightly larger text for wide layout */
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .stat-row:nth-child(odd) { background-color: var(--row-dark); }
+        .stat-row:nth-child(even) { background-color: var(--row-light); }
+        
+        .stat-value { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px; 
+        }
+
+        .stat-label {
+            color: var(--text-label);
+            font-size: 14px;
+            background-color: var(--bg-dark);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .loading { text-align: center; color: var(--text-blue); font-size: 18px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="controls-container">
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="player1Input" class="player-input" placeholder="Player 1" value="crifzer">
+                <input type="text" id="seed1Input" class="seed-input" placeholder="Seed" value="2">
+            </div>
+            <div class="input-group">
+                <input type="text" id="player2Input" class="player-input" placeholder="Player 2" value="goatener">
+                <input type="text" id="seed2Input" class="seed-input" placeholder="Seed" value="3">
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="fetchAndCompare()">LOAD DATA</button>
+            <button onclick="toggleView()">TOGGLE VIEW</button>
+            <button class="btn-export" onclick="exportToPNG()">EXPORT TO PNG</button>
+        </div>
+        <div id="loading" class="loading">Fetching data...</div>
+    </div>
+    
+    <div id="capture-area" class="board-wrapper">
+        
+        <!-- STANDARD VIEW (15:8) -->
+        <div id="standard-board" class="board standard-view">
+            <div class="board-header">
+                <div class="header-side header-left">
+                    <img id="p1-head" class="player-head" src="" alt="" onerror="this.style.display='none'">
+                    <div class="player-info">
+                        <h2 id="p1-name-std">PLAYER 1</h2>
+                        <span id="p1-seed-std" class="seed-text">SEED -</span>
+                    </div>
+                </div>
+                <div class="header-side header-right">
+                    <div class="player-info">
+                        <h2 id="p2-name-std">PLAYER 2</h2>
+                        <span id="p2-seed-std" class="seed-text">SEED -</span>
+                    </div>
+                    <img id="p2-head" class="player-head" src="" alt="" onerror="this.style.display='none'">
+                </div>
+            </div>
+            <div id="stats-container-std"></div>
+        </div>
+
+        <!-- SPOTLIGHT VIEW (16:9) -->
+        <div id="spotlight-board" class="board spotlight-view">
+            <div class="spotlight-header">PLAYER SPOTLIGHT</div>
+            <div class="spotlight-skins">
+                <img id="p1-skin" class="player-skin" src="" alt="" onerror="this.style.display='none'">
+                <div class="vs-text">VS</div>
+                <img id="p2-skin" class="player-skin" src="" alt="" onerror="this.style.display='none'">
+            </div>
+            <div class="spotlight-bottom">
+                
+                <!-- P1 Achievements (Exactly 3 Inputs) -->
+                <div class="achievements-panel">
+                    <div class="achievements-title">
+                        <h3 id="p1-name-spot">P1</h3>
+                        <span id="p1-seed-spot" class="seed-text">SEED -</span>
+                    </div>
+                    <div class="achievements-inputs">
+                        <input type="text" class="achievement-input" placeholder="E.g. Former ELO WR">
+                        <input type="text" class="achievement-input" placeholder="E.g. Back to Back Sub 7s">
+                        <input type="text" class="achievement-input" placeholder="Add achievement...">
+                    </div>
+                </div>
+                
+                <!-- Stats Center -->
+                <div id="stats-container-spot"></div>
+
+                <!-- P2 Achievements (Exactly 3 Inputs) -->
+                <div class="achievements-panel right">
+                    <div class="achievements-title">
+                        <h3 id="p2-name-spot">P2</h3>
+                        <span id="p2-seed-spot" class="seed-text">SEED -</span>
+                    </div>
+                    <div class="achievements-inputs">
+                        <input type="text" class="achievement-input" placeholder="E.g. NRI 2x Winner">
+                        <input type="text" class="achievement-input" placeholder="E.g. 36x AA WR">
+                        <input type="text" class="achievement-input" placeholder="Add achievement...">
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const DB_URL = "https://mcsr-leaderboard-default-rtdb.firebaseio.com";
+        const ASSET_PATH_FLAT = "frontend/public/assets/flat/";
+        const ASSET_PATH_SKINS = "frontend/public/assets/skins/";
+
+        // 4 Strict Stats
+        const STATS_CONFIG = [
+            { key: 'elo', label: 'ELO' },
+            { key: 'pb', label: 'BEST TIME (PB)' },
+            { key: 'average', label: 'AVERAGE TIME' },
+            { key: 'completions', label: '# OF COMPLETIONS' }
+        ];
+
+        let isSpotlight = false;
+
+        function toggleView() {
+            isSpotlight = !isSpotlight;
+            document.getElementById('standard-board').style.display = isSpotlight ? 'none' : 'flex';
+            document.getElementById('spotlight-board').style.display = isSpotlight ? 'flex' : 'none';
+        }
+
+        async function fetchPlayerData(playerName) {
+            const url = `${DB_URL}/players/${playerName}.json`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Network response was not ok");
+                return await response.json();
+            } catch (error) {
+                console.error(`Failed to fetch data for ${playerName}:`, error);
+                return null;
+            }
+        }
+
+        function formatTime(ms) {
+            if (!ms || isNaN(ms)) return ms; 
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        async function fetchAndCompare() {
+            const p1Name = document.getElementById('player1Input').value.trim().toLowerCase();
+            const p2Name = document.getElementById('player2Input').value.trim().toLowerCase();
+            const p1Seed = document.getElementById('seed1Input').value.trim();
+            const p2Seed = document.getElementById('seed2Input').value.trim();
+            const loadingMsg = document.getElementById('loading');
+            
+            if (!p1Name || !p2Name) return alert("Please enter both player names.");
+
+            document.getElementById('p1-name-std').textContent = p1Name.toUpperCase();
+            document.getElementById('p2-name-std').textContent = p2Name.toUpperCase();
+            document.getElementById('p1-name-spot').textContent = p1Name.toUpperCase();
+            document.getElementById('p2-name-spot').textContent = p2Name.toUpperCase();
+            
+            const seedText1 = p1Seed ? `SEED ${p1Seed}` : '';
+            const seedText2 = p2Seed ? `SEED ${p2Seed}` : '';
+            document.getElementById('p1-seed-std').textContent = seedText1;
+            document.getElementById('p2-seed-std').textContent = seedText2;
+            document.getElementById('p1-seed-spot').textContent = seedText1;
+            document.getElementById('p2-seed-spot').textContent = seedText2;
+            
+            const p1Head = document.getElementById('p1-head');
+            const p2Head = document.getElementById('p2-head');
+            const p1Skin = document.getElementById('p1-skin');
+            const p2Skin = document.getElementById('p2-skin');
+            
+            [p1Head, p2Head, p1Skin, p2Skin].forEach(img => img.style.display = 'block');
+            
+            p1Head.src = `${ASSET_PATH_FLAT}${p1Name}.png`;
+            p2Head.src = `${ASSET_PATH_FLAT}${p2Name}.png`;
+            p1Skin.src = `${ASSET_PATH_SKINS}${p1Name}.png`;
+            p2Skin.src = `${ASSET_PATH_SKINS}${p2Name}.png`;
+            
+            loadingMsg.style.display = 'block';
+
+            const [p1Data, p2Data] = await Promise.all([
+                fetchPlayerData(p1Name),
+                fetchPlayerData(p2Name)
+            ]);
+
+            loadingMsg.style.display = 'none';
+            renderStats(p1Data, p2Data);
+        }
+
+        function renderStats(p1Data, p2Data) {
+            const containerStd = document.getElementById('stats-container-std');
+            const containerSpot = document.getElementById('stats-container-spot');
+            containerStd.innerHTML = '';
+            containerSpot.innerHTML = '';
+
+            STATS_CONFIG.forEach(stat => {
+                let p1Value = p1Data ? p1Data[stat.key] : 'N/A';
+                let p2Value = p2Data ? p2Data[stat.key] : 'N/A';
+
+                if (stat.key === 'average' || stat.key === 'pb') {
+                    p1Value = typeof p1Value === 'number' ? formatTime(p1Value) : p1Value;
+                    p2Value = typeof p2Value === 'number' ? formatTime(p2Value) : p2Value;
+                }
+
+                const v1 = p1Value !== undefined && p1Value !== null ? p1Value : '-';
+                const v2 = p2Value !== undefined && p2Value !== null ? p2Value : '-';
+
+                const rowHTML = `
+                    <div class="stat-value">${v1}</div>
+                    <div class="stat-label">${stat.label}</div>
+                    <div class="stat-value">${v2}</div>
+                `;
+
+                const rowStd = document.createElement('div');
+                rowStd.className = 'stat-row';
+                rowStd.innerHTML = rowHTML;
+                containerStd.appendChild(rowStd);
+
+                const rowSpot = document.createElement('div');
+                rowSpot.className = 'stat-row';
+                rowSpot.innerHTML = rowHTML;
+                containerSpot.appendChild(rowSpot);
+            });
+        }
+
+        function exportToPNG() {
+            const inputs = document.querySelectorAll('.achievement-input');
+            inputs.forEach(input => {
+                input.style.border = 'none';
+                input.style.background = 'transparent';
+                input.style.color = 'white';
+            });
+
+            const captureArea = document.getElementById('capture-area');
+            
+            html2canvas(captureArea, {
+                backgroundColor: "#0b1320", 
+                scale: 2, 
+                useCORS: true 
+            }).then(canvas => {
+                inputs.forEach(input => {
+                    input.style.borderBottom = '1px dashed #16263e';
+                });
+
+                const link = document.createElement('a');
+                link.download = 'mcsr_comparison.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert("Failed to export. Ensure you are running this on a local web server.");
+                console.error(err);
+                
+                inputs.forEach(input => {
+                    input.style.borderBottom = '1px dashed #16263e';
+                });
+            });
+        }
+
+        renderStats(null, null);
+    </script>
+</body>
+</html>
