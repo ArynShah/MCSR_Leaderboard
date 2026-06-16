@@ -39,6 +39,7 @@ const getRankStyles = (elo) => {
 
 const Tournament = ({ players = [] }) => {
   const [showAbout, setShowAbout] = useState(false);
+  const [showSeedBoard, setShowSeedBoard] = useState(false); // New state for Seed Points
   const [selectedMatch, setSelectedMatch] = useState(null);
   
   // Mobile detection specifically for layout switching
@@ -51,50 +52,126 @@ const Tournament = ({ players = [] }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Extract all tournament players dynamically from round 1
+  const tournamentPlayers = Object.values(TOURNAMENT_DB.round1)
+    .flatMap(match => [match.p1, match.p2])
+    .filter(p => p && p.name !== 'TBD');
+
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
-      <div className="tournament-header" style={{ marginBottom: '2rem' }}>
+      {/* Header with both buttons */}
+      <div className="tournament-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center', gap: '15px' }}>
+        <button 
+          className="toggle-view-btn" 
+          onClick={() => setShowSeedBoard(true)} 
+          title="Seed Points"
+          style={{ padding: '8px 16px', fontSize: '1.1rem', borderRadius: '8px', cursor: 'pointer' }}
+        >
+          🏆 Seed Points
+        </button>
         <button 
           className="toggle-view-btn" 
           onClick={() => setShowAbout(true)} 
           title="About the Tournament"
-          style={{ padding: '8px 16px', fontSize: '1.2rem', borderRadius: '50%' }}
+          style={{ padding: '8px 16px', fontSize: '1.2rem', borderRadius: '50%', cursor: 'pointer' }}
         >
           ?
         </button>
       </div>
 
-      {/* UPDATED: About Popup Modal using existing Profile Card CSS classes */}
-      {showAbout && (
-        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setShowAbout(false)}>
+      {/* NEW: Seed Points Leaderboard Modal */}
+      {showSeedBoard && (
+        <div 
+          className="profile-overlay" 
+          onClick={() => setShowSeedBoard(false)}
+          style={{ 
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+            backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
+            display: 'flex', justifyContent: 'center', alignItems: 'center' 
+          }}
+        >
           <div 
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
-            style={{ width: '100%', maxWidth: '600px', display: 'flex', justifyContent: 'center', padding: '20px' }}
+            style={{ 
+              width: '90%', maxWidth: '400px', background: 'rgba(10, 12, 25, 0.95)', 
+              border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
+              padding: '25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)' 
+            }}
           >
-            <div className="profile-panel" style={{ width: '100%', position: 'relative' }}>
-              <button className="close-btn" style={{ display: 'flex', top: '15px', right: '15px' }} onClick={() => setShowAbout(false)}>&times;</button>
-              
-              <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
-                About the Tournament
-              </h2>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#70A6C1' }}>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)
+            <button 
+              className="close-btn" 
+              style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', cursor: 'pointer' }} 
+              onClick={() => setShowSeedBoard(false)}
+            >
+              &times;
+            </button>
+            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '20px', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+              Seed Points
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {tournamentPlayers.map((p, idx) => (
+                <div key={idx} style={{ 
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  background: 'rgba(255,255,255,0.05)', padding: '12px 20px', 
+                  borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)'
+                }}>
+                  <span style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.1rem' }}>{p.name}</span>
+                  <span style={{ color: '#55FF55', fontWeight: '900', fontSize: '1.2rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>0</span>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#70A6C1' }}>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#70A6C1' }}>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1*8 matches to determine seeding.
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <strong style={{ color: '#70A6C1' }}>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks
-                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* UPDATED: About Popup Modal using explicit fixed positioning so it hovers instead of scrolling down */}
+      {showAbout && (
+        <div 
+          className="profile-overlay fullscreen-mode" 
+          onClick={() => setShowAbout(false)}
+          style={{ 
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+            backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
+            display: 'flex', justifyContent: 'center', alignItems: 'center' 
+          }}
+        >
+          <div 
+            className="profile-container" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ 
+              width: '90%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
+              border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
+              padding: '30px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)' 
+            }}
+          >
+            <button 
+              className="close-btn" 
+              style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', cursor: 'pointer' }} 
+              onClick={() => setShowAbout(false)}
+            >
+              &times;
+            </button>
+            
+            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
+              About the Tournament
+            </h2>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <strong style={{ color: '#70A6C1' }}>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <strong style={{ color: '#70A6C1' }}>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <strong style={{ color: '#70A6C1' }}>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1v8 matches to determine seeding.
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <strong style={{ color: '#70A6C1' }}>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks
               </div>
             </div>
           </div>
@@ -145,7 +222,8 @@ const Tournament = ({ players = [] }) => {
                 top: '15px', 
                 right: '15px', 
                 zIndex: 10, 
-                display: 'flex' 
+                display: 'flex',
+                cursor: 'pointer'
               }} onClick={() => setSelectedMatch(null)}>&times;</button>
               
               <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
