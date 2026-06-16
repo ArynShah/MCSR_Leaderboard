@@ -188,7 +188,7 @@ const Tournament = ({ players = [] }) => {
                 <strong style={{ color: '#70A6C1' }}>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Rules:</strong> No Buried Treasure. All other seeds legal. Calculator enabled.
+                <strong style={{ color: '#70A6C1' }}>Rules:</strong> Only Village Seeds. Calculator enabled.
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1v8 matches to determine seeding.
