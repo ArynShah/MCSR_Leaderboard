@@ -124,7 +124,7 @@ export default function App() {
       { color: '#FFB347', class: 'tier-orange', glow: 'rgba(255, 179, 71, 0.5)', border: 'rgba(255, 179, 71, 0.8)' }, 
       { color: '#FF7F50', class: 'tier-coral', glow: 'rgba(255, 127, 80, 0.6)', border: '#FF7F50' }, 
       { color: '#FF3300', class: 'tier-legend', glow: 'rgba(255, 51, 0, 0.7)', border: '#FF3300' }, 
-      { color: '#FF0000', class: 'tier-god', glow: 'rgba(255, 0, 0, 0.9)', border: '#FF0000' } 
+      { color: '#FF0000', class: 'tier-god', glow: 'rgba(255, 0, 0, 1)', border: '#FF0000' } 
     ];
     return styles[tier];
   };
