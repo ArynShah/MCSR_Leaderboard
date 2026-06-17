@@ -480,37 +480,45 @@
         }
 
         function exportToPNG() {
-            const inputs = document.querySelectorAll('.achievement-input');
-            inputs.forEach(input => {
-                input.style.border = 'none';
-                input.style.background = 'transparent';
-                input.style.color = 'white';
-            });
+    // Hide borders for a clean export
+    const inputs = document.querySelectorAll('.achievement-input');
+    inputs.forEach(input => {
+        input.style.border = 'none';
+        input.style.background = 'transparent';
+        input.style.color = 'white';
+    });
 
-            const captureArea = document.getElementById('capture-area');
-            
-            html2canvas(captureArea, {
-                backgroundColor: "#0b1320", 
-                scale: 2, 
-                useCORS: true 
-            }).then(canvas => {
-                inputs.forEach(input => {
-                    input.style.borderBottom = '1px dashed #16263e';
-                });
+    // FIX: Target the active view directly instead of the padded wrapper
+    const activeBoard = isSpotlight 
+        ? document.getElementById('spotlight-board') 
+        : document.getElementById('standard-board');
+    
+    html2canvas(activeBoard, {
+        backgroundColor: "#0b1320", 
+        scale: 2, 
+        useCORS: true 
+    }).then(canvas => {
+        // Restore borders
+        inputs.forEach(input => {
+            input.style.borderBottom = '1px dashed #16263e';
+        });
 
-                const link = document.createElement('a');
-                link.download = 'mcsr_comparison.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(err => {
-                alert("Failed to export. Ensure you are running this on a local web server.");
-                console.error(err);
-                
-                inputs.forEach(input => {
-                    input.style.borderBottom = '1px dashed #16263e';
-                });
-            });
-        }
+        const link = document.createElement('a');
+        // Optional: Dynamically name the file based on the aspect ratio
+        const viewName = isSpotlight ? 'spotlight_16x9' : 'standard_15x8';
+        link.download = `mcsr_comparison_${viewName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }).catch(err => {
+        alert("Failed to export. Ensure you are running this on a local web server.");
+        console.error(err);
+        
+        // Restore borders on error
+        inputs.forEach(input => {
+            input.style.borderBottom = '1px dashed #16263e';
+        });
+    });
+}
 
         renderStats(null, null);
     </script>
