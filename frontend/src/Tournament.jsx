@@ -102,22 +102,23 @@ const Tournament = ({ players = [] }) => {
               display: 'flex', flexDirection: 'column'
             }}
           >
-            <div style={{ position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', padding: '20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
-                Seed Points
-              </h2>
-              <button 
-                className="close-btn" 
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
-                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
-                }} 
-                onClick={() => setShowSeedBoard(false)}
-              >
-                &times;
-              </button>
-            </div>
+            <div style={{ position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', padding: '20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', zIndex: 10 }}>
+  <button 
+    className="close-btn" 
+    style={{ 
+      position: 'absolute', top: '15px', right: '15px', 
+      background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+      width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
+      alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
+    }} 
+    onClick={() => setShowSeedBoard(false)}
+  >
+    &times;
+  </button>
+  <h2 style={{ color: '#70A6C1', margin: 0, textAlign: 'center', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+    Seed Points
+  </h2>
+</div>
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
                 <div style={{ textAlign: 'center' }}>Rank</div>
