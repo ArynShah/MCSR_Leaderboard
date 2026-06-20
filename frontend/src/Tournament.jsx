@@ -97,16 +97,17 @@ const Tournament = ({ players = [] }) => {
             style={{ 
               width: '100%', maxWidth: '420px', background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '45px 25px 25px 25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box'
+              padding: '20px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
+              display: 'flex', flexDirection: 'column', gap: '12px'
             }}
           >
             <button 
               className="close-btn" 
               style={{ 
-                position: 'absolute', top: '15px', right: '15px', 
+                position: 'absolute', top: '10px', right: '10px', 
                 background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
+                width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
                 alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
               }} 
               onClick={() => setShowSeedBoard(false)}
@@ -119,20 +120,20 @@ const Tournament = ({ players = [] }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {tournamentPlayers.map((p, idx) => (
                 <div key={idx} style={{ 
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  background: 'rgba(255,255,255,0.05)', padding: '8px 16px', 
-                  borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)'
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                  background: 'rgba(255,255,255,0.03)', padding: '12px', 
+                  borderRadius: '10px', border: '1px solid rgba(255,255,255,0.04)'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <img 
-                      src={`/assets/heads/${p.name.toLowerCase()}.png`} 
-                      alt={p.name} 
-                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} 
-                      onError={(e) => { e.target.style.display = 'none'; }} 
-                    />
-                    <span style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.1rem' }}>{p.name}</span>
+                  <img 
+                    src={`/assets/heads/${p.name.toLowerCase()}.png`} 
+                    alt={p.name} 
+                    style={{ width: '48px', height: '48px', borderRadius: '6px', objectFit: 'cover', marginBottom: '8px' }} 
+                    onError={(e) => { e.target.style.display = 'none'; }} 
+                  />
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.05rem' }}>{p.name}</div>
+                    <div style={{ color: '#55FF55', fontWeight: '900', fontSize: '1.1rem', marginTop: '6px', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>0</div>
                   </div>
-                  <span style={{ color: '#55FF55', fontWeight: '900', fontSize: '1.2rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>0</span>
                 </div>
               ))}
             </div>
@@ -193,12 +194,9 @@ const Tournament = ({ players = [] }) => {
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1v8 matches to determine seeding.
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Pick/Ban:</strong> Round 1: Higher seed bans 1 seed type, lower seed picks. Round 2: Loser picks any. Round 3: Winner bans 1 type, loser picks
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* VS Match Popup Modal */}
