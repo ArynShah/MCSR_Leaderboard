@@ -95,44 +95,56 @@ const Tournament = ({ players = [] }) => {
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
             style={{ 
-              width: '100%', maxWidth: '420px', background: 'rgba(10, 12, 25, 0.95)', 
+              width: '100%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '20px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+              padding: '0', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
               maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
-              display: 'flex', flexDirection: 'column', gap: '12px'
+              display: 'flex', flexDirection: 'column'
             }}
           >
-            <button 
-              className="close-btn" 
-              style={{ 
-                position: 'absolute', top: '10px', right: '10px', 
-                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
-                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
-              }} 
-              onClick={() => setShowSeedBoard(false)}
-            >
-              &times;
-            </button>
-            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginTop: 0, marginBottom: '20px', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
-              Seed Points
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', padding: '20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+                Seed Points
+              </h2>
+              <button 
+                className="close-btn" 
+                style={{ 
+                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
+                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
+                }} 
+                onClick={() => setShowSeedBoard(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
+                <div style={{ textAlign: 'center' }}>Rank</div>
+                <div>Player</div>
+                <div style={{ textAlign: 'right' }}>Points</div>
+              </div>
               {tournamentPlayers.map((p, idx) => (
                 <div key={idx} style={{ 
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-                  background: 'rgba(255,255,255,0.03)', padding: '12px', 
-                  borderRadius: '10px', border: '1px solid rgba(255,255,255,0.04)'
+                  display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px',
+                  background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)', 
+                  padding: '12px', borderRadius: '6px', alignItems: 'center',
+                  borderBottom: idx < tournamentPlayers.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none'
                 }}>
-                  <img 
-                    src={`/assets/heads/${p.name.toLowerCase()}.png`} 
-                    alt={p.name} 
-                    style={{ width: '48px', height: '48px', borderRadius: '6px', objectFit: 'cover', marginBottom: '8px' }} 
-                    onError={(e) => { e.target.style.display = 'none'; }} 
-                  />
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ color: '#E0E0E0', fontWeight: 'bold', fontSize: '1.05rem' }}>{p.name}</div>
-                    <div style={{ color: '#55FF55', fontWeight: '900', fontSize: '1.1rem', marginTop: '6px', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>0</div>
+                  <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem' }}>
+                    #{idx + 1}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img 
+                      src={`/assets/heads/${p.name.toLowerCase()}.png`} 
+                      alt={p.name} 
+                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} 
+                      onError={(e) => { e.target.style.display = 'none'; }} 
+                    />
+                    <div style={{ color: '#E0E0E0', fontWeight: '500', fontSize: '1rem' }}>{p.name}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', color: '#55FF55', fontWeight: 'bold', fontSize: '1.1rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>
+                    0
                   </div>
                 </div>
               ))}
