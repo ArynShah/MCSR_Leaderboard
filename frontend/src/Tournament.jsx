@@ -3,10 +3,10 @@ import './App.css';
 
 const TOURNAMENT_DB = {
   round1: {
-    match1: { p1: { name: "crouchingpuppy", seed: 1, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "pratham001", seed: 8, img: "/assets/heads/pratham001.png" } },
-    match2: { p1: { name: "a1sauces", seed: 4, img: "/assets/heads/a1sauces.png" }, p2: { name: "hamzxy", seed: 5, img: "/assets/heads/hamzxy.png" } },
-    match3: { p1: { name: "neatfoot", seed: 3, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, img: "/assets/heads/iliealot.png" } },
-    match4: { p1: { name: "aneeboamiibo", seed: 2, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, img: "/assets/heads/bozogoofylame.png" } },
+    match1: { p1: { name: "crouchingpuppy", seed: 1, points: 0, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "pratham001", seed: 8, points: 0, img: "/assets/heads/pratham001.png" } },
+    match2: { p1: { name: "a1sauces", seed: 4, points: 0, img: "/assets/heads/a1sauces.png" }, p2: { name: "hamzxy", seed: 5, points: 0, img: "/assets/heads/hamzxy.png" } },
+    match3: { p1: { name: "neatfoot", seed: 3, points: 0, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, points: 0, img: "/assets/heads/iliealot.png" } },
+    match4: { p1: { name: "aneeboamiibo", seed: 2, points: 0, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, points: 500, img: "/assets/heads/bozogoofylame.png" } },
   },
   round2: {
     match1: { p1: null, p2: null }, 
@@ -16,7 +16,6 @@ const TOURNAMENT_DB = {
     match1: { p1: null, p2: null },
   }
 };
-
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
 
 // Helper functions for the Player Cards
@@ -79,7 +78,7 @@ const Tournament = ({ players = [] }) => {
         </button>
       </div>
 
-      {/* Seed Points Leaderboard Modal */}
+{/* Seed Points Leaderboard Modal */}
       {showSeedBoard && (
         <div 
           className="profile-overlay" 
@@ -88,64 +87,78 @@ const Tournament = ({ players = [] }) => {
             position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
             backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
             display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '20px', boxSizing: 'border-box'
+            padding: '15px', boxSizing: 'border-box' // Slightly tighter padding for mobile
           }}
         >
           <div 
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
             style={{ 
-              width: '100%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
+              width: '100%', maxWidth: '500px', // Tighter max-width for a cleaner list view
+              background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
               padding: '0', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
               maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
               display: 'flex', flexDirection: 'column'
             }}
           >
-            <div style={{ position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', padding: '20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', zIndex: 10 }}>
-  <button 
-    className="close-btn" 
-    style={{ 
-      position: 'absolute', top: '15px', right: '15px', 
-      background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-      width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
-      alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
-    }} 
-    onClick={() => setShowSeedBoard(false)}
-  >
-    &times;
-  </button>
-  <h2 style={{ color: '#70A6C1', margin: 0, textAlign: 'center', fontSize: '1.8rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
-    Seed Points
-  </h2>
-</div>
+            {/* FIXED HEADER: Flexbox prevents overlapping */}
+            <div style={{ 
+              position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', 
+              padding: '15px 20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
+              zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' 
+            }}>
+              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.6rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+                Seed Points
+              </h2>
+              <button 
+                className="close-btn" 
+                style={{ 
+                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
+                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
+                  flexShrink: 0
+                }} 
+                onClick={() => setShowSeedBoard(false)}
+              >
+                &times;
+              </button>
+            </div>
+            
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
                 <div style={{ textAlign: 'center' }}>Rank</div>
                 <div>Player</div>
                 <div style={{ textAlign: 'right' }}>Points</div>
               </div>
-              {tournamentPlayers.map((p, idx) => (
+              
+              {/* FIXED LOOP: Sorts by points and pulls dynamically from DB */}
+              {tournamentPlayers
+                .sort((a, b) => (b.points || 0) - (a.points || 0))
+                .map((p, idx) => (
                 <div key={idx} style={{ 
                   display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px',
                   background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)', 
                   padding: '12px', borderRadius: '6px', alignItems: 'center',
                   borderBottom: idx < tournamentPlayers.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none'
                 }}>
-                  <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem' }}>
+                  <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem', width: '30px' }}>
                     #{idx + 1}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {/* Text truncation added for mobile safety */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
                     <img 
                       src={`/assets/heads/${p.name.toLowerCase()}.png`} 
                       alt={p.name} 
-                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} 
+                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover', flexShrink: 0 }} 
                       onError={(e) => { e.target.style.display = 'none'; }} 
                     />
-                    <div style={{ color: '#E0E0E0', fontWeight: '500', fontSize: '1rem' }}>{p.name}</div>
+                    <div style={{ color: '#E0E0E0', fontWeight: '500', fontSize: '1rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                      {p.name}
+                    </div>
                   </div>
                   <div style={{ textAlign: 'right', color: '#55FF55', fontWeight: 'bold', fontSize: '1.1rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>
-                    0
+                    {p.points || 0}
                   </div>
                 </div>
               ))}
@@ -153,7 +166,6 @@ const Tournament = ({ players = [] }) => {
           </div>
         </div>
       )}
-
       {/* About Popup Modal */}
       {showAbout && (
         <div 
