@@ -104,21 +104,27 @@ const Tournament = ({ players = [] }) => {
           >
             {/* FIXED HEADER: Flexbox prevents overlapping */}
             <div style={{ 
-              position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', 
-              padding: '15px 20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
-              zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' 
+              position: 'sticky', 
+              top: 0, 
+              background: 'rgba(10, 12, 25, 0.98)', 
+              padding: '15px 20px', 
+              borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
+              zIndex: 10, 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              alignItems: 'center' 
             }}>
-              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.6rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
+              <h2 style={{ 
+                color: '#70A6C1', 
+                margin: 0, 
+                fontSize: '1.8rem', 
+                textShadow: '0 0 15px rgba(112,166,193,0.4)',
+                textAlign: 'left'
+              }}>
                 Seed Points
               </h2>
               <button 
                 className="close-btn" 
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
-                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
-                  flexShrink: 0
-                }} 
                 onClick={() => setShowSeedBoard(false)}
               >
                 &times;

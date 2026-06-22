@@ -277,10 +277,20 @@ input:checked + .slider:before { transform: translateX(20px); }
 .comment-inputs input:focus, .comment-inputs textarea:focus { border-color: #70A6C1; }
 
 .close-btn {
-  position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
-  border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  color: #70A6C1; font-size: 1.5rem; display: flex; justify-content: center; align-items: center;
-  cursor: pointer; transition: all 0.3s ease; z-index: 10;
+  /* Removed position: absolute, top, and right */
+  width: 40px; height: 40px;
+  border-radius: 50%; 
+  background: rgba(255,255,255,0.05); 
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #70A6C1; 
+  font-size: 1.5rem; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  z-index: 10;
+  flex-shrink: 0; /* Prevents the button from morphing into an oval on tiny screens */
 }
 
 .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; }
