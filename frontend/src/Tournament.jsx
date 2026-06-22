@@ -87,58 +87,54 @@ const Tournament = ({ players = [] }) => {
             position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
             backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
             display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '15px', boxSizing: 'border-box' // Slightly tighter padding for mobile
+            padding: '15px', boxSizing: 'border-box'
           }}
         >
           <div 
             className="profile-container" 
             onClick={(e) => e.stopPropagation()}
             style={{ 
-              width: '100%', maxWidth: '500px', // Tighter max-width for a cleaner list view
+              width: '100%', maxWidth: '500px', 
               background: 'rgba(10, 12, 25, 0.95)', 
               border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
               padding: '0', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
               maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
-              display: 'flex', flexDirection: 'column'
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'stretch' /* <--- THE CRITICAL FIX: Forces children to span 100% width */
             }}
           >
-            {/* FIXED HEADER: Flexbox prevents overlapping */}
+            {/* Header */}
             <div style={{ 
-              position: 'sticky', 
-              top: 0, 
-              background: 'rgba(10, 12, 25, 0.98)', 
-              padding: '15px 20px', 
-              borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
-              zIndex: 10, 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              alignItems: 'center' 
+              position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', 
+              padding: '15px 20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
+              zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              width: '100%', boxSizing: 'border-box' /* Safety check */
             }}>
-              <h2 style={{ 
-                color: '#70A6C1', 
-                margin: 0, 
-                fontSize: '1.8rem', 
-                textShadow: '0 0 15px rgba(112,166,193,0.4)',
-                textAlign: 'left'
-              }}>
+              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.6rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
                 Seed Points
               </h2>
               <button 
                 className="close-btn" 
+                style={{ 
+                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
+                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
+                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
+                  flexShrink: 0
+                }} 
                 onClick={() => setShowSeedBoard(false)}
               >
                 &times;
               </button>
             </div>
             
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {/* List Content */}
+            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0', width: '100%', boxSizing: 'border-box' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
                 <div style={{ textAlign: 'center' }}>Rank</div>
                 <div>Player</div>
                 <div style={{ textAlign: 'right' }}>Points</div>
               </div>
               
-              {/* FIXED LOOP: Sorts by points and pulls dynamically from DB */}
               {tournamentPlayers
                 .sort((a, b) => (b.points || 0) - (a.points || 0))
                 .map((p, idx) => (
@@ -151,7 +147,6 @@ const Tournament = ({ players = [] }) => {
                   <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem', width: '30px' }}>
                     #{idx + 1}
                   </div>
-                  {/* Text truncation added for mobile safety */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
                     <img 
                       src={`/assets/heads/${p.name.toLowerCase()}.png`} 
@@ -172,6 +167,8 @@ const Tournament = ({ players = [] }) => {
           </div>
         </div>
       )}
+
+      
       {/* About Popup Modal */}
       {showAbout && (
         <div 
