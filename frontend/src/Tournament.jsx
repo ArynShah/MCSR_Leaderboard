@@ -6,7 +6,7 @@ const TOURNAMENT_DB = {
     match1: { p1: { name: "crouchingpuppy", seed: 1, points: 0, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "pratham001", seed: 8, points: 0, img: "/assets/heads/pratham001.png" } },
     match2: { p1: { name: "a1sauces", seed: 4, points: 0, img: "/assets/heads/a1sauces.png" }, p2: { name: "hamzxy", seed: 5, points: 0, img: "/assets/heads/hamzxy.png" } },
     match3: { p1: { name: "neatfoot", seed: 3, points: 0, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, points: 0, img: "/assets/heads/iliealot.png" } },
-    match4: { p1: { name: "aneeboamiibo", seed: 2, points: 0, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, points: 500, img: "/assets/heads/bozogoofylame.png" } },
+    match4: { p1: { name: "aneeboamiibo", seed: 2, points: 0, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, points: 0, img: "/assets/heads/bozogoofylame.png" } },
   },
   round2: {
     match1: { p1: null, p2: null }, 
@@ -168,7 +168,7 @@ const Tournament = ({ players = [] }) => {
         </div>
       )}
 
-      
+
       {/* About Popup Modal */}
       {showAbout && (
         <div 
