@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const TOURNAMENT_DB = {
-  round1: {
-    match1: { p1: { name: "crouchingpuppy", seed: 1, points: 0, img: "/assets/heads/crouchingpuppy.png" }, p2: { name: "pratham001", seed: 8, points: 0, img: "/assets/heads/pratham001.png" } },
-    match2: { p1: { name: "a1sauces", seed: 4, points: 0, img: "/assets/heads/a1sauces.png" }, p2: { name: "hamzxy", seed: 5, points: 0, img: "/assets/heads/hamzxy.png" } },
-    match3: { p1: { name: "neatfoot", seed: 3, points: 0, img: "/assets/heads/neatfoot.png" }, p2: { name: "iliealot", seed: 6, points: 1, img: "/assets/heads/iliealot.png" } },
-    match4: { p1: { name: "aneeboamiibo", seed: 2, points: 0, img: "/assets/heads/aneeboamiibo.png" }, p2: { name: "bozogoofylame", seed: 7, points: 1, img: "/assets/heads/bozogoofylame.png" } },
-  },
-  round2: {
-    match1: { p1: null, p2: null }, 
-    match2: { p1: null, p2: null },
-  },
-  round3: {
-    match1: { p1: null, p2: null },
-  }
-};
+// 1. Flat Database of all players
+const PLAYERS_DB = [
+  { name: "crouchingpuppy", points: 0, img: "/assets/heads/crouchingpuppy.png" },
+  { name: "pratham001", points: 0, img: "/assets/heads/pratham001.png" },
+  { name: "a1sauces", points: 0, img: "/assets/heads/a1sauces.png" },
+  { name: "hamzxy", points: 0, img: "/assets/heads/hamzxy.png" },
+  { name: "neatfoot", points: 0, img: "/assets/heads/neatfoot.png" },
+  { name: "iliealot", points: 3, img: "/assets/heads/iliealot.png" },
+  { name: "aneeboamiibo", points: 0, img: "/assets/heads/aneeboamiibo.png" },
+  { name: "bozogoofylame", points: 1, img: "/assets/heads/bozogoofylame.png" }
+];
+
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
+
+// Empty structures for future rounds
+const FUTURE_ROUNDS = {
+  round2: { match1: { p1: null, p2: null }, match2: { p1: null, p2: null } },
+  round3: { match1: { p1: null, p2: null } }
+};
 
 // Helper functions for the Player Cards
 const formatTime = (ms) => {
@@ -50,15 +53,34 @@ const Tournament = ({ players = [] }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Extract all tournament players dynamically from round 1
-  const tournamentPlayers = Object.values(TOURNAMENT_DB.round1)
-    .flatMap(match => [match.p1, match.p2])
-    .filter(p => p && p.name !== 'TBD');
+  // 2. Sort players by points (desc) then name (asc), and assign 1-8 seeds dynamically
+  const sortedPlayers = [...PLAYERS_DB]
+    .sort((a, b) => {
+      if ((b.points || 0) !== (a.points || 0)) {
+        return (b.points || 0) - (a.points || 0);
+      }
+      return a.name.localeCompare(b.name);
+    })
+    .map((player, index) => ({
+      ...player,
+      seed: index + 1
+    }));
+
+  // 3. Bracket Matchup Generator
+  // Standard 8-player bracket seeding: 1v8, 4v5, 3v6, 2v7
+  const getPlayerBySeed = (seed) => sortedPlayers.find(p => p.seed === seed) || TBD_PLAYER;
+
+  const generatedRound1 = {
+    match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(8) },
+    match2: { p1: getPlayerBySeed(4), p2: getPlayerBySeed(5) },
+    match3: { p1: getPlayerBySeed(3), p2: getPlayerBySeed(6) },
+    match4: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(7) },
+  };
 
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       
-      {/* Header with negative top margin to pull it closer to the parent components */}
+      {/* Header */}
       <div className="tournament-header" style={{ marginTop: '-55px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
         <button 
           className="toggle-view-btn" 
@@ -78,7 +100,7 @@ const Tournament = ({ players = [] }) => {
         </button>
       </div>
 
-{/* Seed Points Leaderboard Modal */}
+      {/* Seed Points Leaderboard Modal */}
       {showSeedBoard && (
         <div 
           className="profile-overlay" 
@@ -100,7 +122,7 @@ const Tournament = ({ players = [] }) => {
               padding: '0', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
               maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
               display: 'flex', flexDirection: 'column',
-              alignItems: 'stretch' /* <--- THE CRITICAL FIX: Forces children to span 100% width */
+              alignItems: 'stretch'
             }}
           >
             {/* Header */}
@@ -108,7 +130,7 @@ const Tournament = ({ players = [] }) => {
               position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', 
               padding: '15px 20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
               zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              width: '100%', boxSizing: 'border-box' /* Safety check */
+              width: '100%', boxSizing: 'border-box'
             }}>
               <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.6rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
                 Seed Points
@@ -130,22 +152,21 @@ const Tournament = ({ players = [] }) => {
             {/* List Content */}
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0', width: '100%', boxSizing: 'border-box' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
-                <div style={{ textAlign: 'center' }}>Rank</div>
+                <div style={{ textAlign: 'center' }}>Seed</div>
                 <div>Player</div>
                 <div style={{ textAlign: 'right' }}>Points</div>
               </div>
               
-              {tournamentPlayers
-                .sort((a, b) => (b.points || 0) - (a.points || 0))
-                .map((p, idx) => (
+              {/* Uses the dynamically pre-sorted array */}
+              {sortedPlayers.map((p, idx) => (
                 <div key={idx} style={{ 
                   display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px',
                   background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)', 
                   padding: '12px', borderRadius: '6px', alignItems: 'center',
-                  borderBottom: idx < tournamentPlayers.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none'
+                  borderBottom: idx < sortedPlayers.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none'
                 }}>
                   <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem', width: '30px' }}>
-                    #{idx + 1}
+                    #{p.seed}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
                     <img 
@@ -167,7 +188,6 @@ const Tournament = ({ players = [] }) => {
           </div>
         </div>
       )}
-
 
       {/* About Popup Modal */}
       {showAbout && (
@@ -220,11 +240,11 @@ const Tournament = ({ players = [] }) => {
                 <strong style={{ color: '#70A6C1' }}>Rules:</strong> Only Village Seeds. Calculator enabled.
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Current seeding is RANDOM. There will be FFA 1v8 matches to determine seeding.
-              </div>
+                <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Determined dynamically via points from FFA 1v8 matches.
               </div>
             </div>
           </div>
+        </div>
       )}
 
       {/* VS Match Popup Modal */}
@@ -299,12 +319,13 @@ const Tournament = ({ players = [] }) => {
             <h3>Quarter-Finals</h3>
             <div className="bracket-matches">
               <div className="match-pair">
-                <Match data={TOURNAMENT_DB.round1.match1} onMatchClick={setSelectedMatch} />
-                <Match data={TOURNAMENT_DB.round1.match2} onMatchClick={setSelectedMatch} />
+                {/* Dynamically generated Round 1 pairings */}
+                <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} />
+                <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} />
               </div>
               <div className="match-pair">
-                <Match data={TOURNAMENT_DB.round1.match3} onMatchClick={setSelectedMatch} />
-                <Match data={TOURNAMENT_DB.round1.match4} onMatchClick={setSelectedMatch} />
+                <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} />
+                <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} />
               </div>
             </div>
           </div>
@@ -313,8 +334,8 @@ const Tournament = ({ players = [] }) => {
             <h3>Semi-Finals</h3>
             <div className="bracket-matches">
               <div className="match-pair">
-                <Match data={TOURNAMENT_DB.round2.match1} connectLeft onMatchClick={setSelectedMatch} />
-                <Match data={TOURNAMENT_DB.round2.match2} connectLeft onMatchClick={setSelectedMatch} />
+                <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} />
+                <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} />
               </div>
             </div>
           </div>
@@ -323,7 +344,7 @@ const Tournament = ({ players = [] }) => {
             <h3>Grand Finals</h3>
             <div className="bracket-matches">
               <div className="match-pair single-match">
-                <Match data={TOURNAMENT_DB.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} />
+                <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} />
               </div>
             </div>
           </div>
