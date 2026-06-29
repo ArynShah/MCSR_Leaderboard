@@ -10,7 +10,7 @@ const PLAYERS_DB = [
   { name: "neatfoot", points: 0, img: "/assets/heads/neatfoot.png" },
   { name: "iliealot", points: 3, img: "/assets/heads/iliealot.png" },
   { name: "aneeboamiibo", points: 0, img: "/assets/heads/aneeboamiibo.png" },
-  { name: "bozogoofylame", points: 3, img: "/assets/heads/bozogoofylame.png" }
+  { name: "bozogoofylame", points: 5, img: "/assets/heads/bozogoofylame.png" }
 ];
 
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
