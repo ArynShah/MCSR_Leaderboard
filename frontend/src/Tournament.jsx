@@ -3,7 +3,7 @@ import './App.css';
 
 // 1. Flat Database of all players
 const PLAYERS_DB = [
-  { name: "crouchingpuppy", points: 0, img: "/assets/heads/crouchingpuppy.png" },
+  { name: "crouchingpuppy", points: 2, img: "/assets/heads/crouchingpuppy.png" },
   { name: "pratham001", points: 0, img: "/assets/heads/pratham001.png" },
   { name: "a1sauces", points: 0, img: "/assets/heads/a1sauces.png" },
   { name: "hamzxy", points: 0, img: "/assets/heads/hamzxy.png" },
