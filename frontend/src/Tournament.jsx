@@ -8,7 +8,7 @@ const PLAYERS_DB = [
   { name: "a1sauces", points: 0, img: "/assets/heads/a1sauces.png" },
   { name: "hamzxy", points: 0, img: "/assets/heads/hamzxy.png" },
   { name: "neatfoot", points: 0, img: "/assets/heads/neatfoot.png" },
-  { name: "iliealot", points: 7, img: "/assets/heads/iliealot.png" },
+  { name: "iliealot", points: 11, img: "/assets/heads/iliealot.png" },
   { name: "aneeboamiibo", points: 0, img: "/assets/heads/aneeboamiibo.png" },
   { name: "bozogoofylame", points: 5, img: "/assets/heads/bozogoofylame.png" }
 ];
