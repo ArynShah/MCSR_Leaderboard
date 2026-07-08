@@ -3,14 +3,14 @@ import './App.css';
 
 // 1. Flat Database of all players
 const PLAYERS_DB = [
-  { name: "crouchingpuppy", points: 2, img: "/assets/heads/crouchingpuppy.png" },
-  { name: "pratham001", points: 0, img: "/assets/heads/pratham001.png" },
+  { name: "crouchingpuppy", points: 19, img: "/assets/heads/crouchingpuppy.png" },
+  { name: "pratham001", points: 19, img: "/assets/heads/pratham001.png" },
   { name: "a1sauces", points: 0, img: "/assets/heads/a1sauces.png" },
   { name: "hamzxy", points: 0, img: "/assets/heads/hamzxy.png" },
   { name: "neatfoot", points: 0, img: "/assets/heads/neatfoot.png" },
-  { name: "iliealot", points: 11, img: "/assets/heads/iliealot.png" },
+  { name: "iliealot", points: 24, img: "/assets/heads/iliealot.png" },
   { name: "aneeboamiibo", points: 0, img: "/assets/heads/aneeboamiibo.png" },
-  { name: "bozogoofylame", points: 5, img: "/assets/heads/bozogoofylame.png" }
+  { name: "bozogoofylame", points: 29, img: "/assets/heads/bozogoofylame.png" }
 ];
 
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
