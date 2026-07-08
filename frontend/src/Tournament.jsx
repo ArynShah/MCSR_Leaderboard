@@ -71,9 +71,9 @@ const Tournament = ({ players = [] }) => {
   const getPlayerBySeed = (seed) => sortedPlayers.find(p => p.seed === seed) || TBD_PLAYER;
 
   const generatedRound1 = {
-    match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(7) },
+    match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(5) },
     match2: { p1: getPlayerBySeed(3), p2: getPlayerBySeed(8) },
-    match3: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(5) },
+    match3: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(7) },
     match4: { p1: getPlayerBySeed(4), p2: getPlayerBySeed(6) },
   };
 
