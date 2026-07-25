@@ -15,11 +15,6 @@ const PLAYERS_DB = [
 
 const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
 
-// Empty structures for future rounds
-const FUTURE_ROUNDS = {
-  round2: { match1: { p1: getPlayerBySeed(1), p2: null }, match2: { p1: null, p2: getPlayerBySeed(4) } },
-  round3: { match1: { p1: null, p2: null } }
-};
 
 // Helper functions for the Player Cards
 const formatTime = (ms) => {
@@ -77,6 +72,15 @@ const Tournament = ({ players = [] }) => {
     match4: { p1: getPlayerBySeed(4), p2: getPlayerBySeed(6) },
   };
 
+  const FUTURE_ROUNDS = {
+    round2: { 
+      match1: { p1: getPlayerBySeed(1), p2: null }, 
+      match2: { p1: null, p2: getPlayerBySeed(4) } 
+    },
+    round3: { 
+      match1: { p1: null, p2: null } 
+    }
+  };
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       
