@@ -17,7 +17,7 @@ const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
 
 // Empty structures for future rounds
 const FUTURE_ROUNDS = {
-  round2: { match1: { p1: "bozogoofylame", p2: null }, match2: { p1: null, p2: "Pratham001" } },
+  round2: { match1: { p1: getPlayerBySeed(1), p2: null }, match2: { p1: null, p2: getPlayerBySeed(4) } },
   round3: { match1: { p1: null, p2: null } }
 };
 
