@@ -74,8 +74,8 @@ const Tournament = ({ players = [] }) => {
 
   const FUTURE_ROUNDS = {
     round2: { 
-      match1: { p1: getPlayerBySeed(1), p2: null }, 
-      match2: { p1: null, p2: getPlayerBySeed(4) } 
+      match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(3) }, 
+      match2: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(4) } 
     },
     round3: { 
       match1: { p1: null, p2: null } 
