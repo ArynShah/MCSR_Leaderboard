@@ -124,23 +124,26 @@ export default function App() {
       { color: '#FFB347', class: 'tier-orange', glow: 'rgba(255, 179, 71, 0.5)', border: 'rgba(255, 179, 71, 0.8)' }, 
       { color: '#FF7F50', class: 'tier-coral', glow: 'rgba(255, 127, 80, 0.6)', border: '#FF7F50' }, 
       { color: '#FF3300', class: 'tier-legend', glow: 'rgba(255, 51, 0, 0.7)', border: '#FF3300' }, 
-      { color: '#FF0000', class: 'tier-god', glow: 'rgba(255, 0, 0, 1)', border: '#FF0000' } 
+      { color: '#FF0000', class: 'tier-god', glow: 'rgba(255, 0, 0, 1)', border: '#FF0000' },
+      { color: '#FF0055', class: 'tier-sub9', glow: 'rgba(255, 0, 85, 1)', border: '#FF0055' }
     ];
     return styles[tier];
   };
 
   const getPbStyles = (ms) => {
     if (!ms) return getWarmStyles(0);
-    if (ms < 600000) return getWarmStyles(5);
-    if (ms < 720000) return getWarmStyles(4);
-    if (ms < 780000) return getWarmStyles(3);
-    if (ms < 900000) return getWarmStyles(2);
-    if (ms < 1200000) return getWarmStyles(1);
+    if (ms < 540000) return getWarmStyles(6); // Sub 9
+    if (ms < 600000) return getWarmStyles(5); // Sub 10
+    if (ms < 720000) return getWarmStyles(4); // Sub 12
+    if (ms < 780000) return getWarmStyles(3); // Sub 13
+    if (ms < 900000) return getWarmStyles(2); // Sub 15
+    if (ms < 1200000) return getWarmStyles(1); // Sub 20
     return getWarmStyles(0);
   };
 
   const getCompletionsStyles = (count) => {
     if (!count) return getWarmStyles(0);
+    if (count >= 200) return getWarmStyles(6);
     if (count >= 100) return getWarmStyles(5);
     if (count >= 30) return getWarmStyles(4);
     if (count >= 15) return getWarmStyles(3);
@@ -259,43 +262,47 @@ export default function App() {
             <div className={`profile-overlay ${showComments ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
               <div className={`profile-container ${showComments ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
                 
-                <div className="profile-panel">
+                <div className="profile-panel bento-panel">
                   <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
-                  <div className="profile-header">
-                    <img className="profile-skin" src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} alt={selectedPlayer.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
-                    <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '-0.5px' }}>
-                      {selectedPlayer.nickname}
-                    </h2>
-                  </div>
-
-                  <div className="link-actions">
-                    <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
-                    {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
-                    <button className="action-link" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer', border: '1px solid #70A6C1' }}>
-                      {showComments ? 'Hide Comments' : 'View Comments'}
-                    </button>
+                  
+                  <div className="bento-header">
+                    <div className="bento-skin-container">
+                      <img className="profile-skin" src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} alt={selectedPlayer.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
+                    </div>
+                    <div className="bento-title-section">
+                      <h2 className="bento-name" style={{ color: getRankStyles(selectedPlayer.elo).color }}>
+                        {selectedPlayer.nickname}
+                      </h2>
+                      <div className="link-actions bento-actions">
+                        <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
+                        {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
+                        <button className="action-link" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer', border: '1px solid #70A6C1' }}>
+                          {showComments ? 'Hide Comments' : 'View Comments'}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="stats-grid">
-                    <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
-                      <div className="stat-label">ELO</div>
-                      <div className="stat-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
+                  <div className="bento-grid">
+                    <div className={`bento-box bento-elo`} style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.elo).color}` }}>
+                      <div className="bento-label">Current ELO</div>
+                      <div className="bento-val" style={{color: getRankStyles(selectedPlayer.elo).color}}>{selectedPlayer.elo === 0 ? '???' : selectedPlayer.elo}</div>
                     </div>
-                    <div className="stat-box" style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
-                      <div className="stat-label">Peak ELO</div>
-                      <div className="stat-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
+                    <div className={`bento-box bento-peak`} style={{ borderTop: `3px solid ${getRankStyles(selectedPlayer.peakElo).color}` }}>
+                      <div className="bento-label">Peak ELO</div>
+                      <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                     </div>
-                    <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-                      <div className="stat-label">PB</div>
-                      <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(selectedPlayer.pb)}</div>
+                    <div className={`bento-box bento-pb ${getPbStyles(selectedPlayer.pb).class}`}>
+                      <div className="bento-label">Personal Best</div>
+                      <div className="bento-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
                     </div>
-                    <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-                      <div className="stat-label">Average</div>
-                      <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(selectedPlayer.average)}</div>
+                    <div className={`bento-box bento-avg ${getPbStyles(selectedPlayer.average).class}`}>
+                      <div className="bento-label">Average</div>
+                      <div className="bento-val" style={{color: getPbStyles(selectedPlayer.average).color}}>{formatTime(selectedPlayer.average)}</div>
                     </div>
-                    <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
-                      <div className="stat-label">Total Completions</div>
-                      <div className="stat-val" style={{color: '#FFFFFF'}}>{selectedPlayer.completions}</div>
+                    <div className={`bento-box bento-comp ${getCompletionsStyles(selectedPlayer.completions).class}`}>
+                      <div className="bento-label">Total Completions</div>
+                      <div className="bento-val" style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>{selectedPlayer.completions}</div>
                     </div>
                   </div>
                 </div>
