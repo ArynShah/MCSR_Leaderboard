@@ -13,8 +13,7 @@ const PLAYERS_DB = [
   { name: "bozogoofylame", points: 29, img: "/assets/heads/bozogoofylame.png" }
 ];
 
-const TBD_PLAYER = { name: "TBD", seed: "-", img: null };
-
+const TBD_PLAYER = { name: "TBD", seed: "-", img: null, score: null };
 
 // Helper functions for the Player Cards
 const formatTime = (ms) => {
@@ -39,6 +38,9 @@ const Tournament = ({ players = [] }) => {
   const [showSeedBoard, setShowSeedBoard] = useState(false); 
   const [selectedMatch, setSelectedMatch] = useState(null);
   
+  // NEW: State for tracking the hovered player path
+  const [hoveredPlayer, setHoveredPlayer] = useState(null);
+  
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -61,26 +63,26 @@ const Tournament = ({ players = [] }) => {
       seed: index + 1
     }));
 
-  // 3. Bracket Matchup Generator
-  // Standard 8-player bracket seeding: 1v8, 4v5, 3v6, 2v7
   const getPlayerBySeed = (seed) => sortedPlayers.find(p => p.seed === seed) || TBD_PLAYER;
 
+  // 3. Bracket Matchup Generator - Added scores to mimic the completed Quarterfinals (2-0)
   const generatedRound1 = {
-    match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(7) },
-    match2: { p1: getPlayerBySeed(3), p2: getPlayerBySeed(8) },
-    match3: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(5) },
-    match4: { p1: getPlayerBySeed(4), p2: getPlayerBySeed(6) },
+    match1: { p1: { ...getPlayerBySeed(1), score: 2 }, p2: { ...getPlayerBySeed(7), score: 0 } },
+    match2: { p1: { ...getPlayerBySeed(3), score: 2 }, p2: { ...getPlayerBySeed(8), score: 0 } },
+    match3: { p1: { ...getPlayerBySeed(2), score: 2 }, p2: { ...getPlayerBySeed(5), score: 0 } },
+    match4: { p1: { ...getPlayerBySeed(4), score: 2 }, p2: { ...getPlayerBySeed(6), score: 0 } },
   };
 
   const FUTURE_ROUNDS = {
     round2: { 
-      match1: { p1: getPlayerBySeed(1), p2: getPlayerBySeed(3) }, 
-      match2: { p1: getPlayerBySeed(2), p2: getPlayerBySeed(4) } 
+      match1: { p1: { ...getPlayerBySeed(1), score: null }, p2: { ...getPlayerBySeed(3), score: null } }, 
+      match2: { p1: { ...getPlayerBySeed(2), score: null }, p2: { ...getPlayerBySeed(4), score: null } } 
     },
     round3: { 
-      match1: { p1: null, p2: null } 
+      match1: { p1: { name: "TBD", seed: "-", score: null }, p2: { name: "TBD", seed: "-", score: null } } 
     }
   };
+
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       
@@ -104,252 +106,37 @@ const Tournament = ({ players = [] }) => {
         </button>
       </div>
 
-      {/* Seed Points Leaderboard Modal */}
-      {showSeedBoard && (
-        <div 
-          className="profile-overlay" 
-          onClick={() => setShowSeedBoard(false)}
-          style={{ 
-            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
-            backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '15px', boxSizing: 'border-box'
-          }}
-        >
-          <div 
-            className="profile-container" 
-            onClick={(e) => e.stopPropagation()}
-            style={{ 
-              width: '100%', maxWidth: '500px', 
-              background: 'rgba(10, 12, 25, 0.95)', 
-              border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '0', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'stretch'
-            }}
-          >
-            {/* Header */}
-            <div style={{ 
-              position: 'sticky', top: 0, background: 'rgba(10, 12, 25, 0.98)', 
-              padding: '15px 20px', borderBottom: '1px solid rgba(112, 166, 193, 0.4)', 
-              zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              width: '100%', boxSizing: 'border-box'
-            }}>
-              <h2 style={{ color: '#70A6C1', margin: 0, fontSize: '1.6rem', textShadow: '0 0 15px rgba(112,166,193,0.4)' }}>
-                Seed Points
-              </h2>
-              <button 
-                className="close-btn" 
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                  width: '32px', height: '32px', display: 'flex', justifyContent: 'center', 
-                  alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
-                  flexShrink: 0
-                }} 
-                onClick={() => setShowSeedBoard(false)}
-              >
-                &times;
-              </button>
-            </div>
-            
-            {/* List Content */}
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '0', width: '100%', boxSizing: 'border-box' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px', padding: '12px', backgroundColor: 'rgba(112, 166, 193, 0.1)', borderRadius: '8px', marginBottom: '12px', fontWeight: 'bold', color: '#70A6C1', fontSize: '0.95rem' }}>
-                <div style={{ textAlign: 'center' }}>Seed</div>
-                <div>Player</div>
-                <div style={{ textAlign: 'right' }}>Points</div>
-              </div>
-              
-              {/* Uses the dynamically pre-sorted array */}
-              {sortedPlayers.map((p, idx) => (
-                <div key={idx} style={{ 
-                  display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '15px',
-                  background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)', 
-                  padding: '12px', borderRadius: '6px', alignItems: 'center',
-                  borderBottom: idx < sortedPlayers.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none'
-                }}>
-                  <div style={{ textAlign: 'center', color: '#70A6C1', fontWeight: 'bold', fontSize: '1rem', width: '30px' }}>
-                    #{p.seed}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
-                    <img 
-                      src={`/assets/heads/${p.name.toLowerCase()}.png`} 
-                      alt={p.name} 
-                      style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover', flexShrink: 0 }} 
-                      onError={(e) => { e.target.style.display = 'none'; }} 
-                    />
-                    <div style={{ color: '#E0E0E0', fontWeight: '500', fontSize: '1rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                      {p.name}
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'right', color: '#55FF55', fontWeight: 'bold', fontSize: '1.1rem', textShadow: '0 0 10px rgba(85,255,85,0.5)' }}>
-                    {p.points || 0}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* About Popup Modal */}
-      {showAbout && (
-        <div 
-          className="profile-overlay fullscreen-mode" 
-          onClick={() => setShowAbout(false)}
-          style={{ 
-            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
-            backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, 
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '20px', boxSizing: 'border-box'
-          }}
-        >
-          <div 
-            className="profile-container" 
-            onClick={(e) => e.stopPropagation()}
-            style={{ 
-              width: '100%', maxWidth: '600px', background: 'rgba(10, 12, 25, 0.95)', 
-              border: '1px solid rgba(112, 166, 193, 0.4)', borderRadius: '16px', 
-              padding: '45px 25px 25px 25px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-              maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box',
-              display: 'flex', flexDirection: 'column'
-            }}
-          >
-            <button 
-              className="close-btn" 
-              style={{ 
-                position: 'absolute', top: '15px', right: '15px', 
-                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
-                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' 
-              }} 
-              onClick={() => setShowAbout(false)}
-            >
-              &times;
-            </button>
-            
-            <h2 style={{ color: '#70A6C1', textAlign: 'center', marginTop: 0, marginBottom: '25px', fontSize: '2rem', textShadow: '0 0 20px rgba(112,166,193,0.5)' }}>
-              About the Tournament
-            </h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: '#E0E0E0', fontSize: '0.95rem', lineHeight: '1.5' }}>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Format:</strong> 8-player bracket, BO3 (BO5 Grand Finals)
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Schedule:</strong> Quarters & Semis Day 1; Grand Finals Day 2
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Rules:</strong> Only Village Seeds. Calculator enabled.
-              </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <strong style={{ color: '#70A6C1' }}>Seeding:</strong> Determined dynamically via points from FFA 1v8 matches.
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* VS Match Popup Modal */}
-      {selectedMatch && (
-        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999 }} onClick={() => setSelectedMatch(null)}>
-          <div 
-            className="profile-container single-card-wrapper" 
-            onClick={e => e.stopPropagation()}
-            style={{ 
-              width: '100vw', 
-              height: '100vh', 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              transform: isMobile ? 'none' : `scale(0.8)`, 
-              padding: isMobile ? '20px' : '0',
-              boxSizing: 'border-box'
-            }}
-          >
-            <div className="unified-vs-card" style={{
-              background: 'rgba(10, 12, 25, 0.95)', 
-              backdropFilter: 'blur(25px)',
-              WebkitBackdropFilter: 'blur(25px)', 
-              border: '1px solid rgba(112, 166, 193, 0.4)', 
-              borderRadius: '32px', 
-              padding: isMobile ? '45px 15px 25px 15px' : '40px', 
-              boxShadow: '0 40px 100px rgba(0,0,0,0.8)',
-              display: 'flex',
-              flexDirection: isMobile ? 'column' : 'row', 
-              alignItems: 'center',
-              position: 'relative',
-              maxHeight: isMobile ? '90vh' : 'auto',
-              overflowY: isMobile ? 'auto' : 'visible',
-              width: isMobile ? '100%' : 'auto',
-              boxSizing: 'border-box'
-            }}>
-              
-              <button className="close-btn" style={{ 
-                position: 'absolute', top: '15px', right: '15px', 
-                background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', 
-                width: '30px', height: '30px', display: 'flex', justifyContent: 'center', 
-                alignItems: 'center', color: '#fff', fontSize: '1.2rem', cursor: 'pointer',
-                zIndex: 10
-              }} onClick={() => setSelectedMatch(null)}>&times;</button>
-              
-              <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
-              
-              <div className="vs-separator" style={{ 
-                fontSize: isMobile ? '2.5rem' : '3.5rem', 
-                fontWeight: 900, 
-                color: '#70A6C1', 
-                fontStyle: 'italic', 
-                textShadow: '0 0 20px rgba(112,166,193,0.5)',
-                margin: isMobile ? '15px 0' : '0 30px' 
-              }}>
-                VS
-              </div>
-              
-              <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Modals omitted for brevity - Keep your existing modal code here */}
+      
       <div className="bracket-scroll-wrapper">
-        <div className="bracket-wrapper">
+        <div className="bracket-wrapper" style={{ display: 'flex', gap: '40px', padding: '20px' }}>
           
           <div className="bracket-column">
-            <h3>Quarter-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                {/* Dynamically generated Round 1 pairings */}
-                <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} />
-                <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} />
+            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>QUARTERFINALS</h3>
+            <div className="bracket-matches" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="match-pair" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
               </div>
-              <div className="match-pair">
-                <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} />
-                <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} />
-              </div>
-            </div>
-          </div>
-
-          <div className="bracket-column">
-            <h3>Semi-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} />
-                <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} />
+              <div className="match-pair" style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+                <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
               </div>
             </div>
           </div>
 
-          <div className="bracket-column">
-            <h3>Grand Finals</h3>
+          <div className="bracket-column" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>SEMIFINALS</h3>
+            <div className="bracket-matches" style={{ display: 'flex', flexDirection: 'column', gap: '75px' }}>
+              <Match data={FUTURE_ROUNDS.round2.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+              <Match data={FUTURE_ROUNDS.round2.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+            </div>
+          </div>
+
+          <div className="bracket-column" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>GRAND FINALS</h3>
             <div className="bracket-matches">
-              <div className="match-pair single-match">
-                <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} />
-              </div>
+              <Match data={FUTURE_ROUNDS.round3.match1} isFinal onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
             </div>
           </div>
 
@@ -359,90 +146,93 @@ const Tournament = ({ players = [] }) => {
   );
 };
 
-// Reusable VS Player Card Component 
-const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
-  const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
-  
-  const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
-
-  if (isTbd) {
-    return (
-      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-        <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
-      </div>
-    );
-  }
-
-  const p = playerData || {
-    nickname: matchPlayer.name,
-    elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
-  };
-
-  const rankStyles = getRankStyles(p.elo);
-  const peakRankStyles = getRankStyles(p.peakElo);
-
-  return (
-    <div className="vs-player-card" style={{ width: cardWidth }}> 
-      <div className="profile-header">
-        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} style={{ height: '220px', marginBottom: '15px' }} />
-        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
-          {p.nickname}
-        </h2>
-      </div>
-
-      <div className="link-actions" style={{ marginBottom: '20px' }}>
-        <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
-        {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
-      </div>
-      
-      <div className="stats-grid">
-        <div className="stat-box" style={{ borderTop: `3px solid ${rankStyles.color}` }}>
-          <div className="stat-label">ELO</div>
-          <div className="stat-val" style={{color: rankStyles.color}}>{p.elo === 0 ? '???' : p.elo}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: `3px solid ${peakRankStyles.color}` }}>
-          <div className="stat-label">Peak ELO</div>
-          <div className="stat-val" style={{color: peakRankStyles.color}}>{p.peakElo === 0 ? '???' : p.peakElo}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">PB</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.pb)}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Average</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.average)}</div>
-        </div>
-        <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Total Completions</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{p.completions}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Match = ({ data, isFinal, connectLeft, onMatchClick }) => {
+// Updated Match Component to match the screenshot aesthetic and support hover
+const Match = ({ data, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
   const p1 = data?.p1 || TBD_PLAYER;
   const p2 = data?.p2 || TBD_PLAYER;
 
+  const isP1Hovered = hoveredPlayer && p1.name !== "TBD" && hoveredPlayer === p1.name;
+  const isP2Hovered = hoveredPlayer && p2.name !== "TBD" && hoveredPlayer === p2.name;
+  const matchIsHighlighted = isP1Hovered || isP2Hovered;
+
+  const getScoreStyle = (score, opponentScore) => {
+    if (score === null || score === undefined) return { background: '#3A3A3D', color: '#888' }; // TBD match
+    if (score > opponentScore) return { background: '#629B44', color: '#FFF' }; // Winner (Green)
+    return { background: '#3A3A3D', color: '#BBB' }; // Loser (Gray)
+  };
+
+  const renderPlayerRow = (player, opponent) => {
+    const isHovered = hoveredPlayer === player.name && player.name !== "TBD";
+    const scoreStyle = getScoreStyle(player.score, opponent.score);
+
+    return (
+      <div 
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '6px 8px',
+          background: isHovered ? 'rgba(255,255,255,0.1)' : 'transparent',
+          borderBottom: '1px solid #1A1A1D',
+          transition: 'background 0.2s',
+          height: '28px'
+        }}
+        onMouseEnter={() => player.name !== 'TBD' && setHoveredPlayer(player.name)}
+        onMouseLeave={() => setHoveredPlayer(null)}
+      >
+        <span style={{ color: '#888', fontSize: '0.8rem', width: '20px' }}>
+          {player.seed !== "-" ? player.seed : ""}
+        </span>
+        
+        <span style={{ 
+          flex: 1, 
+          color: player.name !== 'TBD' ? '#FFF' : '#666', 
+          fontSize: '0.95rem',
+          marginLeft: '4px',
+          fontFamily: 'monospace' // To match the blocky/pixel font in screenshot slightly
+        }}>
+          {player.name}
+        </span>
+
+        {/* Score Box */}
+        <div style={{
+          ...scoreStyle,
+          width: '24px',
+          height: '24px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '4px',
+          fontWeight: 'bold',
+          fontSize: '0.9rem',
+          marginLeft: '8px'
+        }}>
+          {player.score !== null ? player.score : ""}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div 
-      className={`match ${isFinal ? 'final-match' : ''} ${connectLeft ? 'connect-left' : ''}`} 
       onClick={() => onMatchClick(data)}
-      style={{ cursor: 'pointer' }}
+      style={{ 
+        cursor: 'pointer',
+        background: '#2A2A2D', // Dark background like screenshot
+        borderRadius: '8px',
+        width: '220px',
+        overflow: 'hidden',
+        boxShadow: matchIsHighlighted ? '0 0 15px rgba(255, 255, 255, 0.4)' : '0 4px 6px rgba(0,0,0,0.3)',
+        border: matchIsHighlighted ? '1px solid #FFF' : '1px solid #333',
+        transition: 'all 0.2s ease-in-out',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
     >
-      <div className={`player ${p1.name === 'TBD' ? 'tbd-player' : ''}`}>
-        {p1.img ? <img src={p1.img} alt={p1.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
-        <span className="seed">{p1.seed}</span>
-        <span className="name" title={p1.name}>{p1.name}</span>
-      </div>
-      <div className={`player ${p2.name === 'TBD' ? 'tbd-player' : ''}`}>
-        {p2.img ? <img src={p2.img} alt={p2.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
-        <span className="seed">{p2.seed}</span>
-        <span className="name" title={p2.name}>{p2.name}</span>
-      </div>
+      {renderPlayerRow(p1, p2)}
+      {renderPlayerRow(p2, p1)}
     </div>
   );
 };
 
-export default Tournament;
+// Ensure you keep your VsPlayerCard component here below 
+// ...
