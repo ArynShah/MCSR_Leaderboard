@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
-import Tournament from './Tournament'; 
+import Tournament, { PLAYERS_DB } from './Tournament'; 
 import './App.css'; 
 
 export default function App() {
@@ -9,6 +9,7 @@ export default function App() {
   const [activeView, setActiveView] = useState('leaderboard');
   const [showSeedBoard, setShowSeedBoard] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showAddComment, setShowAddComment] = useState(false);
 
   // --- Leaderboard States ---
   const [players, setPlayers] = useState([]);
@@ -224,22 +225,51 @@ export default function App() {
       {showSeedBoard && (
         <div className="profile-overlay" onClick={() => setShowSeedBoard(false)}>
           <div className="bento-panel" style={{ width: '500px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowSeedBoard(false)}>&times;</button>
-            <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '15px' }}>Seed Points</h2>
-            <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>Seed points are accumulated through regular season matches and determine playoff placements.</p>
+            <div className="bento-tile" style={{ position: 'relative', padding: '30px' }}>
+              <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setShowSeedBoard(false)}>&times;</button>
+              <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '25px', textAlign: 'center' }}>Seed Points Leaderboard</h2>
+              <div className="custom-scrollbar" style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '10px' }}>
+                {[...PLAYERS_DB].sort((a,b) => b.points - a.points).map((p, i) => (
+                  <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                      <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'rgba(255,255,255,0.5)', width: '25px' }}>#{i+1}</span>
+                      <img src={p.img || `/assets/heads/${p.name.toLowerCase()}.png`} style={{ width: '30px', borderRadius: '4px' }} alt="" onError={e => e.target.style.display='none'} />
+                      <span style={{ fontSize: '1.1rem', fontWeight: '600' }}>{p.name}</span>
+                    </div>
+                    <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#70A6C1' }}>{p.points} <span style={{fontSize:'0.7rem', color:'gray'}}>pts</span></span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
       {showAbout && (
         <div className="profile-overlay" onClick={() => setShowAbout(false)}>
-          <div className="bento-panel" style={{ width: '500px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowAbout(false)}>&times;</button>
-            <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '15px' }}>About Tournament</h2>
-            <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>Welcome to the Crifzer Playoffs! This double-elimination bracket pits the top seeded players against each other in Best-of-3 matchups.</p>
+          <div className="bento-panel" style={{ width: '550px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <div className="bento-tile" style={{ position: 'relative', padding: '35px' }}>
+              <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setShowAbout(false)}>&times;</button>
+              <h2 className="bento-name" style={{ fontSize: '2.5rem', marginBottom: '25px' }}>About Bracket</h2>
+              
+              <ul style={{ color: 'rgba(255,255,255,0.9)', lineHeight: '1.8', fontSize: '1rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <li><strong>Only Village seeds</strong></li>
+                <li><strong>BO3</strong>, except for Grand Finals which is <strong>BO5</strong></li>
+                <li>Calculator allowed, toolscreen allowed, all legal MCSR ranked tools allowed.</li>
+                <li>Single elimination bracket</li>
+              </ul>
+              
+              <h3 style={{ marginTop: '30px', marginBottom: '15px', color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>--- Seed Filter Information ---</h3>
+              
+              <ul style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', fontSize: '0.95rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <li>Portal room will not be more than 8 rooms deep in the Stronghold</li>
+                <li>There will be no negative fortress pieray spikes</li>
+                <li>Guaranteed 20 obsidian + 5 BEDs from bastion + Over 20 pearls + 3 fire res from bastion</li>
+                <li>Guaranteed 15+ Haybales in village</li>
+              </ul>
+            </div>
           </div>
         </div>
       )}
-
       {/* --- Main View Switcher --- */}
       {activeView === 'tournament' ? (
         <Tournament players={players} showSeedBoard={showSeedBoard} setShowSeedBoard={setShowSeedBoard} showAbout={showAbout} setShowAbout={setShowAbout} />
@@ -300,9 +330,8 @@ export default function App() {
               <div className={`profile-container ${showComments ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
                 
                 <div className="bento-panel">
-                  <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
-                  
-                  <div className="bento-tile bento-skin-tile">
+                  <div className="bento-tile bento-skin-tile" style={{ position: 'relative' }}>
+                    <button className="close-btn" style={{ left: "15px", right: "auto" }} onClick={() => setSelectedPlayer(null)}>&times;</button>
                     <img className="profile-skin" src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} alt={selectedPlayer.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
                     <h2 className="bento-name" style={{ color: getRankStyles(selectedPlayer.elo).color, textAlign: 'center' }}>
                       {selectedPlayer.nickname}
@@ -310,7 +339,7 @@ export default function App() {
                     <div className="link-actions bento-actions" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                       <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>Ranked Stats</a>
                       {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>View PB</a>}
-                      <button className="action-link" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer', border: '1px solid #70A6C1', textAlign: 'center', width: '100%' }}>
+                      <button className="action-link" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}>
                         {showComments ? 'Hide Comments' : 'View Comments'}
                       </button>
                     </div>
@@ -340,37 +369,39 @@ export default function App() {
 
                 {showComments && (
                   <div className="comments-panel">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                      <h3 style={{ color: 'white', margin: 0 }}>Comments</h3>
-                      {/* UPDATED: Dynamic mobile state usage for close button */}
-                      <button className="close-btn" style={{ position: 'relative', top: '0', right: '0', display: isMobile ? 'flex' : 'none' }} onClick={() => setShowComments(false)}>&times;</button>
-                    </div>
-                    
-                    <div className="comments-list custom-scrollbar">
-                      {comments.length === 0 ? (
-                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', textAlign: 'center', marginTop: '20px' }}>No comments yet.</p>
-                      ) : (
-                        comments.map((c) => (
-                          <div key={c.id} className="comment-item">
-                            <strong>{c.username}</strong> 
-                            <p>{c.text}</p>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    <div className="comment-inputs">
-                      <input placeholder="Username" maxLength="15" value={newUsername} onChange={e => setNewUsername(e.target.value)} />
-                      <textarea placeholder="Type a comment..." maxLength="150" rows="3" value={newComment} onChange={e => setNewComment(e.target.value)}></textarea>
-                      <button 
-                        className="action-link" 
-                        style={{ width: '100%', marginTop: '5px', textAlign: 'center', opacity: (!newUsername || !newComment) ? 0.5 : 1 }}
-                        onClick={handlePostComment}
-                        disabled={!newUsername || !newComment}
-                      >
-                        Post Comment
+                    <div className="comments-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                      <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Comments</h3>
+                      <button className="action-link" style={{ width: 'auto', padding: '5px 12px', fontSize: '0.8rem', margin: 0 }} onClick={() => setShowAddComment(!showAddComment)}>
+                        {showAddComment ? 'Cancel' : 'Add Comment'}
                       </button>
                     </div>
+                    
+                    <div className="comments-list custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
+                      <div className="comment-item">
+                        <strong>Crifzer</strong>
+                        <p>Every stat mogs everyone</p>
+                      </div>
+                      <div className="comment-item">
+                        <strong>Crifzer</strong>
+                        <p>I wish I had a sub-15. In minecraft too.</p>
+                      </div>
+                      <div className="comment-item">
+                        <strong>PrathamPlays10</strong>
+                        <p>He mogs me</p>
+                      </div>
+                      <div className="comment-item">
+                        <strong>PrathamPlays10</strong>
+                        <p>This guy is so much better than me</p>
+                      </div>
+                    </div>
+                    
+                    {showAddComment && (
+                      <div className="comment-inputs" style={{ marginTop: '15px' }}>
+                        <input type="text" placeholder="Username" />
+                        <textarea rows="3" placeholder="Type a comment..."></textarea>
+                        <button className="action-link" style={{ width: '100%', border: 'none', background: 'rgba(112, 166, 193, 0.15)' }}>Post Comment</button>
+                      </div>
+                    )}
                   </div>
                 )}
 
