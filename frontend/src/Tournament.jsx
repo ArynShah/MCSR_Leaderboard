@@ -38,7 +38,7 @@ const Tournament = ({ players = [] }) => {
   const [showSeedBoard, setShowSeedBoard] = useState(false); 
   const [selectedMatch, setSelectedMatch] = useState(null);
   
-  // NEW: State for tracking the hovered player path
+  // State for tracking the hovered player path
   const [hoveredPlayer, setHoveredPlayer] = useState(null);
   
   const [isMobile, setIsMobile] = useState(false);
@@ -50,7 +50,7 @@ const Tournament = ({ players = [] }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 2. Sort players by points (desc) then name (asc), and assign 1-8 seeds dynamically
+  // 2. Sort players by points (desc) then name (asc), and assign seeds dynamically
   const sortedPlayers = [...PLAYERS_DB]
     .sort((a, b) => {
       if ((b.points || 0) !== (a.points || 0)) {
@@ -65,7 +65,7 @@ const Tournament = ({ players = [] }) => {
 
   const getPlayerBySeed = (seed) => sortedPlayers.find(p => p.seed === seed) || TBD_PLAYER;
 
-  // 3. Bracket Matchup Generator - Added scores to mimic the completed Quarterfinals (2-0)
+  // 3. Bracket Matchup Generator - QF mapped to 2-0 scores
   const generatedRound1 = {
     match1: { p1: { ...getPlayerBySeed(1), score: 2 }, p2: { ...getPlayerBySeed(7), score: 0 } },
     match2: { p1: { ...getPlayerBySeed(3), score: 2 }, p2: { ...getPlayerBySeed(8), score: 0 } },
@@ -92,7 +92,6 @@ const Tournament = ({ players = [] }) => {
           className="toggle-view-btn" 
           onClick={() => setShowSeedBoard(true)} 
           title="Seed Points"
-          style={{ padding: '8px 16px', fontSize: '1rem', borderRadius: '8px', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
         >
           🏆 Seed Points
         </button>
@@ -100,43 +99,47 @@ const Tournament = ({ players = [] }) => {
           className="toggle-view-btn" 
           onClick={() => setShowAbout(true)} 
           title="About the Tournament"
-          style={{ padding: '8px 14px', fontSize: '1.1rem', borderRadius: '50%', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
+          style={{ padding: '8px 14px', borderRadius: '50%' }}
         >
           ?
         </button>
       </div>
 
-      {/* Modals omitted for brevity - Keep your existing modal code here */}
+      {/* Keep your Modals (showSeedBoard, showAbout, selectedMatch) exactly as they are here... */}
       
       <div className="bracket-scroll-wrapper">
-        <div className="bracket-wrapper" style={{ display: 'flex', gap: '40px', padding: '20px' }}>
+        <div className="bracket-wrapper">
           
           <div className="bracket-column">
-            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>QUARTERFINALS</h3>
-            <div className="bracket-matches" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div className="match-pair" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <h3>Quarter-Finals</h3>
+            <div className="bracket-matches">
+              <div className="match-pair">
                 <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
                 <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
               </div>
-              <div className="match-pair" style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+              <div className="match-pair">
                 <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
                 <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
               </div>
             </div>
           </div>
 
-          <div className="bracket-column" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>SEMIFINALS</h3>
-            <div className="bracket-matches" style={{ display: 'flex', flexDirection: 'column', gap: '75px' }}>
-              <Match data={FUTURE_ROUNDS.round2.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-              <Match data={FUTURE_ROUNDS.round2.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+          <div className="bracket-column">
+            <h3>Semi-Finals</h3>
+            <div className="bracket-matches">
+              <div className="match-pair">
+                <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+              </div>
             </div>
           </div>
 
-          <div className="bracket-column" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <h3 style={{ color: '#888', letterSpacing: '2px', fontSize: '0.9rem', textAlign: 'center', marginBottom: '20px' }}>GRAND FINALS</h3>
+          <div className="bracket-column">
+            <h3>Grand Finals</h3>
             <div className="bracket-matches">
-              <Match data={FUTURE_ROUNDS.round3.match1} isFinal onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+              <div className="match-pair single-match">
+                <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+              </div>
             </div>
           </div>
 
@@ -146,8 +149,8 @@ const Tournament = ({ players = [] }) => {
   );
 };
 
-// Updated Match Component to match the screenshot aesthetic and support hover
-const Match = ({ data, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
+// Updated Match Component matching your structure but with hover/score logic
+const Match = ({ data, isFinal, connectLeft, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
   const p1 = data?.p1 || TBD_PLAYER;
   const p2 = data?.p2 || TBD_PLAYER;
 
@@ -155,167 +158,35 @@ const Match = ({ data, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
   const isP2Hovered = hoveredPlayer && p2.name !== "TBD" && hoveredPlayer === p2.name;
   const matchIsHighlighted = isP1Hovered || isP2Hovered;
 
-  const getScoreStyle = (score, opponentScore) => {
-    if (score === null || score === undefined) return { background: '#3A3A3D', color: '#888' }; // TBD match
-    if (score > opponentScore) return { background: '#629B44', color: '#FFF' }; // Winner (Green)
-    return { background: '#3A3A3D', color: '#BBB' }; // Loser (Gray)
-  };
-
   const renderPlayerRow = (player, opponent) => {
     const isHovered = hoveredPlayer === player.name && player.name !== "TBD";
-    const scoreStyle = getScoreStyle(player.score, opponent.score);
-
+    
     return (
       <div 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: '6px 8px',
-          background: isHovered ? 'rgba(255,255,255,0.1)' : 'transparent',
-          borderBottom: '1px solid #1A1A1D',
-          transition: 'background 0.2s',
-          height: '28px'
-        }}
+        className={`player ${player.name === 'TBD' ? 'tbd-player' : ''} ${isHovered ? 'hovered-player' : ''}`}
         onMouseEnter={() => player.name !== 'TBD' && setHoveredPlayer(player.name)}
         onMouseLeave={() => setHoveredPlayer(null)}
       >
-        <span style={{ color: '#888', fontSize: '0.8rem', width: '20px' }}>
-          {player.seed !== "-" ? player.seed : ""}
-        </span>
+        {player.img ? <img src={player.img} alt={player.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
+        <span className="seed">{player.seed}</span>
+        <span className="name" title={player.name}>{player.name}</span>
         
-        <span style={{ 
-          flex: 1, 
-          color: player.name !== 'TBD' ? '#FFF' : '#666', 
-          fontSize: '0.95rem',
-          marginLeft: '4px',
-          fontFamily: 'monospace' // To match the blocky/pixel font in screenshot slightly
-        }}>
-          {player.name}
-        </span>
-
-        {/* Score Box */}
-        <div style={{
-          ...scoreStyle,
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: '4px',
-          fontWeight: 'bold',
-          fontSize: '0.9rem',
-          marginLeft: '8px'
-        }}>
-          {player.score !== null ? player.score : ""}
-        </div>
+        {player.score !== null && player.score !== undefined && (
+          <div className={`match-score ${player.score > opponent.score ? 'winner' : ''}`}>
+            {player.score}
+          </div>
+        )}
       </div>
     );
   };
 
   return (
     <div 
+      className={`match ${isFinal ? 'final-match' : ''} ${connectLeft ? 'connect-left' : ''} ${matchIsHighlighted ? 'highlighted-match' : ''}`} 
       onClick={() => onMatchClick(data)}
-      style={{ 
-        cursor: 'pointer',
-        background: '#2A2A2D', // Dark background like screenshot
-        borderRadius: '8px',
-        width: '220px',
-        overflow: 'hidden',
-        boxShadow: matchIsHighlighted ? '0 0 15px rgba(255, 255, 255, 0.4)' : '0 4px 6px rgba(0,0,0,0.3)',
-        border: matchIsHighlighted ? '1px solid #FFF' : '1px solid #333',
-        transition: 'all 0.2s ease-in-out',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
     >
       {renderPlayerRow(p1, p2)}
       {renderPlayerRow(p2, p1)}
-    </div>
-  );
-};
-
-// Reusable VS Player Card Component 
-const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
-  const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
-  
-  const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
-
-  if (isTbd) {
-    return (
-      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
-        <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
-      </div>
-    );
-  }
-
-  const p = playerData || {
-    nickname: matchPlayer.name,
-    elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
-  };
-
-  const rankStyles = getRankStyles(p.elo);
-  const peakRankStyles = getRankStyles(p.peakElo);
-
-  return (
-    <div className="vs-player-card" style={{ width: cardWidth }}> 
-      <div className="profile-header">
-        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} style={{ height: '220px', marginBottom: '15px' }} />
-        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
-          {p.nickname}
-        </h2>
-      </div>
-
-      <div className="link-actions" style={{ marginBottom: '20px' }}>
-        <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
-        {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
-      </div>
-      
-      <div className="stats-grid">
-        <div className="stat-box" style={{ borderTop: `3px solid ${rankStyles.color}` }}>
-          <div className="stat-label">ELO</div>
-          <div className="stat-val" style={{color: rankStyles.color}}>{p.elo === 0 ? '???' : p.elo}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: `3px solid ${peakRankStyles.color}` }}>
-          <div className="stat-label">Peak ELO</div>
-          <div className="stat-val" style={{color: peakRankStyles.color}}>{p.peakElo === 0 ? '???' : p.peakElo}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">PB</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.pb)}</div>
-        </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Average</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.average)}</div>
-        </div>
-        <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Total Completions</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{p.completions}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Match = ({ data, isFinal, connectLeft, onMatchClick }) => {
-  const p1 = data?.p1 || TBD_PLAYER;
-  const p2 = data?.p2 || TBD_PLAYER;
-
-  return (
-    <div 
-      className={`match ${isFinal ? 'final-match' : ''} ${connectLeft ? 'connect-left' : ''}`} 
-      onClick={() => onMatchClick(data)}
-      style={{ cursor: 'pointer' }}
-    >
-      <div className={`player ${p1.name === 'TBD' ? 'tbd-player' : ''}`}>
-        {p1.img ? <img src={p1.img} alt={p1.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
-        <span className="seed">{p1.seed}</span>
-        <span className="name" title={p1.name}>{p1.name}</span>
-      </div>
-      <div className={`player ${p2.name === 'TBD' ? 'tbd-player' : ''}`}>
-        {p2.img ? <img src={p2.img} alt={p2.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
-        <span className="seed">{p2.seed}</span>
-        <span className="name" title={p2.name}>{p2.name}</span>
-      </div>
     </div>
   );
 };

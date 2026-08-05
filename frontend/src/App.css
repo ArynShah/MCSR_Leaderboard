@@ -374,7 +374,6 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 
 
-
 /* =========================================
    TOURNAMENT LAYOUT & BRACKET FIXES
    ========================================= */
@@ -417,30 +416,6 @@ input:checked + .slider:before { transform: translateX(20px); }
   z-index: 30;
 }
 
-.tournament-about {
-  background: #1e1e1e;
-  padding: 1.5rem;
-  border-radius: 12px;
-  max-width: 800px;
-  width: 100%;
-  margin-bottom: 3rem;
-  border: 1px solid #333;
-}
-
-.tournament-about h2 {
-  margin: 0 0 1rem 0;
-  color: #70A6C1;
-  text-align: center;
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  font-size: 0.85rem;
-  color: #b0b0b0;
-}
-
 /* --- Mobile Scroll Fix --- */
 .bracket-scroll-wrapper {
   width: 100%;
@@ -454,9 +429,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 .bracket-wrapper {
   display: flex;
   justify-content: center;
-  align-items: stretch; /* FIX: Forces columns to perfectly match heights */
-  gap: 4rem;
-  min-width: 950px; /* Essential: Prevents squishing on mobile */
+  align-items: stretch;
+  gap: 3rem; /* Exactly matches connecting line width */
+  min-width: 950px; 
   padding: 1rem 2rem;
   margin: 0 auto;
 }
@@ -472,7 +447,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #70A6C1;
   font-size: 0.95rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   text-align: center;
   flex: 0 0 auto;
 }
@@ -481,13 +456,13 @@ input:checked + .slider:before { transform: translateX(20px); }
 .bracket-matches {
   display: flex;
   flex-direction: column;
-  flex: 1; /* FIX: Ensures space-around spans the full height */
+  flex: 1; 
 }
 
 .match-pair {
   display: flex;
   flex-direction: column;
-  justify-content: space-around; /* Precisely centers matches mathematically */
+  justify-content: space-around; /* Distributes matches evenly to perfectly align lines */
   flex: 1;
   position: relative;
 }
@@ -496,17 +471,17 @@ input:checked + .slider:before { transform: translateX(20px); }
   justify-content: center;
 }
 
-/* --- Connecting Lines --- */
+/* --- Connecting Lines (Subtle Grey/Translucent) --- */
 .bracket-column:not(:last-child) .match-pair::after {
   content: '';
   position: absolute;
-  right: -2rem;
-  width: 2rem;
-  top: 25%;
-  bottom: 25%;
-  border-right: 2px solid #444;
-  border-top: 2px solid #444;
-  border-bottom: 2px solid #444;
+  right: -1.5rem; 
+  width: 1.5rem; 
+  top: 25%; 
+  bottom: 25%; 
+  border-right: 2px solid rgba(255, 255, 255, 0.15);
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
   border-radius: 0 4px 4px 0;
   z-index: 1;
 }
@@ -514,77 +489,106 @@ input:checked + .slider:before { transform: translateX(20px); }
 .connect-left::before {
   content: '';
   position: absolute;
-  left: -2rem;
+  left: -1.5rem;
   top: 50%;
-  width: 2rem;
+  width: 1.5rem;
   height: 2px;
-  background: #444;
+  background: rgba(255, 255, 255, 0.15);
   z-index: 1;
+  transform: translateY(-50%);
 }
 
-/* --- Individual Match Styling --- */
+/* --- Individual Match Styling (Keeps your aesthetic) --- */
 .match {
-  background: #252525;
-  border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 2;
   margin: 0.5rem 0;
   transition: all 0.25s ease;
-  flex: 0 0 auto; /* FIX: Prevents cards from stretching vertically */
+  flex: 0 0 auto;
+  cursor: pointer;
 }
 
-.match:hover {
+/* Highlighting the Match based on Hovering */
+.match:hover, .match.highlighted-match {
   transform: scale(1.02);
-  box-shadow: 0 0 15px rgba(112, 166, 193, 0.2);
+  box-shadow: 0 0 20px rgba(112, 166, 193, 0.3);
   border-color: #70A6C1;
+  background: rgba(40, 45, 60, 0.8);
 }
 
 .final-match {
-  border: 2px solid #ffd700;
+  border: 1px solid #ffd700;
 }
 
 /* --- Player Slots --- */
-.tournament-container .player {
+.player {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
 }
 
-.tournament-container .player:last-child {
+.player:last-child {
   border-bottom: none;
 }
 
-.tournament-container .player-head {
-  width: 28px !important;
-  height: 28px !important;
+.player.hovered-player {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.player-head {
+  width: 24px !important;
+  height: 24px !important;
   margin-right: 12px;
   border-radius: 4px;
   image-rendering: pixelated; 
 }
 
-.tournament-container .placeholder-head {
-  background: #1a1a1a;
-  border: 1px dashed #444;
+.placeholder-head {
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.2);
 }
 
-.tournament-container .seed {
+.seed {
   font-size: 0.8rem;
-  color: #888;
+  color: rgba(255,255,255,0.4);
   margin-right: 10px;
   font-weight: bold;
   width: 15px;
 }
 
-.tournament-container .name {
+.name {
   font-weight: 600;
   font-size: 0.95rem;
+  color: #e0e0e0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tournament-container .tbd-player {
-  opacity: 0.4;
+.tbd-player .name {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Score Styling (Blue / Glassmorphism Aesthetic) --- */
+.match-score {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.match-score.winner {
+  background: rgba(112, 166, 193, 0.2);
+  color: #70A6C1;
+  border: 1px solid rgba(112, 166, 193, 0.4);
 }
