@@ -160,7 +160,7 @@ export default function App() {
   return (
     <div className="app-container">
       <div className="decor-grid"></div>
-      <div className="star-field"></div>
+      <div className="ambient-light"></div>
       
       <div className="side-ribbon left-ribbon"></div>
       <div className="side-ribbon right-ribbon"></div>
@@ -235,17 +235,17 @@ export default function App() {
                   <h3 className="player-name">{player.nickname}</h3>
                   <div className="player-stat">
                     {activeTab === 'elo' && (
-                      <div className="stat-badge" style={{ color: getRankStyles(player.elo).color, borderColor: getRankStyles(player.elo).borderColor, boxShadow: `0 0 15px ${getRankStyles(player.elo).glow}`, textShadow: `0 0 10px ${getRankStyles(player.elo).glow}` }}>
+                      <div className="stat-badge" style={{ color: getRankStyles(player.elo).color, borderColor: getRankStyles(player.elo).borderColor }}>
                         {player.elo === 0 ? '???' : player.elo}
                       </div>
                     )}
                     {activeTab === 'pb' && (
-                      <div className={`stat-badge ${getPbStyles(player.pb).class}`} style={{ color: getPbStyles(player.pb).color, borderColor: getPbStyles(player.pb).border, boxShadow: `0 0 15px ${getPbStyles(player.pb).glow}`, textShadow: `0 0 10px ${getPbStyles(player.pb).glow}` }}>
+                      <div className={`stat-badge ${getPbStyles(player.pb).class}`} style={{ color: getPbStyles(player.pb).color, borderColor: getPbStyles(player.pb).border }}>
                         {formatTime(player.pb)}
                       </div>
                     )}
                     {activeTab === 'completions' && (
-                      <div className={`stat-badge ${getCompletionsStyles(player.completions).class}`} style={{ color: getCompletionsStyles(player.completions).color, borderColor: getCompletionsStyles(player.completions).border, boxShadow: `0 0 15px ${getCompletionsStyles(player.completions).glow}`, textShadow: `0 0 10px ${getCompletionsStyles(player.completions).glow}` }}>
+                      <div className={`stat-badge ${getCompletionsStyles(player.completions).class}`} style={{ color: getCompletionsStyles(player.completions).color, borderColor: getCompletionsStyles(player.completions).border }}>
                         {player.completions}
                       </div>
                     )}
@@ -263,7 +263,7 @@ export default function App() {
                   <button className="close-btn" onClick={() => setSelectedPlayer(null)}>&times;</button>
                   <div className="profile-header">
                     <img className="profile-skin" src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} alt={selectedPlayer.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
-                    <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, textShadow: `0 0 20px ${getRankStyles(selectedPlayer.elo).glow}`, fontSize: '2.2rem', fontWeight: '900' }}>
+                    <h2 style={{ color: getRankStyles(selectedPlayer.elo).color, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '-0.5px' }}>
                       {selectedPlayer.nickname}
                     </h2>
                   </div>
