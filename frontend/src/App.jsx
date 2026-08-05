@@ -224,10 +224,10 @@ export default function App() {
       {/* Tournament Info Modals */}
       {showSeedBoard && (
         <div className="profile-overlay" onClick={() => setShowSeedBoard(false)}>
-          <div className="bento-panel" style={{ width: '500px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+          <div className="bento-panel" style={{ width: '650px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
             <div className="bento-tile" style={{ position: 'relative', padding: '30px' }}>
               <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setShowSeedBoard(false)}>&times;</button>
-              <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '25px', textAlign: 'center' }}>Seed Points Leaderboard</h2>
+              <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '25px', textAlign: 'center', paddingLeft: '35px' }}>Seed Points Leaderboard</h2>
               <div className="custom-scrollbar" style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '10px' }}>
                 {[...PLAYERS_DB].sort((a,b) => b.points - a.points).map((p, i) => (
                   <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -249,9 +249,9 @@ export default function App() {
           <div className="bento-panel" style={{ width: '550px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
             <div className="bento-tile" style={{ position: 'relative', padding: '35px' }}>
               <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setShowAbout(false)}>&times;</button>
-              <h2 className="bento-name" style={{ fontSize: '2.5rem', marginBottom: '25px' }}>About Bracket</h2>
+              <h2 className="bento-name" style={{ fontSize: '2.5rem', marginBottom: '25px', textAlign: 'center', paddingLeft: '35px' }}>About Bracket</h2>
               
-              <ul style={{ color: 'rgba(255,255,255,0.9)', lineHeight: '1.8', fontSize: '1rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <ul style={{ color: 'rgba(255,255,255,0.9)', lineHeight: '1.8', fontSize: '1rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
                 <li><strong>Only Village seeds</strong></li>
                 <li><strong>BO3</strong>, except for Grand Finals which is <strong>BO5</strong></li>
                 <li>Calculator allowed, toolscreen allowed, all legal MCSR ranked tools allowed.</li>
@@ -260,7 +260,7 @@ export default function App() {
               
               <h3 style={{ marginTop: '30px', marginBottom: '15px', color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>--- Seed Filter Information ---</h3>
               
-              <ul style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', fontSize: '0.95rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <ul style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', fontSize: '0.95rem', paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
                 <li>Portal room will not be more than 8 rooms deep in the Stronghold</li>
                 <li>There will be no negative fortress pieray spikes</li>
                 <li>Guaranteed 20 obsidian + 5 BEDs from bastion + Over 20 pearls + 3 fire res from bastion</li>
@@ -376,30 +376,30 @@ export default function App() {
                       </button>
                     </div>
                     
-                    <div className="comments-list custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
-                      <div className="comment-item">
-                        <strong>Crifzer</strong>
-                        <p>Every stat mogs everyone</p>
-                      </div>
-                      <div className="comment-item">
-                        <strong>Crifzer</strong>
-                        <p>I wish I had a sub-15. In minecraft too.</p>
-                      </div>
-                      <div className="comment-item">
-                        <strong>PrathamPlays10</strong>
-                        <p>He mogs me</p>
-                      </div>
-                      <div className="comment-item">
-                        <strong>PrathamPlays10</strong>
-                        <p>This guy is so much better than me</p>
-                      </div>
-                    </div>
-                    
-                    {showAddComment && (
-                      <div className="comment-inputs" style={{ marginTop: '15px' }}>
+                    {showAddComment ? (
+                      <div className="comment-inputs" style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
                         <input type="text" placeholder="Username" />
-                        <textarea rows="3" placeholder="Type a comment..."></textarea>
+                        <textarea rows="4" placeholder="Type a comment..."></textarea>
                         <button className="action-link" style={{ width: '100%', border: 'none', background: 'rgba(112, 166, 193, 0.15)' }}>Post Comment</button>
+                      </div>
+                    ) : (
+                      <div className="comments-list custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
+                        <div className="comment-item">
+                          <strong>Crifzer</strong>
+                          <p>Every stat mogs everyone</p>
+                        </div>
+                        <div className="comment-item">
+                          <strong>Crifzer</strong>
+                          <p>I wish I had a sub-15. In minecraft too.</p>
+                        </div>
+                        <div className="comment-item">
+                          <strong>PrathamPlays10</strong>
+                          <p>He mogs me</p>
+                        </div>
+                        <div className="comment-item">
+                          <strong>PrathamPlays10</strong>
+                          <p>This guy is so much better than me</p>
+                        </div>
                       </div>
                     )}
                   </div>
