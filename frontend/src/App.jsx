@@ -10,6 +10,7 @@ export default function App() {
 
   // --- Leaderboard States ---
   const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('elo');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [filterCoaches, setFilterCoaches] = useState(true);
@@ -37,8 +38,14 @@ export default function App() {
   useEffect(() => {
     fetch('/api/leaderboard')
       .then(res => res.json())
-      .then(data => setPlayers(data))
-      .catch(err => console.error(err));
+      .then(data => {
+        setPlayers(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   // Preload local assets
@@ -168,58 +175,60 @@ export default function App() {
       <div className="side-ribbon left-ribbon"></div>
       <div className="side-ribbon right-ribbon"></div>
 
-      <div className="top-header" style={{ display: (isMobile && selectedPlayer) ? 'none' : 'block' }}>
-        <h1 className="header-title" style={{ lineHeight: '1.2', marginBottom: '1.5rem' }}>
-          Crifzer Playoffs<br />
-          {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
-        </h1>
-        
-        {/* Controls Container */}
-        <div className="controls-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '1rem', flexDirection: 'column' }}>
-          
-          {/* Left Side: Tabs */}
-          <div>
-            {activeView === 'leaderboard' && (
-              <div className="tabs">
-                <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
-                <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
-                <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
-              </div>
-            )}
-          </div>
-          
-          {/* Right Side: Filter & Toggle Button Side-by-Side */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {activeView === 'leaderboard' && (
-              <label className="toggle-container" style={{ margin: 0 }}>
-                <span>Filter Coaches</span>
-                <div className="switch">
-                  <input type="checkbox" checked={filterCoaches} onChange={(e) => setFilterCoaches(e.target.checked)} />
-                  <span className="slider"></span>
-                </div>
-              </label>
-            )}
-            
-            <button 
-              className="toggle-view-btn"
-              onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
-            >
-              {activeView === 'leaderboard' ? '🏆 Switch to Tournament' : '📊 Switch to Leaderboard'}
-            </button>
-          </div>
-
+      <nav className="navbar">
+        <div className="navbar-left">
+          <h1 className="navbar-brand">
+            Crifzer Playoffs {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
+          </h1>
         </div>
-      </div>
+        
+        <div className="navbar-center">
+          {activeView === 'leaderboard' && (
+            <div className="tabs">
+              <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
+              <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
+              <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
+            </div>
+          )}
+        </div>
+        
+        <div className="navbar-right">
+          {activeView === 'leaderboard' && (
+            <label className="toggle-container" style={{ margin: 0 }}>
+              <span>Filter Coaches</span>
+              <div className="switch">
+                <input type="checkbox" checked={filterCoaches} onChange={(e) => setFilterCoaches(e.target.checked)} />
+                <span className="slider"></span>
+              </div>
+            </label>
+          )}
+          
+          <button 
+            className="toggle-view-btn"
+            onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
+          >
+            {activeView === 'leaderboard' ? '🏆 Tournament' : '📊 Leaderboard'}
+          </button>
+        </div>
+      </nav>
 
       {/* --- Main View Switcher --- */}
       {activeView === 'tournament' ? (
         <Tournament players={players} />
       ) : (
         <div className="main-layout">
-          {/* UPDATED: hide-list class checks for mobile overlapping */}
-          <div className={`list-section ${selectedPlayer ? 'split-active' : ''} ${(showComments || (isMobile && selectedPlayer)) ? 'hide-list' : ''}`}>
+          <div className="list-section">
             <div className="leaderboard-list">
-              {displayPlayers.map((player, index) => (
+              {loading ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <div key={`skeleton-${i}`} className="player-card skeleton-card" style={{ animationDelay: `${i * 0.05}s` }}>
+                    <div className="skeleton-rank"></div>
+                    <div className="skeleton-head"></div>
+                    <div className="skeleton-name"></div>
+                    <div className="skeleton-stat"></div>
+                  </div>
+                ))
+              ) : displayPlayers.map((player, index) => (
                 <div 
                   key={`${player.nickname}-${activeTab}-${filterCoaches}`} 
                   className={`player-card ${selectedPlayer?.nickname === player.nickname ? 'selected' : ''}`}
