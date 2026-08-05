@@ -193,7 +193,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
   const pData = allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase()) || {};
   return (
     <div className="bento-tile" style={{ flex: 1, padding: '30px', alignItems: 'center' }}>
-      <img src={matchPlayer.img || `/assets/heads/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ width: '120px', borderRadius: '12px', marginBottom: '15px', filter: 'drop-shadow(0 15px 20px rgba(0,0,0,0.6))' }} onError={(e) => { e.target.style.display = 'none'; }} />
+      <img src={`/assets/skins/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ height: '220px', width: 'auto', marginBottom: '15px', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.7))' }} onError={(e) => { e.target.style.display = 'none'; }} />
       <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>{matchPlayer.name}</h2>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', width: '100%' }}>

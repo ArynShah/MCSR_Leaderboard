@@ -639,6 +639,27 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 .action-link:hover { background: rgba(112, 166, 193, 0.2); border-color: rgba(112, 166, 193, 0.5); color: #FFF; transform: translateY(-2px); }
 
+
+/* =========================================
+   COMMENTS UI (RESTORED)
+   ========================================= */
+.comment-item {
+  padding: 12px 15px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 10px;
+}
+.comment-item strong { color: #70A6C1; display: block; font-size: 0.9rem; margin-bottom: 5px; }
+.comment-item p { margin: 0; font-size: 0.95rem; color: rgba(255,255,255,0.9); line-height: 1.4; }
+
+.comment-inputs input, .comment-inputs textarea {
+  width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 10px; outline: none; font-family: inherit;
+  box-sizing: border-box;
+}
+.comment-inputs input:focus, .comment-inputs textarea:focus { border-color: #70A6C1; }
+
 /* =========================================
    MOBILE RESPONSIVENESS (FIXED)
    ========================================= */
@@ -696,5 +717,24 @@ input:checked + .slider:before { transform: translateX(16px); }
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .bento-tile {
+    background: rgba(15, 18, 30, 0.95) !important;
+  }
+  .profile-overlay {
+    background: rgba(5, 7, 12, 0.9) !important;
+  }
+}
+@media (max-width: 600px) {
+  .navbar-brand {
+    font-size: 1.3rem !important;
+    text-align: center;
+  }
+  .navbar {
+    padding: 10px !important;
+    gap: 10px !important;
   }
 }
