@@ -234,5 +234,90 @@ const Match = ({ data, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
   );
 };
 
-// Ensure you keep your VsPlayerCard component here below 
-// ...
+// Reusable VS Player Card Component 
+const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
+  const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
+  
+  const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
+
+  if (isTbd) {
+    return (
+      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+        <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
+      </div>
+    );
+  }
+
+  const p = playerData || {
+    nickname: matchPlayer.name,
+    elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
+  };
+
+  const rankStyles = getRankStyles(p.elo);
+  const peakRankStyles = getRankStyles(p.peakElo);
+
+  return (
+    <div className="vs-player-card" style={{ width: cardWidth }}> 
+      <div className="profile-header">
+        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} style={{ height: '220px', marginBottom: '15px' }} />
+        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
+          {p.nickname}
+        </h2>
+      </div>
+
+      <div className="link-actions" style={{ marginBottom: '20px' }}>
+        <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
+        {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
+      </div>
+      
+      <div className="stats-grid">
+        <div className="stat-box" style={{ borderTop: `3px solid ${rankStyles.color}` }}>
+          <div className="stat-label">ELO</div>
+          <div className="stat-val" style={{color: rankStyles.color}}>{p.elo === 0 ? '???' : p.elo}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: `3px solid ${peakRankStyles.color}` }}>
+          <div className="stat-label">Peak ELO</div>
+          <div className="stat-val" style={{color: peakRankStyles.color}}>{p.peakElo === 0 ? '???' : p.peakElo}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">PB</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.pb)}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">Average</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.average)}</div>
+        </div>
+        <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">Total Completions</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{p.completions}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Match = ({ data, isFinal, connectLeft, onMatchClick }) => {
+  const p1 = data?.p1 || TBD_PLAYER;
+  const p2 = data?.p2 || TBD_PLAYER;
+
+  return (
+    <div 
+      className={`match ${isFinal ? 'final-match' : ''} ${connectLeft ? 'connect-left' : ''}`} 
+      onClick={() => onMatchClick(data)}
+      style={{ cursor: 'pointer' }}
+    >
+      <div className={`player ${p1.name === 'TBD' ? 'tbd-player' : ''}`}>
+        {p1.img ? <img src={p1.img} alt={p1.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
+        <span className="seed">{p1.seed}</span>
+        <span className="name" title={p1.name}>{p1.name}</span>
+      </div>
+      <div className={`player ${p2.name === 'TBD' ? 'tbd-player' : ''}`}>
+        {p2.img ? <img src={p2.img} alt={p2.name} className="player-head" /> : <div className="player-head placeholder-head"></div>}
+        <span className="seed">{p2.seed}</span>
+        <span className="name" title={p2.name}>{p2.name}</span>
+      </div>
+    </div>
+  );
+};
+
+export default Tournament;
