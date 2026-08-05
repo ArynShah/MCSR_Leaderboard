@@ -193,8 +193,8 @@ export default function App() {
             </div>
           ) : (
             <div className="tabs">
-              <button className="tab-btn" onClick={() => setShowSeedBoard(true)}>🏆 Seed Points</button>
-              <button className="tab-btn" onClick={() => setShowAbout(true)}>?</button>
+              <button className="tab-btn" style={{ border: "1px solid rgba(255,255,255,0.1)" }} onClick={() => setShowSeedBoard(true)}>🏆 Seed Points</button>
+              <button className="tab-btn" style={{ border: "1px solid rgba(255,255,255,0.1)", padding: "8px 16px" }} onClick={() => setShowAbout(true)}>?</button>
             </div>
           )}
         </div>
@@ -218,6 +218,27 @@ export default function App() {
           </button>
         </div>
       </nav>
+
+
+      {/* Tournament Info Modals */}
+      {showSeedBoard && (
+        <div className="profile-overlay" onClick={() => setShowSeedBoard(false)}>
+          <div className="bento-panel" style={{ width: '500px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowSeedBoard(false)}>&times;</button>
+            <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '15px' }}>Seed Points</h2>
+            <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>Seed points are accumulated through regular season matches and determine playoff placements.</p>
+          </div>
+        </div>
+      )}
+      {showAbout && (
+        <div className="profile-overlay" onClick={() => setShowAbout(false)}>
+          <div className="bento-panel" style={{ width: '500px', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setShowAbout(false)}>&times;</button>
+            <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '15px' }}>About Tournament</h2>
+            <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>Welcome to the Crifzer Playoffs! This double-elimination bracket pits the top seeded players against each other in Best-of-3 matchups.</p>
+          </div>
+        </div>
+      )}
 
       {/* --- Main View Switcher --- */}
       {activeView === 'tournament' ? (
@@ -303,17 +324,17 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className={`bento-tile bento-stat ${getPbStyles(selectedPlayer.pb).class}`}>
+                  <div className="bento-tile bento-stat" style={{ borderTop: "2px solid rgba(255,255,255,0.2)" }}>
                     <div className="bento-label">Personal Best</div>
-                    <div className="bento-val" style={{color: getPbStyles(selectedPlayer.pb).color}}>{formatTime(selectedPlayer.pb)}</div>
+                    <div className="bento-val" style={{color: "#fff"}}>{formatTime(selectedPlayer.pb)}</div>
                   </div>
-                  <div className={`bento-tile bento-stat ${getPbStyles(selectedPlayer.average).class}`}>
+                  <div className="bento-tile bento-stat" style={{ borderTop: "2px solid rgba(255,255,255,0.2)" }}>
                     <div className="bento-label">Average</div>
-                    <div className="bento-val" style={{color: getPbStyles(selectedPlayer.average).color}}>{formatTime(selectedPlayer.average)}</div>
+                    <div className="bento-val" style={{color: "#fff"}}>{formatTime(selectedPlayer.average)}</div>
                   </div>
-                  <div className={`bento-tile bento-stat bento-comp ${getCompletionsStyles(selectedPlayer.completions).class}`}>
+                  <div className="bento-tile bento-stat bento-comp" style={{ borderTop: "2px solid rgba(255,255,255,0.2)" }}>
                     <div className="bento-label">Total Completions</div>
-                    <div className="bento-val" style={{color: getCompletionsStyles(selectedPlayer.completions).color}}>{selectedPlayer.completions}</div>
+                    <div className="bento-val" style={{color: "#fff"}}>{selectedPlayer.completions}</div>
                   </div>
                 </div>
 
