@@ -25,22 +25,19 @@ const formatTime = (ms) => {
 };
 
 const getRankStyles = (elo) => {
-  if (elo >= 2000) return { color: '#FF5555', glow: 'rgba(255, 85, 85, 0.5)' };
-  if (elo >= 1500) return { color: '#55FFFF', glow: 'rgba(85, 255, 255, 0.5)' };
-  if (elo >= 1200) return { color: '#55FF55', glow: 'rgba(85, 255, 255, 0.5)' };
-  if (elo >= 900) return { color: '#FFAA00', glow: 'rgba(255, 170, 0, 0.5)' };
-  if (elo >= 600) return { color: '#FFFFFF', glow: 'rgba(255, 255, 255, 0.3)' };
-  return { color: '#AAAAAA', glow: 'rgba(170, 170, 170, 0.2)' };
+  if (elo >= 2000) return { color: '#FF5555', borderColor: 'rgba(255, 85, 85, 0.5)', glow: 'rgba(255, 85, 85, 0.5)' };
+  if (elo >= 1500) return { color: '#55FFFF', borderColor: 'rgba(85, 255, 255, 0.5)', glow: 'rgba(85, 255, 255, 0.5)' };
+  if (elo >= 1200) return { color: '#55FF55', borderColor: 'rgba(85, 255, 110, 0.5)', glow: 'rgba(85, 255, 255, 0.5)' };
+  if (elo >= 900) return { color: '#FFAA00', borderColor: 'rgba(255, 170, 0, 0.5)', glow: 'rgba(255, 170, 0, 0.5)' };
+  if (elo >= 600) return { color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.5)', glow: 'rgba(255, 255, 255, 0.3)' };
+  return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.2)' };
 };
 
 const Tournament = ({ players = [] }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [showSeedBoard, setShowSeedBoard] = useState(false); 
   const [selectedMatch, setSelectedMatch] = useState(null);
-  
-  // State for tracking the hovered player path
   const [hoveredPlayer, setHoveredPlayer] = useState(null);
-  
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -65,7 +62,7 @@ const Tournament = ({ players = [] }) => {
 
   const getPlayerBySeed = (seed) => sortedPlayers.find(p => p.seed === seed) || TBD_PLAYER;
 
-  // 3. Bracket Matchup Generator - QF mapped to 2-0 scores
+  // 3. Bracket Matchup Generator
   const generatedRound1 = {
     match1: { p1: { ...getPlayerBySeed(1), score: 2 }, p2: { ...getPlayerBySeed(7), score: 0 } },
     match2: { p1: { ...getPlayerBySeed(3), score: 2 }, p2: { ...getPlayerBySeed(8), score: 0 } },
@@ -88,24 +85,55 @@ const Tournament = ({ players = [] }) => {
       
       {/* Header */}
       <div className="tournament-header" style={{ marginTop: '-55px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
-        <button 
-          className="toggle-view-btn" 
-          onClick={() => setShowSeedBoard(true)} 
-          title="Seed Points"
-        >
+        <button className="toggle-view-btn" onClick={() => setShowSeedBoard(true)} title="Seed Points">
           🏆 Seed Points
         </button>
-        <button 
-          className="toggle-view-btn" 
-          onClick={() => setShowAbout(true)} 
-          title="About the Tournament"
-          style={{ padding: '8px 14px', borderRadius: '50%' }}
-        >
+        <button className="toggle-view-btn" onClick={() => setShowAbout(true)} title="About the Tournament" style={{ padding: '8px 14px', borderRadius: '50%' }}>
           ?
         </button>
       </div>
 
-      {/* Keep your Modals (showSeedBoard, showAbout, selectedMatch) exactly as they are here... */}
+      {/* VS Match Popup Modal */}
+      {selectedMatch && (
+        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }} onClick={() => setSelectedMatch(null)}>
+          <div 
+            className="profile-panel vs-modal-panel custom-scrollbar" 
+            onClick={e => e.stopPropagation()}
+            style={{ 
+              width: isMobile ? '100%' : 'auto',
+              maxWidth: isMobile ? '500px' : '1200px',
+              padding: isMobile ? '40px 20px 20px' : '50px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'center' : 'stretch',
+              gap: isMobile ? '20px' : '40px',
+              position: 'relative'
+            }}
+          >
+            <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setSelectedMatch(null)}>&times;</button>
+            
+            <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
+            
+            <div className="vs-separator" style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: isMobile ? '2.5rem' : '3.5rem', 
+              fontWeight: 900, 
+              color: '#70A6C1', 
+              fontStyle: 'italic', 
+              textShadow: '0 0 20px rgba(112,166,193,0.5)',
+              margin: isMobile ? '10px 0' : '0 20px' 
+            }}>
+              VS
+            </div>
+            
+            <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
+          </div>
+        </div>
+      )}
       
       <div className="bracket-scroll-wrapper">
         <div className="bracket-wrapper">
@@ -149,7 +177,70 @@ const Tournament = ({ players = [] }) => {
   );
 };
 
-// Updated Match Component matching your structure but with hover/score logic
+// Reusable VS Player Card Component based on main leaderboard aesthetic
+const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
+  const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
+  
+  // Find full stats from the API data passed into allPlayers
+  const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
+
+  if (isTbd) {
+    return (
+      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+        <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
+      </div>
+    );
+  }
+
+  // Fallback structure in case API data is missing for a user
+  const p = playerData || {
+    nickname: matchPlayer.name,
+    elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
+  };
+
+  const rankStyles = getRankStyles(p.elo);
+  const peakRankStyles = getRankStyles(p.peakElo);
+
+  return (
+    <div className="vs-player-card" style={{ width: cardWidth, display: 'flex', flexDirection: 'column' }}> 
+      <div className="profile-header">
+        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
+        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2.2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
+          {p.nickname}
+        </h2>
+      </div>
+
+      <div className="link-actions">
+        <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
+        {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
+      </div>
+      
+      <div className="stats-grid">
+        <div className="stat-box" style={{ borderTop: `3px solid ${rankStyles.color}` }}>
+          <div className="stat-label">ELO</div>
+          <div className="stat-val" style={{color: rankStyles.color}}>{p.elo === 0 ? '???' : p.elo}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: `3px solid ${peakRankStyles.color}` }}>
+          <div className="stat-label">Peak ELO</div>
+          <div className="stat-val" style={{color: peakRankStyles.color}}>{p.peakElo === 0 ? '???' : p.peakElo}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">PB</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.pb)}</div>
+        </div>
+        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">Average</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.average)}</div>
+        </div>
+        <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
+          <div className="stat-label">Total Completions</div>
+          <div className="stat-val" style={{color: '#FFFFFF'}}>{p.completions}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Match = ({ data, isFinal, connectLeft, onMatchClick, hoveredPlayer, setHoveredPlayer }) => {
   const p1 = data?.p1 || TBD_PLAYER;
   const p2 = data?.p2 || TBD_PLAYER;

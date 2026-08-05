@@ -592,3 +592,34 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #70A6C1;
   border: 1px solid rgba(112, 166, 193, 0.4);
 }
+
+
+/* =========================================
+   VS MODAL OVERRIDES
+   ========================================= */
+
+.vs-modal-panel {
+  flex-direction: row; /* Default for desktop */
+}
+
+.vs-player-card {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .vs-modal-panel {
+    flex-direction: column !important;
+    gap: 15px !important;
+    padding-top: 50px !important; /* Make room for absolute close button */
+  }
+  
+  .vs-separator {
+    margin: 10px 0 !important;
+  }
+  
+  /* Scale down the avatars slightly on mobile so it requires less scrolling */
+  .vs-modal-panel .profile-skin {
+    height: 180px; 
+    margin-bottom: 15px;
+  }
+}
