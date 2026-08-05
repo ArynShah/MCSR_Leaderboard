@@ -368,8 +368,6 @@ input:checked + .slider:before { transform: translateX(16px); }
   width: 100%;
   padding: 3rem 1rem;
   color: #e0e0e0;
-  position: relative;
-  z-index: 30;
 }
 
 /* --- Mobile Scroll Fix --- */
