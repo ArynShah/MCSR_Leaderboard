@@ -95,26 +95,47 @@ const Tournament = ({ players = [] }) => {
 
       {/* VS Match Popup Modal */}
       {selectedMatch && (
-        <div className="profile-overlay fullscreen-mode" style={{ zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }} onClick={() => setSelectedMatch(null)}>
+        <div 
+          className="profile-overlay fullscreen-mode" 
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100vw', 
+            height: '100vh', 
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            zIndex: 99999, 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            padding: '20px',
+            boxSizing: 'border-box'
+          }} 
+          onClick={() => setSelectedMatch(null)}
+        >
           <div 
             className="profile-panel vs-modal-panel custom-scrollbar" 
             onClick={e => e.stopPropagation()}
             style={{ 
-              width: isMobile ? '100%' : 'auto',
-              maxWidth: isMobile ? '500px' : '1200px',
+              width: isMobile ? '100%' : 'max-content',
+              maxWidth: '1200px',
+              flex: 'none', /* OVERRIDES the 450px strict width from App.css */
               padding: isMobile ? '40px 20px 20px' : '50px',
               maxHeight: '90vh',
               overflowY: 'auto',
               display: 'flex',
               flexDirection: isMobile ? 'column' : 'row',
               alignItems: isMobile ? 'center' : 'stretch',
+              justifyContent: 'center',
               gap: isMobile ? '20px' : '40px',
               position: 'relative'
             }}
           >
             <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setSelectedMatch(null)}>&times;</button>
             
-            <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
+            <VsPlayerCard matchPlayer={selectedMatch.p1} allPlayers={players} cardWidth={isMobile ? "100%" : "350px"} />
             
             <div className="vs-separator" style={{ 
               display: 'flex',
@@ -125,12 +146,12 @@ const Tournament = ({ players = [] }) => {
               color: '#70A6C1', 
               fontStyle: 'italic', 
               textShadow: '0 0 20px rgba(112,166,193,0.5)',
-              margin: isMobile ? '10px 0' : '0 20px' 
+              margin: isMobile ? '10px 0' : '0' 
             }}>
               VS
             </div>
             
-            <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth={isMobile ? "100%" : "380px"} />
+            <VsPlayerCard matchPlayer={selectedMatch.p2} allPlayers={players} cardWidth={isMobile ? "100%" : "350px"} />
           </div>
         </div>
       )}
