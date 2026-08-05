@@ -33,9 +33,7 @@ const getRankStyles = (elo) => {
   return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.2)' };
 };
 
-const Tournament = ({ players = [] }) => {
-  const [showAbout, setShowAbout] = useState(false);
-  const [showSeedBoard, setShowSeedBoard] = useState(false); 
+const Tournament = ({ players = [], showSeedBoard, setShowSeedBoard, showAbout, setShowAbout }) => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [hoveredPlayer, setHoveredPlayer] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -83,15 +81,7 @@ const Tournament = ({ players = [] }) => {
   return (
     <div className="tournament-container" style={{ color: '#fff' }}>
       
-      {/* Header */}
-      <div className="tournament-header" style={{ marginTop: '-55px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
-        <button className="toggle-view-btn" onClick={() => setShowSeedBoard(true)} title="Seed Points">
-          🏆 Seed Points
-        </button>
-        <button className="toggle-view-btn" onClick={() => setShowAbout(true)} title="About the Tournament" style={{ padding: '8px 14px', borderRadius: '50%' }}>
-          ?
-        </button>
-      </div>
+
 
       {/* VS Match Popup Modal */}
       {selectedMatch && (
@@ -200,62 +190,28 @@ const Tournament = ({ players = [] }) => {
 
 // Reusable VS Player Card Component based on main leaderboard aesthetic
 const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
-  const isTbd = !matchPlayer || matchPlayer.name === 'TBD';
-  
-  // Find full stats from the API data passed into allPlayers
-  const playerData = isTbd ? null : allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase());
-
-  if (isTbd) {
-    return (
-      <div style={{ width: cardWidth, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-        <h2 style={{ color: 'rgba(255,255,255,0.2)', fontSize: '3rem', fontStyle: 'italic' }}>TBD</h2>
-      </div>
-    );
-  }
-
-  // Fallback structure in case API data is missing for a user
-  const p = playerData || {
-    nickname: matchPlayer.name,
-    elo: 0, peakElo: 0, pb: 0, average: 0, completions: 0, pbMatchId: null
-  };
-
-  const rankStyles = getRankStyles(p.elo);
-  const peakRankStyles = getRankStyles(p.peakElo);
-
+  const pData = allPlayers.find(p => p.nickname === matchPlayer.name) || {};
   return (
-    <div className="vs-player-card" style={{ width: cardWidth, display: 'flex', flexDirection: 'column' }}> 
-      <div className="profile-header">
-        <img className="profile-skin" src={`/assets/skins/${p.nickname.toLowerCase()}.png`} alt={p.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
-        <h2 style={{ color: rankStyles.color, textShadow: `0 0 20px ${rankStyles.glow}`, fontSize: '2.2rem', fontWeight: '900', textAlign: 'center', margin: 0 }}>
-          {p.nickname}
-        </h2>
-      </div>
-
-      <div className="link-actions">
-        <a href={`https://mcsrranked.com/stats/${p.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link">Ranked Stats</a>
-        {p.pbMatchId && <a href={`https://mcsrranked.com/stats/${p.nickname}/${p.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link">View PB</a>}
-      </div>
+    <div className="bento-tile" style={{ flex: 1, padding: '30px', alignItems: 'center' }}>
+      <img src={matchPlayer.img || `/assets/heads/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ width: '120px', borderRadius: '12px', marginBottom: '20px', filter: 'drop-shadow(0 15px 20px rgba(0,0,0,0.6))' }} onError={(e) => { e.target.style.display = 'none'; }} />
+      <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem' }}>{matchPlayer.name}</h2>
       
-      <div className="stats-grid">
-        <div className="stat-box" style={{ borderTop: `3px solid ${rankStyles.color}` }}>
-          <div className="stat-label">ELO</div>
-          <div className="stat-val" style={{color: rankStyles.color}}>{p.elo === 0 ? '???' : p.elo}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', width: '100%' }}>
+        <div className="bento-tile bento-stat" style={{ padding: '15px' }}>
+          <div className="bento-label">Score</div>
+          <div className="bento-val">{matchPlayer.score !== null ? matchPlayer.score : '-'}</div>
         </div>
-        <div className="stat-box" style={{ borderTop: `3px solid ${peakRankStyles.color}` }}>
-          <div className="stat-label">Peak ELO</div>
-          <div className="stat-val" style={{color: peakRankStyles.color}}>{p.peakElo === 0 ? '???' : p.peakElo}</div>
+        <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: pData.elo ? `2px solid ${getRankStyles(pData.elo).color}` : '' }}>
+          <div className="bento-label">ELO</div>
+          <div className="bento-val" style={{color: pData.elo ? getRankStyles(pData.elo).color : '#fff'}}>{pData.elo || '???'}</div>
         </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">PB</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.pb)}</div>
+        <div className="bento-tile bento-stat" style={{ padding: '15px' }}>
+          <div className="bento-label">PB</div>
+          <div className="bento-val" style={{ fontSize: '1.4rem' }}>{formatTime(pData.pb)}</div>
         </div>
-        <div className="stat-box" style={{ borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Average</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{formatTime(p.average)}</div>
-        </div>
-        <div className="stat-box" style={{ gridColumn: 'span 2', borderTop: '3px solid #FFFFFF' }}>
-          <div className="stat-label">Total Completions</div>
-          <div className="stat-val" style={{color: '#FFFFFF'}}>{p.completions}</div>
+        <div className="bento-tile bento-stat" style={{ padding: '15px' }}>
+          <div className="bento-label">Average</div>
+          <div className="bento-val" style={{ fontSize: '1.4rem' }}>{formatTime(pData.average)}</div>
         </div>
       </div>
     </div>

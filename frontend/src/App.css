@@ -75,6 +75,8 @@ body, html { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background:
   background: linear-gradient(135deg, #E0F2FE, #70A6C1, #315594);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  padding-bottom: 8px;
+  line-height: 1.1;
   filter: drop-shadow(0 2px 10px rgba(49, 85, 148, 0.4));
 }
 
@@ -195,9 +197,9 @@ input:checked + .slider:before { transform: translateX(16px); }
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 1000;
-  background: rgba(5, 7, 12, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(5, 7, 12, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -205,197 +207,87 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 .profile-container {
-  display: flex; gap: 20px; align-items: flex-start;
-  max-width: 90vw;
+  display: flex; gap: 20px; align-items: stretch;
+  max-width: 95vw;
   max-height: 90vh;
 }
-.profile-container.show-comments { max-width: 1100px; }
+.profile-container.show-comments { max-width: 1200px; }
 
 .bento-panel {
-  width: 500px;
+  width: 850px;
   max-width: 100%;
-  background: rgba(15, 18, 30, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(112, 166, 193, 0.3); 
-  border-top: 1px solid rgba(112, 166, 193, 0.8);
-  border-radius: 28px; 
-  padding: 35px; 
-  box-shadow: 0 40px 100px rgba(0,0,0,0.9), inset 0 2px 20px rgba(255,255,255,0.03);
-  position: relative;
-  display: flex; flex-direction: column; gap: 25px;
-  animation: modalPopIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.profile-container.show-comments .bento-panel { width: 500px; }
-.bento-header {
-  display: flex; gap: 25px; align-items: center;
-}
-
-.bento-skin-container {
-  flex: 0 0 140px; height: 180px;
-  display: flex; justify-content: center; align-items: flex-start;
-  background: radial-gradient(circle at top, rgba(112, 166, 193, 0.1), transparent 70%);
-  border-radius: 20px;
-}
-.profile-skin { height: 100%; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.6)); animation: hoverSkin 3s ease-in-out infinite; }
-@keyframes hoverSkin { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-.bento-title-section { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.bento-name { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; margin: 0; line-height: 1; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-.bento-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-
-.bento-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 20px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  animation: modalPopIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  position: relative;
 }
-.bento-comp { grid-column: span 2; }
 
-.bento-box {
-  background: rgba(20, 24, 39, 0.6);
+.bento-panel .close-btn {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  display: flex; justify-content: center; align-items: center;
+}
+
+.bento-tile {
+  background: rgba(15, 18, 30, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 20px;
-  padding: 20px;
-  display: flex; flex-direction: column; justify-content: center;
-  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-radius: 28px;
+  padding: 25px;
+  box-shadow: inset 0 2px 20px rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
 }
-.bento-box:hover { transform: translateY(-3px) scale(1.02); }
+.bento-tile:hover { transform: translateY(-2px) scale(1.01); }
 
+.bento-skin-tile {
+  grid-row: span 3;
+  grid-column: span 1;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border-top: 1px solid rgba(112, 166, 193, 0.5);
+}
+
+.bento-skin-tile .profile-skin {
+  height: 220px;
+  filter: drop-shadow(0 15px 20px rgba(0,0,0,0.6));
+  animation: hoverSkin 3s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+.bento-name { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; margin: 0; line-height: 1; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+
+.bento-stat { justify-content: center; align-items: flex-start; }
+.bento-comp { grid-column: span 2; }
 .bento-label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
 .bento-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; }
 
 .comments-panel {
-  flex: 0 0 400px;
-  background: rgba(12, 14, 25, 0.85);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(112, 166, 193, 0.2);
-  border-radius: 32px;
+  flex: 0 0 350px;
+  background: rgba(15, 18, 30, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(112, 166, 193, 0.5);
+  border-radius: 28px;
   padding: 30px;
   display: flex; flex-direction: column;
-  animation: popInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+  animation: popInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
-.comments-list {
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 15px 0;
-  padding-right: 10px;
-}
-
-.comment-item {
-  background: rgba(255, 255, 255, 0.04);
-  padding: 15px;
-  border-radius: 15px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.comment-item strong { color: #70A6C1; display: block; font-size: 0.9rem; margin-bottom: 5px; }
-.comment-item p { margin: 0; font-size: 0.95rem; color: rgba(255,255,255,0.9); line-height: 1.4; }
-
-.comment-inputs input, .comment-inputs textarea {
-  width: 100%;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 12px 15px;
-  color: white;
-  margin-bottom: 10px;
-  outline: none;
-  font-family: inherit;
-}
-
-.comment-inputs input:focus, .comment-inputs textarea:focus { border-color: #70A6C1; }
-
-.close-btn {
-  /* Removed position: absolute, top, and right */
-  width: 40px; height: 40px;
-  border-radius: 50%; 
-  background: rgba(255,255,255,0.05); 
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #70A6C1; 
-  font-size: 1.5rem; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  cursor: pointer; 
-  transition: all 0.3s ease; 
-  z-index: 10;
-  flex-shrink: 0; /* Prevents the button from morphing into an oval on tiny screens */
-}
-
-.profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; }
-.profile-skin { height: 280px; margin-bottom: 20px; filter: drop-shadow(0 20px 30px black); animation: float 4s ease-in-out infinite; }
-
-.link-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-.action-link {
-  padding: 10px 18px; background: rgba(112, 166, 193, 0.15);
-  border: 1px solid rgba(112, 166, 193, 0.3); color: #70A6C1;
-  text-decoration: none; font-weight: 600; border-radius: 20px; font-size: 0.85rem; transition: all 0.3s ease;
-  cursor: pointer;
-}
-.action-link:hover:not(:disabled) { background: #70A6C1; color: #121212; transform: translateY(-3px); }
-
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-.stat-box {
-  background: rgba(0, 0, 0, 0.2); padding: 18px; border-radius: 12px;
-  text-align: center; border: 1px solid rgba(255,255,255,0.05); 
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-}
-.stat-label { font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 700;}
-.stat-val { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;}
-
-/* =========================================
-   MOBILE RESPONSIVENESS (FIXED)
-   ========================================= */
-@media (max-width: 1024px) {
-  .main-layout { display: block; }
-  
-  .profile-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85); z-index: 1000; 
-    display: flex; justify-content: center; align-items: center; /* Perfectly centers modals */
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  .profile-container {
-    width: 100%;
-    max-width: 450px;
-    margin: 0 auto; /* Safety centering */
-    align-items: center;
-  }
-
-  .profile-container.show-comments .bento-panel { display: none; }
-  
-  /* Reset height/width variables so they fit screen */
-  .bento-panel, .comments-panel { 
-    width: 100%; 
-    flex: none; 
-    max-height: 90vh; 
-    overflow-y: auto;
-  }
-}
-
-@media (max-width: 600px) {
-  .player-card { padding: 12px 10px; }
-  .player-name { font-size: 1.1rem; }
-  .head-wrapper { margin: 0 10px 0 15px; }
-  
-  /* FIX: Prevents ELO numbers from breaking boundaries */
-  .stat-badge { 
-    font-size: 1rem; 
-    min-width: auto; 
-    padding: 6px 12px;
-  }
-
-  .bento-grid { grid-template-columns: 1fr; }
-}
-
 /* =========================================
    RICH TIER CLASSES (REFINED)
    ========================================= */
