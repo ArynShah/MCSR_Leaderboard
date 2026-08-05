@@ -122,7 +122,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 
 .main-layout {
   display: flex; justify-content: center; align-items: flex-start;
-  max-width: 900px; margin: 0 auto; position: relative; z-index: 30;
+  max-width: 900px; margin: 0 auto;
   padding: 0 15px;
 }
 .list-section { width: 100%; max-width: 900px; }
@@ -629,6 +629,16 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 
+
+.action-link {
+  display: block; width: 100%; text-align: center;
+  padding: 10px 18px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); color: #70A6C1;
+  text-decoration: none; font-weight: 600; border-radius: 9999px; 
+  font-size: 0.9rem; transition: all 0.2s ease; cursor: pointer;
+}
+.action-link:hover { background: rgba(112, 166, 193, 0.2); border-color: rgba(112, 166, 193, 0.5); color: #FFF; transform: translateY(-2px); }
+
 /* =========================================
    MOBILE RESPONSIVENESS (FIXED)
    ========================================= */
@@ -674,4 +684,17 @@ input:checked + .slider:before { transform: translateX(16px); }
   .player-head { width: 40px; height: 40px; }
   .rank { font-size: 1.2rem; width: 30px; }
   .bento-name { font-size: 1.8rem !important; }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+  .navbar-right {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 }
