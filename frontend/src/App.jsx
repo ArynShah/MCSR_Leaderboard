@@ -342,19 +342,16 @@ export default function App() {
                     <div className="link-actions bento-actions" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                       <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>Ranked Stats</a>
                       {selectedPlayer.pbMatchId && (
-                        <>
-                          <button 
-                            className="action-link" 
-                            onClick={() => {
-                              setShowPbViewer(!showPbViewer);
-                              if (!showPbViewer) setShowComments(false);
-                            }} 
-                            style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}
-                          >
-                            {showPbViewer ? 'Hide PB' : 'View PB'}
-                          </button>
-                          <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>View on Ranked Website</a>
-                        </>
+                        <button 
+                          className="action-link" 
+                          onClick={() => {
+                            setShowPbViewer(!showPbViewer);
+                            if (!showPbViewer) setShowComments(false);
+                          }} 
+                          style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}
+                        >
+                          {showPbViewer ? 'Hide PB' : 'View PB'}
+                        </button>
                       )}
                       <button className="action-link" onClick={() => {
                         setShowComments(!showComments);
@@ -373,7 +370,7 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className={`bento-tile bento-stat ${getPbStyles(selectedPlayer.pb).class || ''}`} style={{ position: 'relative' }}>
+                  <div className="bento-tile bento-stat" style={{ position: 'relative' }}>
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
                       {[...Array(5)].map((_, i) => (
                         <div key={i} style={{ 

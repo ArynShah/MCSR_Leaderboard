@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css'; 
 
 const formatTime = (ms) => {
-  if (!ms) return 'N/A';
+  if (ms == null) return 'N/A';
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -110,12 +110,15 @@ export default function PbViewer({ matchId, nickname, onClose }) {
 
   return (
     <div className="comments-panel" style={{ display: 'flex', flexDirection: 'column' }}>
-      <div className="comments-header" style={{ marginBottom: '25px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="comments-header" style={{ marginBottom: '15px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Personal Best Splits</h3>
-          <p style={{ margin: '5px 0 0 0', color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Match #{matchId}</p>
+          <h3 style={{ margin: 0, fontSize: '1.2rem' }}>Personal Best Splits</h3>
+          <p style={{ margin: '3px 0 0 0', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Match #{matchId}</p>
         </div>
-        {onClose && <button className="close-btn mobile-only-btn" style={{ position: 'relative', top: 'auto', right: 'auto' }} onClick={onClose}>&times;</button>}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <a href={`https://mcsrranked.com/stats/${nickname}/${matchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ padding: '4px 10px', fontSize: '0.75rem', margin: 0, textDecoration: 'none' }}>View more</a>
+          {onClose && <button className="close-btn mobile-only-btn" style={{ position: 'relative', top: 'auto', right: 'auto', width: '28px', height: '28px' }} onClick={onClose}>&times;</button>}
+        </div>
       </div>
 
       <div className="custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
@@ -140,14 +143,14 @@ export default function PbViewer({ matchId, nickname, onClose }) {
           const isMajor = ev.type === 'major';
 
           return (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: '25px', position: 'relative' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', position: 'relative' }}>
               {/* Timeline Line (drawn downwards to next item, except for last item) */}
               {!isLast && (
                 <div style={{
                   position: 'absolute',
                   left: '-20px',
                   top: '50%',
-                  height: 'calc(100% + 25px)',
+                  height: 'calc(100% + 15px)',
                   width: '4px',
                   backgroundColor: lineColor,
                   boxShadow: `0 0 8px ${lineColor}88`,
@@ -158,45 +161,49 @@ export default function PbViewer({ matchId, nickname, onClose }) {
               {/* Node Marker */}
               <div style={{
                 position: 'absolute',
-                left: '-26px',
-                width: isMajor ? '16px' : '12px',
-                height: isMajor ? '16px' : '12px',
+                width: isMajor ? '12px' : '8px',
+                height: isMajor ? '12px' : '8px',
                 borderRadius: '50%',
                 backgroundColor: isMajor ? lineColor : 'rgba(255,255,255,0.9)',
-                border: isMajor ? 'none' : `3px solid ${lineColor}`,
-                boxShadow: isMajor ? `0 0 10px ${lineColor}` : 'none',
+                border: isMajor ? 'none' : `2px solid ${lineColor}`,
+                boxShadow: isMajor ? `0 0 8px ${lineColor}` : 'none',
                 zIndex: 2,
-                left: isMajor ? '-26px' : '-24px' // centering correction
+                left: isMajor ? '-24px' : '-22px' // centering correction for 4px line at -20px
               }} />
 
               {/* Time Badge */}
               <div style={{ 
-                backgroundColor: isMajor ? `${lineColor}33` : 'rgba(255,255,255,0.1)',
-                color: isMajor ? lineColor : '#FFF',
-                border: `1px solid ${isMajor ? lineColor : 'rgba(255,255,255,0.2)'}`,
-                padding: '4px 12px',
-                borderRadius: '12px',
+                backgroundColor: `${lineColor}22`,
+                color: lineColor,
+                border: `1px solid ${lineColor}`,
+                padding: '2px 8px',
+                borderRadius: '8px',
                 fontWeight: 'bold',
                 fontFamily: 'monospace',
-                fontSize: '1.1rem',
-                marginRight: '15px',
-                minWidth: '65px',
+                fontSize: '0.85rem',
+                marginRight: '12px',
+                width: '60px',
                 textAlign: 'center',
-                boxShadow: isMajor ? `0 0 8px ${lineColor}44` : 'none'
+                boxShadow: isMajor ? `0 0 8px ${lineColor}44` : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '22px'
               }}>
                 {formatTime(ev.time)}
               </div>
 
               {/* Label */}
               <div style={{ 
-                color: isMajor ? '#FFF' : 'rgba(255,255,255,0.7)',
-                fontSize: isMajor ? '1.2rem' : '1.0rem',
+                color: isMajor ? '#FFF' : 'rgba(255,255,255,0.8)',
+                fontSize: isMajor ? '0.95rem' : '0.85rem',
                 fontWeight: isMajor ? '600' : '400',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px',
+                whiteSpace: 'nowrap'
               }}>
-                {ev.image && <img src={ev.image} alt="" style={{ width: isMajor ? '28px' : '24px', height: isMajor ? '28px' : '24px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} />}
+                {ev.image && <img src={ev.image} alt="" style={{ width: isMajor ? '20px' : '16px', height: isMajor ? '20px' : '16px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} />}
                 {ev.type === 'major' ? PHASE_CONFIG[ev.phase].label : ev.label}
               </div>
             </div>
