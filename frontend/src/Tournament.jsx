@@ -37,20 +37,21 @@ export const getPbColor = (ms) => {
   if (!ms) return '#F0F1F2';
   if (ms < 540000) return '#FF0055'; // Sub 9
   if (ms < 600000) return '#FF0000'; // Sub 10
-  if (ms < 720000) return '#FF3300'; // Sub 12
-  if (ms < 780000) return '#FF7F50'; // Sub 13
-  if (ms < 900000) return '#FFB347'; // Sub 15
-  if (ms < 1200000) return '#FFE066'; // Sub 20
-  return '#F0F1F2';
+  if (ms < 660000) return '#FF3300'; // Sub 11
+  if (ms < 720000) return '#FF7F50'; // Sub 12
+  if (ms < 780000) return '#FFB347'; // Sub 13
+  if (ms < 900000) return '#FFE066'; // Sub 15
+  if (ms < 1200000) return '#F0F1F2'; // Sub 20 (base color)
+  return '#AAAAAA';
 };
 
 export const getPbFilledBars = (ms) => {
   if (!ms) return 0;
-  if (ms < 540000) return 5;
-  if (ms < 600000) return 4;
-  if (ms < 720000) return 3;
-  if (ms < 780000) return 2;
-  if (ms < 900000) return 1;
+  if (ms < 600000) return 5; // Sub 10
+  if (ms < 660000) return 4; // Sub 11
+  if (ms < 780000) return 3; // Sub 13
+  if (ms < 900000) return 2; // Sub 15
+  if (ms < 1200000) return 1; // Sub 20
   return 0;
 };
 
@@ -226,7 +227,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
           <div className="bento-label">Peak ELO</div>
           <div className="bento-val" style={{color: pData.peakElo ? getRankStyles(pData.peakElo).color : '#fff'}}>{pData.peakElo || '???'}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative', overflow: 'hidden' }}>
+        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
             {[...Array(5)].map((_, i) => (
               <div key={i} style={{ 
@@ -234,7 +235,10 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
                 flex: 1, 
                 backgroundColor: i < getPbFilledBars(pData.pb) ? getPbColor(pData.pb) : 'rgba(255,255,255,0.2)',
                 boxShadow: i < getPbFilledBars(pData.pb) ? `0 0 5px ${getPbColor(pData.pb)}` : 'none',
-                borderRadius: '2px'
+                borderTopLeftRadius: i === 0 ? '28px' : '2px',
+                borderBottomLeftRadius: i === 0 ? '0' : '2px',
+                borderTopRightRadius: i === 4 ? '28px' : '2px',
+                borderBottomRightRadius: i === 4 ? '0' : '2px'
               }} />
             ))}
           </div>

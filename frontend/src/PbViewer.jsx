@@ -20,7 +20,7 @@ const PHASE_CONFIG = {
   finish: { color: '#55FF55', label: 'Finish' }
 };
 
-export default function PbViewer({ matchId, nickname }) {
+export default function PbViewer({ matchId, nickname, onClose }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,32 +91,36 @@ export default function PbViewer({ matchId, nickname }) {
   let bastionChest = playerTimelines.find(t => t.type === 'nether.loot_bastion');
   let blazeRod = playerTimelines.find(t => t.type === 'nether.obtain_blaze_rod');
 
-  // Build a unified timeline array
   const events = [];
   
-  if (iron) events.push({ type: 'minor', label: 'Obtain Iron', time: iron.time, icon: '⛏️' });
-  if (nether) events.push({ type: 'major', phase: 'nether', time: nether.time });
-  if (bastion) events.push({ type: 'major', phase: 'bastion', time: bastion.time });
-  if (bastionChest) events.push({ type: 'minor', label: 'Loot Bastion', time: bastionChest.time, icon: '📦' });
-  if (fortress) events.push({ type: 'major', phase: 'fortress', time: fortress.time });
-  if (blazeRod) events.push({ type: 'minor', label: 'Blaze Rod', time: blazeRod.time, icon: '🔥' });
-  if (blind) events.push({ type: 'major', phase: 'blind', time: blind.time });
-  if (stronghold) events.push({ type: 'major', phase: 'stronghold', time: stronghold.time });
-  if (end) events.push({ type: 'major', phase: 'end', time: end.time });
-  if (finishTime) events.push({ type: 'major', phase: 'finish', time: finishTime });
+  events.push({ type: 'major', phase: 'overworld', time: 0, image: '/assets/PBviewer/Start.png' });
+  if (iron) events.push({ type: 'minor', label: 'Obtain Iron', time: iron.time, image: '/assets/PBviewer/Iron_pickaxe.png' });
+  if (nether) events.push({ type: 'major', phase: 'nether', time: nether.time, image: '/assets/PBviewer/Nether.png' });
+  if (bastion) events.push({ type: 'major', phase: 'bastion', time: bastion.time, image: '/assets/PBviewer/Bastion.png' });
+  if (bastionChest) events.push({ type: 'minor', label: 'Loot Bastion', time: bastionChest.time, image: '/assets/PBviewer/Loot Bastion Chest.png' });
+  if (fortress) events.push({ type: 'major', phase: 'fortress', time: fortress.time, image: '/assets/PBviewer/Nether_Bricks_JE4_BE5.png' });
+  if (blazeRod) events.push({ type: 'minor', label: 'Blaze Rod', time: blazeRod.time, image: '/assets/PBviewer/Blaze_rod.png' });
+  if (blind) events.push({ type: 'major', phase: 'blind', time: blind.time, image: '/assets/PBviewer/Nether_portal.png' });
+  if (stronghold) events.push({ type: 'major', phase: 'stronghold', time: stronghold.time, image: '/assets/PBviewer/Stronghold.png' });
+  if (end) events.push({ type: 'major', phase: 'end', time: end.time, image: '/assets/PBviewer/End.png' });
+  if (finishTime) events.push({ type: 'major', phase: 'finish', time: finishTime, image: '/assets/PBviewer/Completion.png' });
 
   // Sort strictly by time
   events.sort((a, b) => a.time - b.time);
 
   return (
-    <div className="comments-panel custom-scrollbar" style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-      <div className="comments-header" style={{ marginBottom: '25px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Personal Best Splits</h3>
-        <p style={{ margin: '5px 0 0 0', color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Match #{matchId}</p>
+    <div className="comments-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="comments-header" style={{ marginBottom: '25px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Personal Best Splits</h3>
+          <p style={{ margin: '5px 0 0 0', color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>Match #{matchId}</p>
+        </div>
+        {onClose && <button className="close-btn mobile-only-btn" style={{ position: 'relative', top: 'auto', right: 'auto' }} onClick={onClose}>&times;</button>}
       </div>
 
-      <div style={{ position: 'relative', paddingLeft: '40px', flex: 1, paddingBottom: '20px' }}>
-        {events.map((ev, i) => {
+      <div className="custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
+        <div style={{ position: 'relative', paddingLeft: '40px', paddingBottom: '20px' }}>
+          {events.map((ev, i) => {
           // Determine the line color from this event up to the next major event
           let lineColor = PHASE_CONFIG.overworld.color;
           
@@ -142,8 +146,8 @@ export default function PbViewer({ matchId, nickname }) {
                 <div style={{
                   position: 'absolute',
                   left: '-20px',
-                  top: '20px',
-                  bottom: '-35px', // Connect to next item
+                  top: '50%',
+                  height: 'calc(100% + 25px)',
                   width: '4px',
                   backgroundColor: lineColor,
                   boxShadow: `0 0 8px ${lineColor}88`,
@@ -192,12 +196,13 @@ export default function PbViewer({ matchId, nickname }) {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                {ev.type === 'minor' && <span>{ev.icon}</span>}
+                {ev.image && <img src={ev.image} alt="" style={{ width: isMajor ? '28px' : '24px', height: isMajor ? '28px' : '24px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} />}
                 {ev.type === 'major' ? PHASE_CONFIG[ev.phase].label : ev.label}
               </div>
             </div>
           );
         })}
+        </div>
       </div>
     </div>
   );

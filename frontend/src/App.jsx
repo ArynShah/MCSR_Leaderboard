@@ -373,7 +373,7 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className="bento-tile bento-stat" style={{ position: 'relative', overflow: 'hidden' }}>
+                  <div className={`bento-tile bento-stat ${getPbStyles(selectedPlayer.pb).class || ''}`} style={{ position: 'relative' }}>
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
                       {[...Array(5)].map((_, i) => (
                         <div key={i} style={{ 
@@ -381,7 +381,10 @@ export default function App() {
                           flex: 1, 
                           backgroundColor: i < getPbFilledBars(selectedPlayer.pb) ? getPbColor(selectedPlayer.pb) : 'rgba(255,255,255,0.2)',
                           boxShadow: i < getPbFilledBars(selectedPlayer.pb) ? `0 0 5px ${getPbColor(selectedPlayer.pb)}` : 'none',
-                          borderRadius: '2px'
+                          borderTopLeftRadius: i === 0 ? '28px' : '2px',
+                          borderBottomLeftRadius: i === 0 ? '0' : '2px',
+                          borderTopRightRadius: i === 4 ? '28px' : '2px',
+                          borderBottomRightRadius: i === 4 ? '0' : '2px'
                         }} />
                       ))}
                     </div>
@@ -402,9 +405,12 @@ export default function App() {
                   <div className="comments-panel">
                     <div className="comments-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                       <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Comments</h3>
-                      <button className="action-link" style={{ width: 'auto', padding: '5px 12px', fontSize: '0.8rem', margin: 0 }} onClick={() => setShowAddComment(!showAddComment)}>
-                        {showAddComment ? 'Cancel' : 'Add Comment'}
-                      </button>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <button className="action-link" style={{ width: 'auto', padding: '5px 12px', fontSize: '0.8rem', margin: 0 }} onClick={() => setShowAddComment(!showAddComment)}>
+                          {showAddComment ? 'Cancel' : 'Add Comment'}
+                        </button>
+                        <button className="close-btn mobile-only-btn" onClick={() => setShowComments(false)}>&times;</button>
+                      </div>
                     </div>
                     
                     {showAddComment ? (
@@ -437,7 +443,7 @@ export default function App() {
                 )}
 
                 {showPbViewer && selectedPlayer.pbMatchId && (
-                  <PbViewer matchId={selectedPlayer.pbMatchId} nickname={selectedPlayer.nickname} />
+                  <PbViewer matchId={selectedPlayer.pbMatchId} nickname={selectedPlayer.nickname} onClose={() => setShowPbViewer(false)} />
                 )}
 
               </div>
