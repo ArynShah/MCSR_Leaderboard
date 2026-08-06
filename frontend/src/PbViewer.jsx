@@ -59,8 +59,12 @@ export default function PbViewer({ matchId, nickname, onClose }) {
     );
   }
 
-  // Find the player's UUID
-  const player = data.players.find(p => p.nickname.toLowerCase() === nickname.toLowerCase());
+  // Find the player's UUID (fallback to index 0 if it's a private room 1v1 match)
+  let player = data.players.find(p => p.nickname.toLowerCase() === nickname.toLowerCase());
+  if (!player && data.players.length === 1) {
+    player = data.players[0];
+  }
+
   if (!player) {
     return (
       <div className="comments-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -195,15 +199,15 @@ export default function PbViewer({ matchId, nickname, onClose }) {
 
               {/* Label */}
               <div style={{ 
-                color: isMajor ? '#FFF' : 'rgba(255,255,255,0.8)',
-                fontSize: isMajor ? '0.95rem' : '0.85rem',
-                fontWeight: isMajor ? '600' : '400',
+                color: '#FFF',
+                fontSize: '1.05rem',
+                fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '10px',
                 whiteSpace: 'nowrap'
               }}>
-                {ev.image && <img src={ev.image} alt="" style={{ width: isMajor ? '20px' : '16px', height: isMajor ? '20px' : '16px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} />}
+                {ev.image && <img src={ev.image} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />}
                 {ev.type === 'major' ? PHASE_CONFIG[ev.phase].label : ev.label}
               </div>
             </div>
