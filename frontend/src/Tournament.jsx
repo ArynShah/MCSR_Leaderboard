@@ -226,7 +226,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
           <div className="bento-label">Peak ELO</div>
           <div className="bento-val" style={{color: pData.peakElo ? getRankStyles(pData.peakElo).color : '#fff'}}>{pData.peakElo || '???'}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative' }}>
+        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
             {[...Array(5)].map((_, i) => (
               <div key={i} style={{ 

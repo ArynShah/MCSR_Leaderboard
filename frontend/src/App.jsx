@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
 import Tournament, { PLAYERS_DB, getPbColor, getPbFilledBars } from './Tournament'; 
+import PbViewer from './PbViewer';
 import './App.css'; 
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
 
   // --- Comment System States ---
   const [showComments, setShowComments] = useState(false);
+  const [showPbViewer, setShowPbViewer] = useState(false);
   const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState('');
   const [newUsername, setNewUsername] = useState('');
@@ -65,8 +67,9 @@ export default function App() {
 
   // --- FIREBASE: Fetch Comments in Real-time ---
   useEffect(() => {
-    // Reset comment UI state when changing players
+    // Reset UI state when changing players
     setShowComments(false);
+    setShowPbViewer(false);
     setNewComment('');
     setComments([]);
 
@@ -326,8 +329,8 @@ export default function App() {
           </div>
 
           {selectedPlayer && (
-            <div className={`profile-overlay ${showComments ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
-              <div className={`profile-container ${showComments ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
+            <div className={`profile-overlay ${showComments || showPbViewer ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
+              <div className={`profile-container ${showComments || showPbViewer ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
                 
                 <div className="bento-panel">
                   <div className="bento-tile bento-skin-tile" style={{ position: 'relative' }}>
@@ -338,8 +341,25 @@ export default function App() {
                     </h2>
                     <div className="link-actions bento-actions" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                       <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>Ranked Stats</a>
-                      {selectedPlayer.pbMatchId && <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>View PB</a>}
-                      <button className="action-link" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}>
+                      {selectedPlayer.pbMatchId && (
+                        <>
+                          <button 
+                            className="action-link" 
+                            onClick={() => {
+                              setShowPbViewer(!showPbViewer);
+                              if (!showPbViewer) setShowComments(false);
+                            }} 
+                            style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}
+                          >
+                            {showPbViewer ? 'Hide PB' : 'View PB'}
+                          </button>
+                          <a href={`https://mcsrranked.com/stats/${selectedPlayer.nickname}/${selectedPlayer.pbMatchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ textAlign: 'center', width: '100%' }}>View on Ranked Website</a>
+                        </>
+                      )}
+                      <button className="action-link" onClick={() => {
+                        setShowComments(!showComments);
+                        if (!showComments) setShowPbViewer(false);
+                      }} style={{ cursor: 'pointer', textAlign: 'center', width: '100%' }}>
                         {showComments ? 'Hide Comments' : 'View Comments'}
                       </button>
                     </div>
@@ -353,7 +373,7 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className="bento-tile bento-stat" style={{ position: 'relative' }}>
+                  <div className="bento-tile bento-stat" style={{ position: 'relative', overflow: 'hidden' }}>
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
                       {[...Array(5)].map((_, i) => (
                         <div key={i} style={{ 
@@ -414,6 +434,10 @@ export default function App() {
                       </div>
                     )}
                   </div>
+                )}
+
+                {showPbViewer && selectedPlayer.pbMatchId && (
+                  <PbViewer matchId={selectedPlayer.pbMatchId} nickname={selectedPlayer.nickname} />
                 )}
 
               </div>
