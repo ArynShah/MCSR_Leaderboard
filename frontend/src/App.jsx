@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
 import Tournament, { PLAYERS_DB, getPbColor, getPbFilledBars } from './Tournament'; 
@@ -28,6 +28,8 @@ export default function App() {
 
   // --- Mobile Detection State ---
   const [isMobile, setIsMobile] = useState(false);
+  const bentoRef = useRef(null);
+  const [bentoHeight, setBentoHeight] = useState(null);
 
   const coaches = ['Crifzer', 'Goatener'];
 
@@ -38,6 +40,13 @@ export default function App() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Measure bento panel height for constraining side panels
+  useLayoutEffect(() => {
+    if (bentoRef.current && selectedPlayer) {
+      setBentoHeight(bentoRef.current.offsetHeight);
+    }
+  }, [selectedPlayer]);
 
   // Initial Leaderboard Fetch
   useEffect(() => {
@@ -332,7 +341,7 @@ export default function App() {
             <div className={`profile-overlay ${showComments || showPbViewer ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
               <div className={`profile-container ${showComments || showPbViewer ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
                 
-                <div className="bento-panel">
+                <div className="bento-panel" ref={bentoRef}>
                   <div className="bento-tile bento-skin-tile" style={{ position: 'relative' }}>
                     <button className="close-btn" style={{ left: "15px", right: "auto" }} onClick={() => setSelectedPlayer(null)}>&times;</button>
                     <img className="profile-skin" src={`/assets/skins/${selectedPlayer.nickname.toLowerCase()}.png`} alt={selectedPlayer.nickname} onError={(e) => { e.target.style.display = 'none'; }} />
@@ -397,7 +406,7 @@ export default function App() {
                 </div>
 
                 {showComments && (
-                  <div className="comments-panel">
+                  <div className="comments-panel" style={bentoHeight ? { maxHeight: `${bentoHeight}px` } : {}}>
                     <div className="comments-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                       <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Comments</h3>
                       <div style={{ display: 'flex', gap: '10px' }}>
@@ -438,7 +447,9 @@ export default function App() {
                 )}
 
                 {showPbViewer && selectedPlayer.pbMatchId && (
-                  <PbViewer matchId={selectedPlayer.pbMatchId} nickname={selectedPlayer.nickname} onClose={() => setShowPbViewer(false)} />
+                  <div style={bentoHeight ? { maxHeight: `${bentoHeight}px`, display: 'flex' } : { display: 'flex' }}>
+                    <PbViewer matchId={selectedPlayer.pbMatchId} nickname={selectedPlayer.nickname} onClose={() => setShowPbViewer(false)} />
+                  </div>
                 )}
 
               </div>
