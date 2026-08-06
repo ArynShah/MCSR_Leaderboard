@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
-import Tournament, { PLAYERS_DB } from './Tournament'; 
+import Tournament, { PLAYERS_DB, getPbColor, getPbFilledBars } from './Tournament'; 
 import './App.css'; 
 
 export default function App() {
@@ -353,7 +353,18 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className="bento-tile bento-stat" style={{ borderTop: "2px solid rgba(255,255,255,0.2)" }}>
+                  <div className="bento-tile bento-stat" style={{ position: 'relative' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} style={{ 
+                          height: '2px', 
+                          flex: 1, 
+                          backgroundColor: i < getPbFilledBars(selectedPlayer.pb) ? getPbColor(selectedPlayer.pb) : 'rgba(255,255,255,0.2)',
+                          boxShadow: i < getPbFilledBars(selectedPlayer.pb) ? `0 0 5px ${getPbColor(selectedPlayer.pb)}` : 'none',
+                          borderRadius: '2px'
+                        }} />
+                      ))}
+                    </div>
                     <div className="bento-label">Personal Best</div>
                     <div className="bento-val" style={{color: "#fff"}}>{formatTime(selectedPlayer.pb)}</div>
                   </div>
