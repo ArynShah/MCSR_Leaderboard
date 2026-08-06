@@ -120,7 +120,7 @@ export default function PbViewer({ matchId, nickname, onClose }) {
           <p style={{ margin: '3px 0 0 0', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Match #{matchId}</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <a href={`https://mcsrranked.com/stats/${nickname}/${matchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ padding: '4px 10px', fontSize: '0.75rem', margin: 0, textDecoration: 'none' }}>View more</a>
+          <a href={`https://mcsrranked.com/stats/${nickname}/${matchId}`} target="_blank" rel="noopener noreferrer" className="action-link" style={{ padding: '4px 10px', fontSize: '0.75rem', margin: 0, textDecoration: 'none', whiteSpace: 'nowrap' }}>View more</a>
           {onClose && <button className="close-btn mobile-only-btn" style={{ position: 'relative', top: 'auto', right: 'auto', width: '28px', height: '28px' }} onClick={onClose}>&times;</button>}
         </div>
       </div>
