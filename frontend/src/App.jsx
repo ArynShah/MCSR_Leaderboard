@@ -370,23 +370,21 @@ export default function App() {
                     <div className="bento-label">Peak ELO</div>
                     <div className="bento-val" style={{color: getRankStyles(selectedPlayer.peakElo).color}}>{selectedPlayer.peakElo === 0 ? '???' : selectedPlayer.peakElo}</div>
                   </div>
-                  <div className="bento-tile bento-stat" style={{ position: 'relative' }}>
+                  <div className="bento-tile bento-stat" style={{ position: 'relative', overflow: 'hidden' }}>
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
                       {[...Array(5)].map((_, i) => (
                         <div key={i} style={{ 
-                          height: '2px', 
+                          height: '3px', 
                           flex: 1, 
-                          backgroundColor: i < getPbFilledBars(selectedPlayer.pb) ? getPbColor(selectedPlayer.pb) : 'rgba(255,255,255,0.2)',
-                          boxShadow: i < getPbFilledBars(selectedPlayer.pb) ? `0 0 5px ${getPbColor(selectedPlayer.pb)}` : 'none',
-                          borderTopLeftRadius: i === 0 ? '28px' : '2px',
-                          borderBottomLeftRadius: i === 0 ? '0' : '2px',
-                          borderTopRightRadius: i === 4 ? '28px' : '2px',
-                          borderBottomRightRadius: i === 4 ? '0' : '2px'
+                          backgroundColor: i < getPbFilledBars(selectedPlayer.pb) ? getPbColor(selectedPlayer.pb) : 'rgba(255,255,255,0.1)',
+                          boxShadow: 'none'
                         }} />
                       ))}
                     </div>
                     <div className="bento-label">Personal Best</div>
-                    <div className="bento-val" style={{color: "#fff"}}>{formatTime(selectedPlayer.pb)}</div>
+                    <div className="bento-val" style={{ color: getPbColor(selectedPlayer.pb) }}>
+                      {formatTime(selectedPlayer.pb)}
+                    </div>
                   </div>
                   <div className="bento-tile bento-stat" style={{ borderTop: "2px solid rgba(255,255,255,0.2)" }}>
                     <div className="bento-label">Average</div>

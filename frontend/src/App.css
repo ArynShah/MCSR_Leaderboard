@@ -265,7 +265,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 
 .bento-name { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; margin: 0; line-height: 1; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
-.bento-stat { justify-content: center; align-items: flex-start; }
+.bento-stat { justify-content: center; align-items: flex-start; min-height: 160px; }
 .bento-comp { grid-column: span 2; }
 .bento-label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
 .bento-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; }

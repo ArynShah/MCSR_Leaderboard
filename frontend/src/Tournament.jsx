@@ -227,23 +227,19 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
           <div className="bento-label">Peak ELO</div>
           <div className="bento-val" style={{color: pData.peakElo ? getRankStyles(pData.peakElo).color : '#fff'}}>{pData.peakElo || '???'}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative' }}>
+        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
             {[...Array(5)].map((_, i) => (
               <div key={i} style={{ 
-                height: '2px', 
+                height: '3px', 
                 flex: 1, 
-                backgroundColor: i < getPbFilledBars(pData.pb) ? getPbColor(pData.pb) : 'rgba(255,255,255,0.2)',
-                boxShadow: i < getPbFilledBars(pData.pb) ? `0 0 5px ${getPbColor(pData.pb)}` : 'none',
-                borderTopLeftRadius: i === 0 ? '28px' : '2px',
-                borderBottomLeftRadius: i === 0 ? '0' : '2px',
-                borderTopRightRadius: i === 4 ? '28px' : '2px',
-                borderBottomRightRadius: i === 4 ? '0' : '2px'
+                backgroundColor: i < getPbFilledBars(pData.pb) ? getPbColor(pData.pb) : 'rgba(255,255,255,0.1)',
+                boxShadow: 'none'
               }} />
             ))}
           </div>
           <div className="bento-label">Personal Best</div>
-          <div className="bento-val" style={{ fontSize: '1.4rem' }}>{formatTime(pData.pb)}</div>
+          <div className="bento-val" style={{ color: getPbColor(pData.pb) }}>{formatTime(pData.pb)}</div>
         </div>
         <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: '2px solid rgba(255,255,255,0.2)' }}>
           <div className="bento-label">Average</div>
