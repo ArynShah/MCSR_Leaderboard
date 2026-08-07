@@ -113,7 +113,7 @@ export default function PbViewer({ matchId, nickname, onClose }) {
   events.sort((a, b) => a.time - b.time);
 
   return (
-    <div className="comments-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="comments-panel" style={{ display: 'flex', flexDirection: 'column', width: 'max-content', flex: '0 0 max-content', minWidth: '350px', maxWidth: '90vw' }}>
       <div className="comments-header" style={{ marginBottom: '15px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h3 style={{ margin: 0, fontSize: '1.2rem' }}>Personal Best Splits</h3>

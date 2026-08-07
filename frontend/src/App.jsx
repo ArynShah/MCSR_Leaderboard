@@ -419,28 +419,20 @@ export default function App() {
                     
                     {showAddComment ? (
                       <div className="comment-inputs" style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
-                        <input type="text" placeholder="Username" />
-                        <textarea rows="4" placeholder="Type a comment..."></textarea>
-                        <button className="action-link" style={{ width: '100%', border: 'none', background: 'rgba(112, 166, 193, 0.15)' }}>Post Comment</button>
+                        <input type="text" placeholder="Username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
+                        <textarea rows="4" placeholder="Type a comment..." value={newComment} onChange={(e) => setNewComment(e.target.value)}></textarea>
+                        <button className="action-link" style={{ width: '100%', border: 'none', background: 'rgba(112, 166, 193, 0.15)' }} onClick={handlePostComment}>Post Comment</button>
                       </div>
                     ) : (
                       <div className="comments-list custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '10px' }}>
-                        <div className="comment-item">
-                          <strong>Crifzer</strong>
-                          <p>Every stat mogs everyone</p>
-                        </div>
-                        <div className="comment-item">
-                          <strong>Crifzer</strong>
-                          <p>I wish I had a sub-15. In minecraft too.</p>
-                        </div>
-                        <div className="comment-item">
-                          <strong>PrathamPlays10</strong>
-                          <p>He mogs me</p>
-                        </div>
-                        <div className="comment-item">
-                          <strong>PrathamPlays10</strong>
-                          <p>This guy is so much better than me</p>
-                        </div>
+                        {comments.length > 0 ? comments.map(comment => (
+                          <div className="comment-item" key={comment.id}>
+                            <strong>{comment.username}</strong>
+                            <p>{comment.text}</p>
+                          </div>
+                        )) : (
+                          <p style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>No comments yet.</p>
+                        )}
                       </div>
                     )}
                   </div>
