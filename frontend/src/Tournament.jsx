@@ -218,7 +218,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
       <img src={`/assets/skins/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ height: '220px', width: 'auto', marginBottom: '15px', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.7))' }} onError={(e) => { e.target.style.display = 'none'; }} />
       <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>{matchPlayer.name}</h2>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', width: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
         <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: pData.elo ? `2px solid ${getRankStyles(pData.elo).color}` : '' }}>
           <div className="bento-label">Current ELO</div>
           <div className="bento-val" style={{color: pData.elo ? getRankStyles(pData.elo).color : '#fff'}}>{pData.elo || '???'}</div>
