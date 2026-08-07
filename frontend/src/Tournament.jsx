@@ -213,40 +213,39 @@ const Tournament = ({ players = [], showSeedBoard, setShowSeedBoard, showAbout, 
 // Reusable VS Player Card Component based on main leaderboard aesthetic
 const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
   const pData = allPlayers.find(p => p.nickname.toLowerCase() === matchPlayer.name.toLowerCase()) || {};
+  
+  const statStyle = {
+    padding: '12px 20px',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: '60px'
+  };
+
   return (
-    <div className="bento-tile" style={{ flex: 1, padding: '30px', alignItems: 'center' }}>
+    <div className="vs-player-card" style={{ flex: 1, padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <img src={`/assets/skins/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ height: '220px', width: 'auto', marginBottom: '15px', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.7))' }} onError={(e) => { e.target.style.display = 'none'; }} />
       <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>{matchPlayer.name}</h2>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: pData.elo ? `2px solid ${getRankStyles(pData.elo).color}` : '' }}>
-          <div className="bento-label">Current ELO</div>
-          <div className="bento-val" style={{color: pData.elo ? getRankStyles(pData.elo).color : '#fff'}}>{pData.elo || '???'}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+        <div className="bento-tile bento-stat" style={{ ...statStyle, borderTop: pData.elo ? `2px solid ${getRankStyles(pData.elo).color}` : '' }}>
+          <div className="bento-label" style={{ marginBottom: 0 }}>Current ELO</div>
+          <div className="bento-val" style={{ fontSize: '1.4rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff'}}>{pData.elo || '???'}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: pData.peakElo ? `2px solid ${getRankStyles(pData.peakElo).color}` : '' }}>
-          <div className="bento-label">Peak ELO</div>
-          <div className="bento-val" style={{color: pData.peakElo ? getRankStyles(pData.peakElo).color : '#fff'}}>{pData.peakElo || '???'}</div>
+        <div className="bento-tile bento-stat" style={{ ...statStyle, borderTop: pData.peakElo ? `2px solid ${getRankStyles(pData.peakElo).color}` : '' }}>
+          <div className="bento-label" style={{ marginBottom: 0 }}>Peak ELO</div>
+          <div className="bento-val" style={{ fontSize: '1.4rem', color: pData.peakElo ? getRankStyles(pData.peakElo).color : '#fff'}}>{pData.peakElo || '???'}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', gap: '4px' }}>
-            {[...Array(5)].map((_, i) => (
-              <div key={i} style={{ 
-                height: '3px', 
-                flex: 1, 
-                backgroundColor: i < getPbFilledBars(pData.pb) ? getPbColor(pData.pb) : 'rgba(255,255,255,0.1)',
-                boxShadow: 'none'
-              }} />
-            ))}
-          </div>
-          <div className="bento-label">Personal Best</div>
-          <div className="bento-val" style={{ color: getPbColor(pData.pb) }}>{formatTime(pData.pb)}</div>
+        <div className="bento-tile bento-stat" style={{ ...statStyle, position: 'relative', overflow: 'hidden' }}>
+          <div className="bento-label" style={{ marginBottom: 0 }}>Personal Best</div>
+          <div className="bento-val" style={{ fontSize: '1.4rem', color: getPbColor(pData.pb) }}>{formatTime(pData.pb)}</div>
         </div>
-        <div className="bento-tile bento-stat" style={{ padding: '15px', borderTop: '2px solid rgba(255,255,255,0.2)' }}>
-          <div className="bento-label">Average</div>
+        <div className="bento-tile bento-stat" style={{ ...statStyle, borderTop: '2px solid rgba(255,255,255,0.2)' }}>
+          <div className="bento-label" style={{ marginBottom: 0 }}>Average</div>
           <div className="bento-val" style={{ fontSize: '1.4rem' }}>{formatTime(pData.average)}</div>
         </div>
-        <div className="bento-tile bento-stat bento-comp" style={{ padding: '15px', borderTop: '2px solid rgba(255,255,255,0.2)' }}>
-          <div className="bento-label">Total Completions</div>
+        <div className="bento-tile bento-stat" style={{ ...statStyle, borderTop: '2px solid rgba(255,255,255,0.2)' }}>
+          <div className="bento-label" style={{ marginBottom: 0 }}>Total Completions</div>
           <div className="bento-val" style={{ fontSize: '1.4rem' }}>{pData.completions || 0}</div>
         </div>
       </div>
