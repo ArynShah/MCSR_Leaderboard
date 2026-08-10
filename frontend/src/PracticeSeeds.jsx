@@ -121,16 +121,7 @@ export default function PracticeSeeds({ onClose }) {
               </select>
             </div>
 
-            {selectedFilter && selectedFilter.supportedVersions && selectedFilter.supportedVersions.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <strong style={{ color: 'rgba(255,255,255,0.8)' }}>Supported Versions: </strong>
-                <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: '5px' }}>
-                  {selectedFilter.supportedVersions.map(v => (
-                    <span key={v} style={{ background: 'rgba(255,255,255,0.1)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.85rem' }}>{v}</span>
-                  ))}
-                </div>
-              </div>
-            )}
+
 
             {error && (
               <div style={{ background: 'rgba(255, 85, 85, 0.2)', border: '1px solid #FF5555', color: '#FF5555', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
@@ -172,13 +163,13 @@ export default function PracticeSeeds({ onClose }) {
       {showHelp && (
         <div className="profile-overlay" style={{ zIndex: 99999 }} onClick={(e) => { e.stopPropagation(); setShowHelp(false); }}>
           <div className="bento-panel custom-scrollbar" style={{ width: '600px', maxHeight: '85vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-            <div className="bento-tile" style={{ position: 'relative', padding: '35px', color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+            <div className="bento-tile" style={{ position: 'relative', padding: '35px', color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', lineHeight: '1.6', textAlign: 'left' }}>
               <button className="close-btn" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={() => setShowHelp(false)}>&times;</button>
-              <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '25px', textAlign: 'center' }}>Filter Explanations</h2>
+              <h2 className="bento-name" style={{ fontSize: '2rem', marginBottom: '25px', textAlign: 'left' }}>Filter Explanations</h2>
               
               <h3 style={{ color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px', marginBottom: '10px' }}>Village</h3>
               <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
-                <li><u>plains/savanna/desert only</u></li>
+                <li>plains/savanna/desert only</li>
                 <li><strong>Ruined portal</strong> within 48 blocks of village center</li>
                 <li>27 iron nuggets + a fire charge or flint and steel, or 36 iron nuggets + flint</li>
                 <li>The rare case of 10 obsidian reduces the required iron nuggets by 27</li>
@@ -193,7 +184,7 @@ export default function PracticeSeeds({ onClose }) {
 
               <h3 style={{ color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px', marginBottom: '10px' }}>Shipwreck</h3>
               <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
-                <li>Only <u>full upright</u> shipwrecks</li>
+                <li>Only full upright shipwrecks</li>
                 <li>5 carrots or 10 bread, or a combination.</li>
                 <li>Spawnpoint within 48 blocks of shipwreck.</li>
                 <li>Ravine within 80 blocks of shipwreck (50 for OP version)</li>
