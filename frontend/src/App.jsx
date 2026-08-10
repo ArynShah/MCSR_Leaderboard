@@ -3,6 +3,7 @@ import { db } from './firebase';
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
 import Tournament, { PLAYERS_DB, getPbColor, getPbFilledBars } from './Tournament'; 
 import PbViewer from './PbViewer';
+import PracticeSeeds from './PracticeSeeds';
 import './App.css'; 
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
   const [showSeedBoard, setShowSeedBoard] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
+  const [showPracticeSeeds, setShowPracticeSeeds] = useState(false);
 
   // --- Leaderboard States ---
   const [players, setPlayers] = useState([]);
@@ -222,6 +224,14 @@ export default function App() {
               </div>
             </label>
           )}
+          
+          <button 
+            className="toggle-view-btn"
+            style={{ marginRight: '10px' }}
+            onClick={() => setShowPracticeSeeds(true)}
+          >
+            🎲 Practice Seeds
+          </button>
           
           <button 
             className="toggle-view-btn"
@@ -449,6 +459,8 @@ export default function App() {
           )}
         </div>
       )}
+
+      {showPracticeSeeds && <PracticeSeeds onClose={() => setShowPracticeSeeds(false)} />}
     </div>
   );
 }

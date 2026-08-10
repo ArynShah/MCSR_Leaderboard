@@ -223,7 +223,7 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
   };
 
   return (
-    <div className="vs-player-card" style={{ flex: 1, padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="vs-player-card" style={{ width: cardWidth, flex: 'none', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <img src={`/assets/skins/${matchPlayer.name.toLowerCase()}.png`} alt={matchPlayer.name} style={{ height: '220px', width: 'auto', marginBottom: '15px', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.7))' }} onError={(e) => { e.target.style.display = 'none'; }} />
       <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>{matchPlayer.name}</h2>
       
