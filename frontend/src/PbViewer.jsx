@@ -10,14 +10,14 @@ const formatTime = (ms) => {
 };
 
 const PHASE_CONFIG = {
-  overworld: { color: '#55FF55', label: 'Overworld' },
-  nether: { color: '#FF5555', label: 'Nether Enter' },
-  bastion: { color: '#555555', label: 'Bastion Enter' },
-  fortress: { color: '#AA0000', label: 'Fortress Enter' },
-  blind: { color: '#AA00AA', label: 'Blind Travel' },
-  stronghold: { color: '#55FF55', label: 'Stronghold Enter' },
-  end: { color: '#FFFF55', label: 'End Enter' },
-  finish: { color: '#55FF55', label: 'Finish' }
+  overworld: { color: '#65f970', label: 'Overworld' },
+  nether: { color: '#fb6b6b', label: 'Nether Enter' },
+  bastion: { color: '#282828', label: 'Bastion Enter' },
+  fortress: { color: '#821414', label: 'Fortress Enter' },
+  blind: { color: '#8155ff', label: 'Blind Travel' },
+  stronghold: { color: '#92c2a0', label: 'Stronghold Enter' },
+  end: { color: '#e6d6a5', label: 'End Enter' },
+  finish: { color: '#e6d6a5', label: 'Finish' }
 };
 
 export default function PbViewer({ matchId, nickname, onClose }) {
@@ -157,7 +157,6 @@ export default function PbViewer({ matchId, nickname, onClose }) {
                   height: 'calc(100% + 15px)',
                   width: '4px',
                   backgroundColor: lineColor,
-                  boxShadow: `0 0 8px ${lineColor}88`,
                   zIndex: 1
                 }} />
               )}
@@ -170,16 +169,15 @@ export default function PbViewer({ matchId, nickname, onClose }) {
                 borderRadius: '50%',
                 backgroundColor: isMajor ? lineColor : 'rgba(255,255,255,0.9)',
                 border: isMajor ? 'none' : `2px solid ${lineColor}`,
-                boxShadow: isMajor ? `0 0 8px ${lineColor}` : 'none',
                 zIndex: 2,
                 left: isMajor ? '-24px' : '-22px' // centering correction for 4px line at -20px
               }} />
 
               {/* Time Badge */}
               <div style={{ 
-                backgroundColor: `${lineColor}22`,
-                color: lineColor,
-                border: `1px solid ${lineColor}`,
+                backgroundColor: lineColor,
+                color: ['#282828', '#821414'].includes(lineColor) ? '#FFFFFF' : '#000000',
+                textDecoration: 'underline',
                 padding: '2px 8px',
                 borderRadius: '8px',
                 fontWeight: 'bold',
@@ -188,7 +186,6 @@ export default function PbViewer({ matchId, nickname, onClose }) {
                 marginRight: '12px',
                 width: '60px',
                 textAlign: 'center',
-                boxShadow: isMajor ? `0 0 8px ${lineColor}44` : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
