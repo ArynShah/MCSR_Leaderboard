@@ -195,7 +195,7 @@ export default function App() {
       <nav className="navbar">
         <div className="navbar-left">
           <h1 className="navbar-brand">
-            Crifzer Playoffs {activeView === 'leaderboard' ? 'Leaderboard' : 'Tournament'}
+            Crifzer Playoffs {activeView === 'leaderboard' ? 'Leaderboard' : 'Bracket'}
           </h1>
         </div>
         
@@ -203,7 +203,7 @@ export default function App() {
           {activeView === 'leaderboard' ? (
             <div className="tabs">
               <button className={`tab-btn ${activeTab === 'elo' ? 'active' : ''}`} onClick={() => setActiveTab('elo')}>ELO</button>
-              <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>Best Time</button>
+              <button className={`tab-btn ${activeTab === 'pb' ? 'active' : ''}`} onClick={() => setActiveTab('pb')}>PB</button>
               <button className={`tab-btn ${activeTab === 'completions' ? 'active' : ''}`} onClick={() => setActiveTab('completions')}>Completions</button>
             </div>
           ) : (
@@ -227,17 +227,16 @@ export default function App() {
           
           <button 
             className="toggle-view-btn"
-            style={{ marginRight: '10px' }}
             onClick={() => setShowPracticeSeeds(true)}
           >
-            🎲 Practice Seeds
+            Practice
           </button>
           
           <button 
             className="toggle-view-btn"
             onClick={() => setActiveView(activeView === 'leaderboard' ? 'tournament' : 'leaderboard')}
           >
-            {activeView === 'leaderboard' ? '🏆 Tournament' : '📊 Leaderboard'}
+            {activeView === 'leaderboard' ? 'Bracket' : 'Leaderboard'}
           </button>
         </div>
       </nav>
