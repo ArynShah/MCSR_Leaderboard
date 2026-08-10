@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { db } from './firebase'; 
 import { ref, onValue, push, serverTimestamp } from 'firebase/database'; 
-import Tournament, { PLAYERS_DB, getPbColor, getPbFilledBars } from './Tournament'; 
+import Tournament, { PLAYERS_DB } from './Tournament'; 
 import PbViewer from './PbViewer';
 import PracticeSeeds from './PracticeSeeds';
-import './App.css'; 
+import { formatTime, getRankStyles, getPbColor, getPbFilledBars } from './utils';
+import './App.css';
 
 export default function App() {
   // --- View Toggle State ---
@@ -52,16 +53,52 @@ export default function App() {
 
   // Initial Leaderboard Fetch
   useEffect(() => {
-    fetch('/api/leaderboard')
-      .then(res => res.json())
-      .then(data => {
-        setPlayers(data);
+    const fetchPlayers = async () => {
+      try {
+        const fbRes = await fetch('https://mcsr-leaderboard-default-rtdb.firebaseio.com/players.json');
+        const fbData = (await fbRes.json()) || {};
+        
+        const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'a1sauces'];
+        const playersList = [];
+
+        for (const name of WHITELIST) {
+          const dbKey = name.toLowerCase();
+          const pData = fbData[dbKey] || { pb: null, average: null, completions: 0 };
+          
+          let elo = pData.elo || 0;
+          let peakElo = pData.peakElo || 0;
+          
+          try {
+            const mcsrRes = await fetch(`https://api.mcsrranked.com/users/${name}`);
+            if (mcsrRes.ok) {
+              const mcsrData = await mcsrRes.json();
+              if (mcsrData.data) {
+                elo = mcsrData.data.eloRate || elo;
+                peakElo = Math.max(mcsrData.data.seasonResult?.highest || 0, mcsrData.data.eloRate || 0, peakElo);
+              }
+            }
+          } catch (e) {
+            console.error(`Failed to fetch ELO for ${name}:`, e);
+          }
+
+          playersList.push({
+            nickname: name,
+            elo,
+            peakElo,
+            pb: pData.pb,
+            average: pData.average,
+            completions: pData.completions,
+            pbMatchId: pData.pbMatchId
+          });
+        }
+        setPlayers(playersList);
         setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
         setLoading(false);
-      });
+      }
+    };
+    fetchPlayers();
   }, []);
 
   // Preload local assets
@@ -124,22 +161,7 @@ export default function App() {
     }
   };
 
-  const formatTime = (ms) => {
-    if (!ms) return 'N/A';
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
 
-  const getRankStyles = (elo) => {
-    if (elo >= 2000) return { color: '#FF5555', borderColor: 'rgba(255, 85, 85, 0.5)', glow: 'rgba(255, 85, 85, 0.5)' };
-    if (elo >= 1500) return { color: '#55FFFF', borderColor: 'rgba(85, 255, 255, 0.5)', glow: 'rgba(85, 255, 255, 0.5)' };
-    if (elo >= 1200) return { color: '#55FF55', borderColor: 'rgba(85, 255, 110, 0.5)', glow: 'rgba(85, 255, 255, 0.5)' };
-    if (elo >= 900) return { color: '#FFAA00', borderColor: 'rgba(255, 170, 0, 0.5)', glow: 'rgba(255, 170, 0, 0.5)' };
-    if (elo >= 600) return { color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.5)', glow: 'rgba(255, 255, 255, 0.3)' };
-    return { color: '#AAAAAA', borderColor: 'rgba(170, 170, 170, 0.5)', glow: 'rgba(170, 170, 170, 0.2)' };
-  };
 
   const getWarmStyles = (tier) => {
     const styles = [
