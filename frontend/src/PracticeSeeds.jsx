@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE_URL = 'https://www.filteredseed.com';
+const API_BASE_URL = '/api';
 
 export default function PracticeSeeds({ onClose }) {
   const [filters, setFilters] = useState([]);

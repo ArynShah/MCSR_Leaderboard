@@ -129,5 +129,38 @@ app.get('/api/leaderboard', async (req, res) => {
     res.json(data);
 });
 
+app.get('/api/filters', async (req, res) => {
+    try {
+        const response = await axios.get('https://www.filteredseed.com/filters', {
+            headers: { 'Accept': 'application/json' },
+            timeout: 10000
+        });
+        res.json(response.data);
+    } catch (err) {
+        console.error('Failed to fetch filters:', err.message);
+        res.status(500).json({ type: 'ERROR', errorMessage: 'Failed to fetch filters from FSG.' });
+    }
+});
+
+app.get('/api/getRandomUsedSeed/:id', async (req, res) => {
+    try {
+        // Based on the provided TS route, the correct endpoint is /getRandomUsedSeeds/:id/:count
+        const response = await axios.get(`https://www.filteredseed.com/getRandomUsedSeeds/${encodeURIComponent(req.params.id)}/1`, {
+            headers: { 'Accept': 'application/json' },
+            timeout: 10000
+        });
+        
+        if (response.data.type === 'SUCCESS' && response.data.seeds && response.data.seeds.length > 0) {
+            // Map the plural 'seeds' array to the singular 'seed' that our frontend expects
+            res.json({ type: 'SUCCESS', seed: response.data.seeds[0] });
+        } else {
+            res.json(response.data); // pass through error/cooldown messages
+        }
+    } catch (err) {
+        console.error('Failed to fetch seed:', err.message);
+        res.status(500).json({ type: 'ERROR', errorMessage: 'Failed to fetch seed from FSG.' });
+    }
+});
+
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
