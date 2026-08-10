@@ -20,7 +20,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('elo');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [filterCoaches, setFilterCoaches] = useState(true);
+  const [showCoaches, setShowCoaches] = useState(false);
 
   // --- Comment System States ---
   const [showComments, setShowComments] = useState(false);
@@ -58,7 +58,7 @@ export default function App() {
         const fbRes = await fetch('https://mcsr-leaderboard-default-rtdb.firebaseio.com/players.json');
         const fbData = (await fbRes.json()) || {};
         
-        const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'a1sauces'];
+        const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'Bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'A1sauces', "hamzxy"];
         const playersList = [];
 
         for (const name of WHITELIST) {
@@ -198,7 +198,7 @@ export default function App() {
   };
 
   const displayPlayers = players
-    .filter(p => !filterCoaches || !coaches.includes(p.nickname))
+    .filter(p => showCoaches || !coaches.includes(p.nickname))
     .sort((a, b) => {
       if (activeTab === 'elo') return b.elo - a.elo;
       if (activeTab === 'pb') return (a.pb || Infinity) - (b.pb || Infinity);
@@ -217,7 +217,7 @@ export default function App() {
       <nav className="navbar">
         <div className="navbar-left">
           <h1 className="navbar-brand">
-            Crifzer Playoffs {activeView === 'leaderboard' ? 'Leaderboard' : 'Bracket'}
+            Crifzer Playoffs
           </h1>
         </div>
         
@@ -239,9 +239,9 @@ export default function App() {
         <div className="navbar-right">
           {activeView === 'leaderboard' && (
             <label className="toggle-container" style={{ margin: 0 }}>
-              <span>Filter Coaches</span>
+              <span>Show Coaches</span>
               <div className="switch">
-                <input type="checkbox" checked={filterCoaches} onChange={(e) => setFilterCoaches(e.target.checked)} />
+                <input type="checkbox" checked={showCoaches} onChange={(e) => setShowCoaches(e.target.checked)} />
                 <span className="slider"></span>
               </div>
             </label>
