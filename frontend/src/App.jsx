@@ -55,7 +55,7 @@ export default function App() {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const fbRes = await fetch('https://mcsr-leaderboard-default-rtdb.firebaseio.com/players.json');
+        const fbRes = await fetch('https://mcsr-leaderboard-default-rtdb.firebaseio.com/players.json', { cache: 'no-store' });
         const fbData = (await fbRes.json()) || {};
         
         const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'Bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'A1sauces', "hamzxy"];
@@ -69,7 +69,7 @@ export default function App() {
           let peakElo = pData.peakElo || 0;
           
           try {
-            const mcsrRes = await fetch(`https://api.mcsrranked.com/users/${name}`);
+            const mcsrRes = await fetch(`https://api.mcsrranked.com/users/${name}`, { cache: 'no-store' });
             if (mcsrRes.ok) {
               const mcsrData = await mcsrRes.json();
               if (mcsrData.data) {

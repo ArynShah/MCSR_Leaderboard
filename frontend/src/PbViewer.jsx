@@ -21,7 +21,7 @@ export default function PbViewer({ matchId, nickname, onClose }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://api.mcsrranked.com/matches/${matchId}`)
+    fetch(`https://api.mcsrranked.com/matches/${matchId}`, { cache: 'no-store' })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch match");
         return res.json();

@@ -13,7 +13,7 @@ export default function PracticeSeeds({ onClose }) {
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/filters`)
+    fetch(`${API_BASE_URL}/filters`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.type === "SUCCESS" && data.filters) {
@@ -50,7 +50,7 @@ export default function PracticeSeeds({ onClose }) {
     setLoadingSeed(true);
     setCopyStatus('Copy Seed');
 
-    fetch(`${API_BASE_URL}/getRandomUsedSeed/${selectedFilterId}`)
+    fetch(`${API_BASE_URL}/getRandomUsedSeed/${selectedFilterId}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.type === "SUCCESS" && data.seed) {
