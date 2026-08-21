@@ -56,10 +56,10 @@ const Tournament = ({ players = [], showSeedBoard, setShowSeedBoard, showAbout, 
   const FUTURE_ROUNDS = {
     round2: { 
       match1: { p1: { ...getPlayerBySeed(1), score: 2 }, p2: { ...getPlayerBySeed(3), score: 0 } }, 
-      match2: { p1: { ...getPlayerBySeed(2), score: null }, p2: { ...getPlayerBySeed(4), score: null } } 
+      match2: { p1: { ...getPlayerBySeed(2), score: 2 }, p2: { ...getPlayerBySeed(4), score: 0 } } 
     },
     round3: { 
-      match1: { p1: { ...getPlayerBySeed(1), score: null }, p2: { name: "TBD", seed: "-", score: null } } 
+      match1: { p1: { ...getPlayerBySeed(1), score: null }, p2: { ...getPlayerBySeed(2), score: null } } 
     }
   };
 
