@@ -59,7 +59,7 @@ const Tournament = ({ players = [], showSeedBoard, setShowSeedBoard, showAbout, 
       match2: { p1: { ...getPlayerBySeed(2), score: 2 }, p2: { ...getPlayerBySeed(4), score: 0 } } 
     },
     round3: { 
-      match1: { p1: { ...getPlayerBySeed(1), score: null }, p2: { ...getPlayerBySeed(2), score: null } } 
+      match1: { p1: { ...getPlayerBySeed(1), score: 3 }, p2: { ...getPlayerBySeed(2), score: 2 } } 
     }
   };
 
@@ -131,43 +131,47 @@ const Tournament = ({ players = [], showSeedBoard, setShowSeedBoard, showAbout, 
         </div>
       )}
       
-      <div className="bracket-scroll-wrapper">
-        <div className="bracket-wrapper">
-          
-          <div className="bracket-column">
-            <h3>Quarter-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-              </div>
-              <div className="match-pair">
-                <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-              </div>
-            </div>
-          </div>
-
-          <div className="bracket-column">
-            <h3>Semi-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+      <div className="tournament-content-row">
+        <div className="bracket-scroll-wrapper">
+          <div className="bracket-wrapper">
+            
+            <div className="bracket-column">
+              <h3>Quarter-Finals</h3>
+              <div className="bracket-matches">
+                <div className="match-pair">
+                  <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                </div>
+                <div className="match-pair">
+                  <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bracket-column">
-            <h3>Grand Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair single-match">
-                <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+            <div className="bracket-column">
+              <h3>Semi-Finals</h3>
+              <div className="bracket-matches">
+                <div className="match-pair">
+                  <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                </div>
               </div>
             </div>
-          </div>
 
+            <div className="bracket-column">
+              <h3>Grand Finals</h3>
+              <div className="bracket-matches">
+                <div className="match-pair single-match">
+                  <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+
+        <Podium />
       </div>
     </div>
   );
@@ -253,6 +257,38 @@ const Match = ({ data, isFinal, connectLeft, onMatchClick, hoveredPlayer, setHov
     >
       {renderPlayerRow(p1, p2)}
       {renderPlayerRow(p2, p1)}
+    </div>
+  );
+};
+
+const Podium = () => {
+  return (
+    <div className="podium-container">
+      <div className="podium-tabs">
+        <span className="podium-tab active">Results</span>
+        <span className="podium-tab">Schedule</span>
+        <span className="podium-tab">Players</span>
+      </div>
+      
+      <div className="podium-display">
+        {/* 2nd Place */}
+        <div className="podium-place second-place">
+          <img src="/assets/skins/iliealot.png" alt="iliealot" className="podium-skin" />
+          <div className="podium-box second-box">
+            <div className="podium-name">iliealot</div>
+            <div className="podium-prize">$1,500</div>
+          </div>
+        </div>
+
+        {/* 1st Place */}
+        <div className="podium-place first-place">
+          <img src="/assets/skins/bozogoofylameVictory.png" alt="bozogoofylame" className="podium-skin first-skin" />
+          <div className="podium-box first-box">
+            <div className="podium-name">bozogoofylame</div>
+            <div className="podium-prize">$3,000</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
