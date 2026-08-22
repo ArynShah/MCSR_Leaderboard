@@ -315,7 +315,7 @@ export default function App() {
       )}
       {/* --- Main View Switcher --- */}
       {activeView === 'tournament' ? (
-        <Tournament players={players} showSeedBoard={showSeedBoard} setShowSeedBoard={setShowSeedBoard} showAbout={showAbout} setShowAbout={setShowAbout} />
+        <Tournament players={players} setSelectedPlayer={setSelectedPlayer} showSeedBoard={showSeedBoard} setShowSeedBoard={setShowSeedBoard} showAbout={showAbout} setShowAbout={setShowAbout} />
       ) : (
         <div className="main-layout">
           <div className="list-section">
@@ -367,8 +367,10 @@ export default function App() {
               ))}
             </div>
           </div>
+        </div>
+      )}
 
-          {selectedPlayer && (
+      {selectedPlayer && (
             <div className={`profile-overlay ${showComments || showPbViewer ? 'fullscreen-mode' : ''}`} onClick={() => setSelectedPlayer(null)}>
               <div className={`profile-container ${showComments || showPbViewer ? 'show-comments' : ''}`} onClick={e => e.stopPropagation()}>
                 
@@ -478,8 +480,6 @@ export default function App() {
               </div>
             </div>
           )}
-        </div>
-      )}
 
       {showPracticeSeeds && <PracticeSeeds onClose={() => setShowPracticeSeeds(false)} />}
     </div>
