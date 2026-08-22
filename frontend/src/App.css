@@ -376,6 +376,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   width: 100%;
   padding: 3rem 1rem;
   color: #e0e0e0;
+}
 /* --- Podium Layout --- */
 .podium-container {
   display: flex;
