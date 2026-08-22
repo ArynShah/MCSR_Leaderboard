@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import './App.css';
 import { formatTime, getRankStyles, getPbColor, getPbFilledBars } from './utils';
 
@@ -132,46 +133,58 @@ const Tournament = ({ players = [], setSelectedPlayer, showSeedBoard, setShowSee
       )}
       
       <div className="bracket-scroll-wrapper">
-        <div className="bracket-wrapper">
-          
-          <div className="bracket-column">
-            <h3>Quarter-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+        <TransformWrapper 
+          initialScale={1}
+          minScale={0.3}
+          maxScale={2}
+          centerOnInit={true}
+          wheel={{ step: 0.1 }}
+          limitToBounds={false}
+          panning={{ velocityDisabled: true }}
+        >
+          <TransformComponent wrapperStyle={{ width: "100%", height: "auto", overflow: "visible" }}>
+            <div className="bracket-wrapper">
+              
+              <div className="bracket-column">
+                <h3>Quarter-Finals</h3>
+                <div className="bracket-matches">
+                  <div className="match-pair">
+                    <Match data={generatedRound1.match1} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                    <Match data={generatedRound1.match2} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  </div>
+                  <div className="match-pair">
+                    <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                    <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  </div>
+                </div>
               </div>
-              <div className="match-pair">
-                <Match data={generatedRound1.match3} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={generatedRound1.match4} onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+
+              <div className="bracket-column">
+                <h3>Semi-Finals</h3>
+                <div className="bracket-matches">
+                  <div className="match-pair">
+                    <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                    <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  </div>
+                </div>
               </div>
+
+              <div className="bracket-column">
+                <h3>Grand Finals</h3>
+                <div className="bracket-matches">
+                  <div className="match-pair single-match">
+                    <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bracket-column" style={{ width: 'auto', justifyContent: 'center' }}>
+                <Podium players={players} setSelectedPlayer={setSelectedPlayer} />
+              </div>
+
             </div>
-          </div>
-
-          <div className="bracket-column">
-            <h3>Semi-Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair">
-                <Match data={FUTURE_ROUNDS.round2.match1} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-                <Match data={FUTURE_ROUNDS.round2.match2} connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-              </div>
-            </div>
-          </div>
-
-          <div className="bracket-column">
-            <h3>Grand Finals</h3>
-            <div className="bracket-matches">
-              <div className="match-pair single-match">
-                <Match data={FUTURE_ROUNDS.round3.match1} isFinal connectLeft onMatchClick={setSelectedMatch} hoveredPlayer={hoveredPlayer} setHoveredPlayer={setHoveredPlayer} />
-              </div>
-            </div>
-          </div>
-
-          <div className="bracket-column" style={{ width: 'auto', justifyContent: 'center' }}>
-            <Podium players={players} setSelectedPlayer={setSelectedPlayer} />
-          </div>
-
-        </div>
+          </TransformComponent>
+        </TransformWrapper>
       </div>
     </div>
   );

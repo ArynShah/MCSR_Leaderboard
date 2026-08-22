@@ -457,9 +457,10 @@ input:checked + .slider:before { transform: translateX(16px); }
 .bracket-scroll-wrapper {
   width: 100%;
   max-width: 1200px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   padding-bottom: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 /* --- Bracket Grid Layout --- */
