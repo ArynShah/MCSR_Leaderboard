@@ -278,7 +278,7 @@ const Podium = ({ players, setSelectedPlayer }) => {
           <img src="/assets/skins/iliealot.png" alt="iliealot" className="podium-skin" />
           <div className="podium-box second-box">
             <div className="podium-name">iliealot</div>
-            <div className="podium-prize">SECOND PLACE</div>
+            <div className="podium-prize">2nd Place</div>
           </div>
         </div>
 
@@ -287,7 +287,7 @@ const Podium = ({ players, setSelectedPlayer }) => {
           <img src="/assets/skins/bozogoofylameVictory.png" alt="bozogoofylame" className="podium-skin first-skin" />
           <div className="podium-box first-box">
             <div className="podium-name">bozogoofylame</div>
-            <div className="podium-prize">FIRST PLACE</div>
+            <div className="podium-prize">1st Place</div>
           </div>
         </div>
       </div>
