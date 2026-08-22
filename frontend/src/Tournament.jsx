@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { formatTime, getRankStyles, getPbColor, getPbFilledBars } from './utils';
 
@@ -23,9 +22,23 @@ const Tournament = ({ players = [], setSelectedPlayer, showSeedBoard, setShowSee
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [hoveredPlayer, setHoveredPlayer] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef(null);
+  const [bracketScale, setBracketScale] = useState(1);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+      if (containerRef.current) {
+        const availableWidth = containerRef.current.clientWidth;
+        const bracketNaturalWidth = 1100; // minimum width of bracket-wrapper
+        
+        if (availableWidth > 0 && availableWidth < bracketNaturalWidth) {
+          setBracketScale(availableWidth / bracketNaturalWidth);
+        } else {
+          setBracketScale(1);
+        }
+      }
+    };
     handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -132,20 +145,10 @@ const Tournament = ({ players = [], setSelectedPlayer, showSeedBoard, setShowSee
         </div>
       )}
       
-      <div className="bracket-scroll-wrapper">
-        <TransformWrapper 
-          initialScale={1}
-          minScale={0.3}
-          maxScale={2}
-          centerOnInit={true}
-          wheel={{ step: 0.1 }}
-          limitToBounds={false}
-          panning={{ velocityDisabled: true }}
-        >
-          <TransformComponent wrapperStyle={{ width: "100%", height: "auto", overflow: "visible" }}>
-            <div className="bracket-wrapper">
-              
-              <div className="bracket-column">
+      <div className="bracket-scroll-wrapper" ref={containerRef}>
+        <div className="bracket-wrapper" style={{ zoom: bracketScale }}>
+          
+          <div className="bracket-column">
                 <h3>Quarter-Finals</h3>
                 <div className="bracket-matches">
                   <div className="match-pair">
@@ -183,8 +186,6 @@ const Tournament = ({ players = [], setSelectedPlayer, showSeedBoard, setShowSee
               </div>
 
             </div>
-          </TransformComponent>
-        </TransformWrapper>
       </div>
     </div>
   );
