@@ -4,6 +4,8 @@ import NavDrawer from './components/NavDrawer';
 import LeaderboardPage from './pages/LeaderboardPage';
 import TournamentPage from './pages/TournamentPage';
 import PracticePage from './pages/PracticePage';
+import ResourcesPage from './pages/ResourcesPage';
+import ComparePage from './pages/ComparePage';
 import PlayerProfileModal from './components/PlayerProfileModal';
 import SeedBoardModal from './components/SeedBoardModal';
 import AboutTournamentModal from './components/AboutTournamentModal';
@@ -156,8 +158,16 @@ export default function App() {
         />
       )}
 
+      {activePage === 'compare' && (
+        <ComparePage players={players} />
+      )}
+
       {activePage === 'practice' && (
         <PracticePage />
+      )}
+
+      {activePage === 'resources' && (
+        <ResourcesPage />
       )}
 
       {/* Mobile Slide-Over Support: If on mobile and Tournament is active, also render Leaderboard in background for instantaneous transitions */}

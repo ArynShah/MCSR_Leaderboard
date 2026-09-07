@@ -30,7 +30,7 @@ export default function Navbar({
           </h1>
           {activePage !== 'leaderboard' && (
             <span className="navbar-page-badge">
-              {activePage === 'tournament' ? 'Tournament' : 'Practice'}
+              {activePage === 'tournament' ? 'Tournament' : activePage === 'practice' ? 'Practice' : activePage === 'resources' ? 'Resources' : 'Compare'}
             </span>
           )}
         </div>
@@ -79,10 +79,24 @@ export default function Navbar({
           </div>
         )}
 
+        {activePage === 'compare' && (
+          <div className="practice-header-pill">
+            <span className="practice-pill-dot" style={{ background: '#70A6C1', boxShadow: '0 0 8px #70A6C1' }}></span>
+            <span>Head to Head</span>
+          </div>
+        )}
+
         {activePage === 'practice' && (
           <div className="practice-header-pill">
             <span className="practice-pill-dot"></span>
             <span>Seed Generator</span>
+          </div>
+        )}
+
+        {activePage === 'resources' && (
+          <div className="practice-header-pill">
+            <span className="practice-pill-dot" style={{ background: '#70A6C1', boxShadow: '0 0 8px #70A6C1' }}></span>
+            <span>Guides &amp; Tech</span>
           </div>
         )}
       </div>

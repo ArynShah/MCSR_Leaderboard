@@ -47,6 +47,19 @@ export default function NavDrawer({ isOpen, onClose, activePage, onNavigate }) {
       )
     },
     {
+      id: 'compare',
+      title: 'Compare',
+      desc: 'Head-to-head player stats',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m16 3 4 4-4 4" />
+          <path d="M20 7H4" />
+          <path d="m8 21-4-4 4-4" />
+          <path d="M4 17h16" />
+        </svg>
+      )
+    },
+    {
       id: 'practice',
       title: 'Practice',
       desc: 'Filtered seed generator',
@@ -55,6 +68,19 @@ export default function NavDrawer({ isOpen, onClose, activePage, onNavigate }) {
           <circle cx="12" cy="12" r="10" />
           <circle cx="12" cy="12" r="6" />
           <circle cx="12" cy="12" r="2" />
+        </svg>
+      )
+    },
+    {
+      id: 'resources',
+      title: 'Resources',
+      desc: 'Guides, bastion routes & tools',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          <line x1="8" y1="7" x2="16" y2="7" />
+          <line x1="8" y1="11" x2="13" y2="11" />
         </svg>
       )
     }
