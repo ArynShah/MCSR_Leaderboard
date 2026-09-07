@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const API_BASE_URL = '/api';
 
@@ -16,17 +16,34 @@ export default function PracticeSeeds({ onClose }) {
     fetch(`${API_BASE_URL}/filters`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        if (data.type === "SUCCESS" && data.filters) {
-          const ALLOWED_FILTERS = ['Village', 'Shipwreck', 'Desert Temple', 'Ruined Portal'];
+          const ALLOWED_MAPPING = {
+            'zsgvillage': 'Village',
+            'zsgtemple': 'Desert Temple',
+            'zsgshipwreck': 'Shipwreck',
+            'zsg': 'Buried Treasure',
+            'zsgvillageop': 'Village (OP)',
+            'zsgtempleop': 'Desert Temple (OP)',
+            'zsgshipwreckop': 'Shipwreck (OP)',
+            'zsgop': 'Buried Treasure (OP)'
+          };
+          const FILTER_ORDER = [
+            'zsgvillage',
+            'zsgtemple',
+            'zsgshipwreck',
+            'zsg',
+            'zsgvillageop',
+            'zsgtempleop',
+            'zsgshipwreckop',
+            'zsgop'
+          ];
+
           const processedFilters = data.filters
-            .filter(f => ALLOWED_FILTERS.some(allowed => f.displayName.includes(allowed)))
-            .map(f => {
-                let newName = f.displayName.replace('ZSG ', '').replace('ZSG', '');
-                if (newName.includes('Ruined Portal')) {
-                    newName = 'Ruined Portal (OP)';
-                }
-                return { ...f, displayName: newName.trim() };
-            });
+            .filter(f => ALLOWED_MAPPING[f.id])
+            .map(f => ({
+              ...f,
+              displayName: ALLOWED_MAPPING[f.id]
+            }))
+            .sort((a, b) => FILTER_ORDER.indexOf(a.id) - FILTER_ORDER.indexOf(b.id));
           setFilters(processedFilters);
         } else {
           setError("Failed to load filters.");
@@ -79,8 +96,6 @@ export default function PracticeSeeds({ onClose }) {
         });
     }
   };
-
-  const selectedFilter = filters.find(f => f.id === selectedFilterId);
 
   return (
     <>
@@ -171,6 +186,7 @@ export default function PracticeSeeds({ onClose }) {
               <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
                 <li>plains/savanna/desert only</li>
                 <li><strong>Ruined portal</strong> within 48 blocks of village center</li>
+                <li>Spawnpoint within 32 blocks of village or ruined portal</li>
                 <li>27 iron nuggets + a fire charge or flint and steel, or 36 iron nuggets + flint</li>
                 <li>The rare case of 10 obsidian reduces the required iron nuggets by 27</li>
               </ul>
@@ -180,27 +196,35 @@ export default function PracticeSeeds({ onClose }) {
                 <li><strong>Ruined portal</strong> within 64 blocks of pyramid</li>
                 <li>Cannot be in the same chunk as pyramid</li>
                 <li>Spawnpoint within 32 blocks of structure</li>
+                <li>Pickaxe craftable (diamond or iron)</li>
+                <li>Bucket craftable</li>
               </ul>
 
               <h3 style={{ color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px', marginBottom: '10px' }}>Shipwreck</h3>
               <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
+                <li>Shipwreck in ++ region</li>
                 <li>Only full upright shipwrecks</li>
-                <li>5 carrots or 10 bread, or a combination.</li>
-                <li>Spawnpoint within 48 blocks of shipwreck.</li>
+                <li>5 carrots or 10 bread, or a combination</li>
+                <li>Spawnpoint within 48 blocks of shipwreck</li>
                 <li>Ravine within 80 blocks of shipwreck (50 for OP version)</li>
+              </ul>
+
+              <h3 style={{ color: '#70A6C1', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px', marginBottom: '10px' }}>Buried Treasure</h3>
+              <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
+                <li>Spawnpoint within 32 blocks of bt (24 for OP version)</li>
+                <li>Pickaxe craftable (diamond or iron)</li>
+                <li>Bucket craftable</li>
+                <li>Wood mineable (tnt w/ iron/gold plate or axe; OP guarantees 2 TNT)</li>
+                <li>Ravine within 80 blocks of bt (50 for OP version)</li>
               </ul>
 
               <h3 style={{ color: '#FF5555', borderBottom: '1px solid rgba(255,85,85,0.3)', paddingBottom: '5px', marginBottom: '10px' }}>Nether (For all seed types)</h3>
               <ul style={{ paddingLeft: '20px', marginBottom: '15px' }}>
-                <li>&lt;=96 bastion (&lt;=32 for OP version).</li>
-                <li>&lt;=256 fortress from bastion (&lt;=112 for OP version).</li>
-              </ul>
-              
-              <ul style={{ paddingLeft: '20px', marginBottom: '10px', listStyleType: 'square' }}>
-                <li>37.5% Housing</li>
-                <li>20.9% Stables</li>
-                <li>14.5% Treasure</li>
-                <li>27.1% Bridge</li>
+                <li>&lt;=96 bastion (&lt;=32 for OP version)</li>
+                <li>&lt;=256 fortress from bastion (&lt;=112 for OP version)</li>
+                <li>Terrain between 0,0 and bastion, and between bastion and fortress</li>
+                <li>20 or more obsidian from 90% chance trades plus reasonable bastion chests</li>
+                <li>Spawn rates: 37.5% Housing, 27.1% Bridge, 20.9% Stables, 14.5% Treasure</li>
               </ul>
 
             </div>
