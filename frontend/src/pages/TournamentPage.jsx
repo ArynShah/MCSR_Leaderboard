@@ -143,7 +143,11 @@ export default function TournamentPage({
       {/* Horizontal scroll helper note on mobile */}
       {isMobile && (
         <div className="mobile-scroll-hint">
-          <span>Swipe horizontally to explore bracket rounds</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#70A6C1', flexShrink: 0 }}>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+          <span>Swipe horizontally to explore bracket</span>
         </div>
       )}
 
@@ -217,14 +221,29 @@ export default function TournamentPage({
             <button 
               className="slideover-action-btn" 
               onClick={onOpenSeedBoard}
+              aria-label="Seed Points Leaderboard"
             >
-              Seed Points
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34" />
+                <path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+              </svg>
+              <span>Seed Points</span>
             </button>
             <button 
               className="slideover-action-btn" 
               onClick={onOpenAbout}
+              aria-label="About Tournament Rules"
             >
-              About
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span>About</span>
             </button>
           </div>
         </header>
@@ -259,12 +278,12 @@ const VsPlayerCard = ({ matchPlayer, allPlayers, cardWidth }) => {
   return (
     <div className="vs-player-card" style={{ width: cardWidth, flex: 'none', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <img 
+        className="vs-skin-img"
         src={`/assets/skins/${matchPlayer.name.toLowerCase()}.png`} 
         alt={matchPlayer.name} 
-        style={{ height: '220px', width: 'auto', marginBottom: '15px', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.7))' }} 
         onError={(e) => { e.target.style.display = 'none'; }} 
       />
-      <h2 className="bento-name" style={{ margin: '0 0 25px 0', fontSize: '2.5rem', color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>
+      <h2 className="bento-name vs-player-name" style={{ color: pData.elo ? getRankStyles(pData.elo).color : '#fff' }}>
         {matchPlayer.name}
       </h2>
       

@@ -10,17 +10,17 @@ export default function SeedBoardModal({ onClose }) {
         style={{ width: 'min(650px, 92vw)', display: 'flex', flexDirection: 'column' }} 
         onClick={e => e.stopPropagation()}
       >
-        <div className="bento-tile" style={{ padding: '30px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', width: '100%' }}>
+        <div className="bento-tile modal-bento-tile">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', width: '100%', gap: '12px' }}>
             <h2 
-              className="bento-name" 
-              style={{ fontSize: '1.9rem', margin: 0, textAlign: 'left' }}
+              className="bento-name modal-title" 
+              style={{ margin: 0, textAlign: 'left' }}
             >
               Seed Points Leaderboard
             </h2>
             <button 
               className="close-btn" 
-              style={{ position: 'static' }} 
+              style={{ position: 'static', flexShrink: 0 }} 
               onClick={onClose}
               aria-label="Close"
             >

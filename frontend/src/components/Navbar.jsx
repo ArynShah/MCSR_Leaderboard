@@ -63,18 +63,31 @@ export default function Navbar({
         {activePage === 'tournament' && (
           <div className="tabs tournament-nav-tabs">
             <button 
-              className="tab-btn" 
-              style={{ border: "1px solid rgba(255,255,255,0.12)" }} 
+              className="tab-btn tournament-tab-btn" 
               onClick={onOpenSeedBoard}
+              aria-label="Seed Points Leaderboard"
             >
-              Seed Points
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34" />
+                <path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+              </svg>
+              <span>Seed Points</span>
             </button>
             <button 
-              className="tab-btn" 
-              style={{ border: "1px solid rgba(255,255,255,0.12)", padding: "8px 16px" }} 
+              className="tab-btn tournament-tab-btn" 
               onClick={onOpenAbout}
+              aria-label="About Tournament Rules"
             >
-              About
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span>About</span>
             </button>
           </div>
         )}
