@@ -9,7 +9,8 @@ export default function TournamentPage({
   setSelectedPlayer,
   onOpenSeedBoard,
   onOpenAbout,
-  onCloseMobile,
+  onOpenMenu,
+  onNavigate,
   isMobile
 }) {
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -187,7 +188,8 @@ export default function TournamentPage({
             </div>
           </div>
 
-          <div className="bracket-column" style={{ width: 'auto', justifyContent: 'center' }}>
+          <div className="bracket-column podium-column" style={{ width: 'auto', justifyContent: 'center' }}>
+            <h3>Podium</h3>
             <Podium players={players} setSelectedPlayer={setSelectedPlayer} />
           </div>
 
@@ -201,20 +203,20 @@ export default function TournamentPage({
     return (
       <div className="tournament-slideover-mobile">
         <header className="slideover-mobile-header">
-          <button 
-            className="slideover-back-btn" 
-            onClick={onCloseMobile}
-            aria-label="Back to Leaderboard"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Back</span>
-          </button>
-
-          <div className="slideover-title-wrap">
-            <span className="slideover-title">Tournament</span>
+          <div className="slideover-header-left">
+            <button 
+              className="hamburger-btn" 
+              onClick={onOpenMenu}
+              aria-label="Open Navigation Menu"
+              title="Open Menu"
+            >
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </button>
+            <div className="brand-group" onClick={() => onNavigate?.('leaderboard')}>
+              <h1 className="navbar-brand">Crifzer Playoffs</h1>
+            </div>
           </div>
 
           <div className="slideover-header-actions">
@@ -367,18 +369,29 @@ const Podium = ({ players, setSelectedPlayer }) => {
     <div className="podium-container">
       <div className="podium-display">
         {/* 2nd Place */}
-        <div className="podium-place second-place" onClick={() => handlePlayerClick('iliealot')} style={{ cursor: 'pointer' }}>
-          <img src="/assets/skins/iliealot.png" alt="iliealot" className="podium-skin" />
+        <div className="podium-place second-place" onClick={() => handlePlayerClick('iliealot')} style={{ cursor: 'pointer' }} title="View iliealot profile">
+          <div className="podium-avatar-wrap">
+            <span className="podium-medal-badge silver-badge">2</span>
+            <img src="/assets/skins/iliealot.png" alt="iliealot" className="podium-skin" />
+          </div>
           <div className="podium-box second-box">
+            <div className="podium-pillar-glow silver-glow"></div>
+            <div className="podium-rank-tag silver-tag">2ND PLACE</div>
             <div className="podium-name">iliealot</div>
-            <div className="podium-prize">2nd Place</div>
+            <div className="podium-prize">Runner-Up</div>
           </div>
         </div>
 
         {/* 1st Place */}
-        <div className="podium-place first-place" onClick={() => handlePlayerClick('bozogoofylame')} style={{ cursor: 'pointer' }}>
-          <img src="/assets/skins/bozogoofylameVictory.png" alt="bozogoofylame" className="podium-skin first-skin" />
+        <div className="podium-place first-place" onClick={() => handlePlayerClick('bozogoofylame')} style={{ cursor: 'pointer' }} title="View bozogoofylame profile">
+          <div className="podium-avatar-wrap">
+            <span className="podium-crown-icon" aria-hidden="true">👑</span>
+            <span className="podium-medal-badge gold-badge">1</span>
+            <img src="/assets/skins/bozogoofylameVictory.png" alt="bozogoofylame" className="podium-skin first-skin" />
+          </div>
           <div className="podium-box first-box">
+            <div className="podium-pillar-glow gold-glow"></div>
+            <div className="podium-rank-tag gold-tag">CHAMPION</div>
             <div className="podium-name">bozogoofylame</div>
             <div className="podium-prize">1st Place</div>
           </div>

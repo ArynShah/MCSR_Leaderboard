@@ -153,7 +153,8 @@ export default function App() {
           setSelectedPlayer={setSelectedPlayer}
           onOpenSeedBoard={() => setShowSeedBoard(true)}
           onOpenAbout={() => setShowAbout(true)}
-          onCloseMobile={() => setActivePage('leaderboard')}
+          onOpenMenu={() => setIsNavMenuOpen(true)}
+          onNavigate={handleNavigate}
           isMobile={isMobile}
         />
       )}
