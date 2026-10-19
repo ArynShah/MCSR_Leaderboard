@@ -214,9 +214,6 @@ export default function TournamentPage({
               <span className="hamburger-line"></span>
               <span className="hamburger-line"></span>
             </button>
-            <div className="brand-group" onClick={() => onNavigate?.('leaderboard')}>
-              <h1 className="navbar-brand">Crifzer Playoffs</h1>
-            </div>
           </div>
 
           <div className="slideover-header-actions">
@@ -371,7 +368,6 @@ const Podium = ({ players, setSelectedPlayer }) => {
         {/* 2nd Place */}
         <div className="podium-place second-place" onClick={() => handlePlayerClick('iliealot')} style={{ cursor: 'pointer' }} title="View iliealot profile">
           <div className="podium-avatar-wrap">
-            <span className="podium-medal-badge silver-badge">2</span>
             <img src="/assets/skins/iliealot.png" alt="iliealot" className="podium-skin" />
           </div>
           <div className="podium-box second-box">
@@ -386,7 +382,6 @@ const Podium = ({ players, setSelectedPlayer }) => {
         <div className="podium-place first-place" onClick={() => handlePlayerClick('bozogoofylame')} style={{ cursor: 'pointer' }} title="View bozogoofylame profile">
           <div className="podium-avatar-wrap">
             <span className="podium-crown-icon" aria-hidden="true">👑</span>
-            <span className="podium-medal-badge gold-badge">1</span>
             <img src="/assets/skins/bozogoofylameVictory.png" alt="bozogoofylame" className="podium-skin first-skin" />
           </div>
           <div className="podium-box first-box">
