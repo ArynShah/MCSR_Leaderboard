@@ -940,13 +940,14 @@ input:checked + .slider:before { transform: translateX(16px); }
     align-items: center;
     justify-content: space-between;
     padding: 12px 18px;
-    gap: 12px;
+    gap: 8px;
     margin-bottom: 24px;
   }
   .navbar-left {
     flex: 1 1 auto;
     align-items: center;
     gap: 6px;
+    order: 1;
   }
   .brand-group {
     gap: 8px;
@@ -972,11 +973,17 @@ input:checked + .slider:before { transform: translateX(16px); }
     flex: 0 0 auto;
     gap: 10px;
     width: auto;
+    order: 2;
   }
   .navbar-center {
     width: 100%;
     order: 3;
     justify-content: center;
+  }
+  /* Hide descriptive pills on mobile — page identity is shown via navbar-page-badge */
+  .navbar-center .practice-header-pill,
+  .navbar-center .tournament-nav-tabs {
+    display: none;
   }
   .tabs {
     width: 100%;
@@ -1003,13 +1010,12 @@ input:checked + .slider:before { transform: translateX(16px); }
   .navbar-brand {
     font-size: 1.2rem !important;
   }
-  .toggle-container span {
-    display: none;
+  .toggle-container {
+    padding: 5px 10px;
+    gap: 6px;
   }
-  .toggle-container:before {
-    content: "Coaches";
-    font-size: 0.78rem;
-    color: #70A6C1;
+  .toggle-container span {
+    font-size: 0.72rem;
   }
 }
 
@@ -1399,9 +1405,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 .slideover-action-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
+  border-radius: 8px;
   color: #E0E0E0;
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;

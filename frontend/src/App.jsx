@@ -25,7 +25,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('elo');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [showCoaches, setShowCoaches] = useState(false);
+  const [showCoaches, setShowCoaches] = useState(true);
 
   // Screen Size Tracking
   const [isMobile, setIsMobile] = useState(false);
@@ -45,7 +45,7 @@ export default function App() {
         const fbRes = await fetch('https://mcsr-leaderboard-default-rtdb.firebaseio.com/players.json', { cache: 'no-store' });
         const fbData = (await fbRes.json()) || {};
         
-        const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'Bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'A1sauces', "hamzxy"];
+        const WHITELIST = ['Crifzer', 'Goatener', 'ILieALot', 'Bozogoofylame', 'AneeboAmiibo', 'NeatFoot', 'CrouchingPuppy', 'Pratham001', 'A1sauces', "Hamzxy"];
         const playersList = [];
 
         for (const name of WHITELIST) {
